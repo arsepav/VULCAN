@@ -1,0 +1,4 @@
+back/venv
+.idea
+back/test.db
+back/config.json
