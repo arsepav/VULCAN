@@ -2,3 +2,4 @@ back/venv
 .idea
 back/test.db
 back/config.json
+back/src/__pycache__/
