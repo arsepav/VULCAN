@@ -34,7 +34,24 @@
 
     <script>
         const apiBase = 'http://{{ ip }}:8000'; // URL вашего API
-        let accessToken = localStorage.getItem('accessToken');
+        let accessToken = localStorage.getItem('accessToken') || getCookie('accessToken');
+
+        function setCookie(name, value, days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            const expires = "expires=" + date.toUTCString();
+            document.cookie = name + "=" + value + ";" + expires + ";path=/";
+        }
+
+        function getCookie(name) {
+            const value = "; " + document.cookie;
+            const parts = value.split("; " + name + "=");
+            if (parts.length === 2) return parts.pop().split(";").shift();
+        }
+
+        function deleteCookie(name) {
+            document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        }
 
         // Функция для отправки запросов с токеном авторизации
         async function fetchData(url) {
@@ -73,6 +90,7 @@
                     const data = await response.json();
                     accessToken = data.access_token;
                     localStorage.setItem('accessToken', accessToken);
+                    setCookie('accessToken', accessToken, 1); // Сохраняем токен в cookie на 1 день
                     document.getElementById('logout').style.display = 'inline';
                     document.getElementById('login-form').style.display = 'none';
                     document.getElementById('protected-content').style.display = 'block';
@@ -88,6 +106,7 @@
 
         document.getElementById('logout').addEventListener('click', () => {
             localStorage.removeItem('accessToken');
+            deleteCookie('accessToken');
             accessToken = null;
             document.getElementById('logout').style.display = 'none';
             document.getElementById('login-form').style.display = 'block';
