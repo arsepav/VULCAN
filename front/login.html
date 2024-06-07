@@ -34,7 +34,7 @@
 
     <script>
         const apiBase = 'http://{{ ip }}:8000'; // URL вашего API
-        let accessToken = localStorage.getItem('accessToken');
+        let accessToken = localStorage.getItem('access_token');
 
         // Функция для отправки запросов с токеном авторизации
         async function fetchData(url) {
@@ -72,7 +72,7 @@
                 if (response.ok) {
                     const data = await response.json();
                     accessToken = data.access_token;
-                    localStorage.setItem('accessToken', accessToken);
+                    localStorage.setItem('access_token', accessToken);
                     document.getElementById('logout').style.display = 'inline';
                     document.getElementById('login-form').style.display = 'none';
                     document.getElementById('protected-content').style.display = 'block';
@@ -87,7 +87,7 @@
         });
 
         document.getElementById('logout').addEventListener('click', () => {
-            localStorage.removeItem('accessToken');
+            localStorage.removeItem('access_token');
             accessToken = null;
             document.getElementById('logout').style.display = 'none';
             document.getElementById('login-form').style.display = 'block';
