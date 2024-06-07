@@ -32,6 +32,8 @@
         <button id="fetch-data">Fetch Protected Data</button>
     </div>
 
+    <a href="{{ ip }}:8000/map">Карта</a>
+
     <script>
         const apiBase = 'http://{{ ip }}:8000'; // URL вашего API
         let accessToken = localStorage.getItem('access_token');
