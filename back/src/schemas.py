@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Any, Dict, List, Tuple
 
 class UserBase(BaseModel):
     username: str
@@ -16,3 +17,30 @@ class UserResponse(UserBase):
 class UserLogin(BaseModel):
     username: str
     password: str
+
+class GeoPointAdd(BaseModel):
+    name: str
+    geom: Tuple[float, float]
+
+class GeoPointResponse(BaseModel):
+    id: int
+    class Config:
+        orm_mode = True
+
+class GeoPolygonAdd(BaseModel):
+    name: str
+    geom: Dict[str, Any]
+
+class GeoPolygonResponse(BaseModel):
+    id: int
+    class Config:
+        orm_mode = True
+
+class GeoPathAdd(BaseModel):
+    name: str
+    geom: List[Tuple[float, float]]
+
+class GeoPathResponse(BaseModel):
+    id: int
+    class Config:
+        orm_mode = True
