@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from typing import Optional
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from . import models, schemas, database
@@ -53,13 +53,34 @@ def authenticate_user(db, username: str, password: str):
         return False
     return user
 
-async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
+class RedirectToLoginException(HTTPException):
+    def __init__(self):
+        super().__init__(status_code=status.HTTP_307_TEMPORARY_REDIRECT, detail="Redirecting to login")
+        self.headers = {"Location": "/login"}
+
+
+async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(database.get_db)):
+    credentials_exception = RedirectToLoginException()
     try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise credentials_exception
+        token_data = schemas.UserBase(username=username, email="")
+    except JWTError:
+        raise credentials_exception
+    user = get_user(db, username=token_data.username)
+    if user is None:
+        raise credentials_exception
+    return user
+
+
+async def get_current_user_cookie(request: Request, db: Session = Depends(database.get_db)):
+    credentials_exception = RedirectToLoginException()
+    try:
+        token = request.cookies.get("access_token")
+        if not token:
+            raise credentials_exception
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
         if username is None:

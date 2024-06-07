@@ -3,111 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auth Example</title>
+    <title>Authorization Demo</title>
+    <style>
+        #logout, #protected-content {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <h1>Registration</h1>
-    <form id="register-form">
+    <h1>Authorization Demo</h1>
+    <div id="message"></div>
+
+    <div id="login-form">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required>
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
+        <br>
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
-        <button type="submit">Register</button>
-    </form>
+        <br>
+        <button id="login">Login</button>
+    </div>
 
-    <h1>Login</h1>
-    <form id="login-form">
-        <label for="login-username">Username:</label>
-        <input type="text" id="login-username" name="login-username" required>
-        <label for="login-password">Password:</label>
-        <input type="password" id="login-password" name="login-password" required>
-        <button type="submit">Login</button>
-    </form>
+    <button id="logout">Logout</button>
 
-    <h1>Protected Resource</h1>
-    <button id="get-user">Get Current User</button>
-    <p id="user-info"></p>
+    <div id="protected-content">
+        <h2>Protected Content</h2>
+        <p id="user-info"></p>
+        <button id="fetch-data">Fetch Protected Data</button>
+    </div>
 
     <script>
-        const apiBase = 'http://localhost:8000'; // Замените на ваш адрес backend
+        const apiBase = 'http://{{ ip }}:8000'; // URL вашего API
+        let accessToken = localStorage.getItem('accessToken');
 
-        document.getElementById('register-form').addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const username = event.target.username.value;
-            const email = event.target.email.value;
-            const password = event.target.password.value;
-
-            const response = await fetch(`${apiBase}/register`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username, email, password })
-            });
-
-            if (response.ok) {
-                alert('Registration successful');
-            } else {
-                alert('Registration failed');
-            }
-        });
-
-        document.getElementById('login-form').addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const username = event.target['login-username'].value;
-            const password = event.target['login-password'].value;
-
-            const response = await fetch(`${apiBase}/token`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username, password })
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                document.cookie = `access_token=${data.access_token}; path=/; SameSite=Lax;`;
-                alert('Login successful');
-                var myVariable = "Hello World";
-
-                sessionStorage['myvariable'] = myVariable;
-
-                var readValue = sessionStorage['myvariable'];
-                console.log(readValue);
-            } else {
-                alert('Login failed');
-            }
-        });
-
-        document.getElementById('get-user').addEventListener('click', async () => {
-            const tokenCookie = document.cookie.split('; ').find(row => row.startsWith('access_token'));
-            var readValue = sessionStorage['myvariable'];
-            console.log(readValue);
-            if (!tokenCookie) {
-                alert('No access token found');
-                return;
-            }
-            const token = tokenCookie.split('=')[1];
+        // Функция для отправки запросов с токеном авторизации
+        async function fetchData(url) {
             try {
-                const response = await fetch(`${apiBase}/users/me`, {
-                    method: 'GET',
+                const response = await fetch(url, {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${accessToken}`
                     }
                 });
-
                 if (response.ok) {
                     const data = await response.json();
                     document.getElementById('user-info').innerText = `Username: ${data.username}, Email: ${data.email}`;
                 } else {
-                    document.getElementById('user-info').innerText = 'Failed to fetch user info';
+                    document.getElementById('user-info').innerText = 'Failed to fetch data';
                 }
             } catch (error) {
-                console.error('Error fetching user info:', error);
-                document.getElementById('user-info').innerText = 'Error fetching user info';
+                console.error('Error fetching data:', error);
+                document.getElementById('user-info').innerText = 'Error fetching data';
+            }
+        }
+
+        // Обработчик для кнопки входа
+        document.getElementById('login').addEventListener('click', async () => {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch(`${apiBase}/token`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    accessToken = data.access_token;
+                    localStorage.setItem('accessToken', accessToken);
+                    document.getElementById('logout').style.display = 'inline';
+                    document.getElementById('login-form').style.display = 'none';
+                    document.getElementById('protected-content').style.display = 'block';
+                    document.getElementById('message').innerText = 'Login successful';
+                } else {
+                    document.getElementById('message').innerText = 'Login failed';
+                }
+            } catch (error) {
+                console.error('Error logging in:', error);
+                document.getElementById('message').innerText = 'Error logging in';
+            }
+        });
+
+        document.getElementById('logout').addEventListener('click', () => {
+            localStorage.removeItem('accessToken');
+            accessToken = null;
+            document.getElementById('logout').style.display = 'none';
+            document.getElementById('login-form').style.display = 'block';
+            document.getElementById('protected-content').style.display = 'none';
+            document.getElementById('message').innerText = '';
+        });
+
+        // Обработчик для кнопки получения защищенных данных
+        document.getElementById('fetch-data').addEventListener('click', () => {
+            fetchData(`${apiBase}/users/me`);
+        });
+
+        // Проверка наличия токена при загрузке страницы
+        window.addEventListener('load', () => {
+            if (accessToken) {
+                document.getElementById('logout').style.display = 'inline';
+                document.getElementById('login-form').style.display = 'none';
+                document.getElementById('protected-content').style.display = 'block';
+                document.getElementById('message').innerText = 'Already logged in';
             }
         });
     </script>

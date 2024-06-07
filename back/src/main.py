@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException, status, Request
 from geoalchemy2.shape import from_shape
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from shapely import Polygon, LineString
 from shapely.geometry import shape, Point
 from sqlalchemy.orm import Session
@@ -8,11 +8,17 @@ from . import models, schemas, auth, database
 from datetime import datetime, timedelta
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.templating import Jinja2Templates
-import os
+import json
 models.Base.metadata.create_all(bind=database.engine)
 
-template_directory = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates")
-templates = Jinja2Templates(directory=template_directory)
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent
+
+with open('config.json') as f:
+    d = json.load(f)
+
+templates = Jinja2Templates(directory='../front')
 
 app = FastAPI()
 
@@ -103,15 +109,15 @@ async def add_path(path_data: schemas.GeoPathAdd, db: Session = Depends(database
 
 @app.get("/login", response_class=HTMLResponse)
 async def get_login_page(request: Request):
-    return templates.TemplateResponse("../front/login.html", {"request": request})
+    ip = d['ip']
+
+    print(ip)
+
+    return templates.TemplateResponse("login.html", {"request": request, 'ip': ip})
 
 
 @app.get("/map", response_class=HTMLResponse)
-async def get_map_page(request: Request):
-
-
-    # Получение текущей рабочей директории
-    current_directory = os.getcwd()
-
-    print(f"Current working directory: {current_directory}")
-    return templates.TemplateResponse("map.html", {"request": request})
+async def get_map_page(request: Request, current_user: schemas.UserResponse = Depends(auth.get_current_user_cookie)):
+    if not current_user:
+        return RedirectResponse(url="/login")
+    return templates.TemplateResponse("map.html", {"request": request, "ip": d['ip']})

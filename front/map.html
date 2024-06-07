@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
     <style>
         #map {
-            height: 600px;
+            height: 700px;
             width: 100%;
         }
     </style>
@@ -20,7 +20,7 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
         // Initialize the map
-        var map = L.map('map').setView([51.505, -0.09], 13);
+        var map = L.map('map').setView([55.914298, 158.918540], 13);
 
         // Add OpenStreetMap tiles
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -29,14 +29,43 @@
 
         // Array to store path points
         var pathPoints = [];
+        var markers = [];
+        var polyline = null;
 
         // Function to handle map clicks
         function onMapClick(e) {
             var latLng = e.latlng;
             pathPoints.push([latLng.lat, latLng.lng]);
 
-            // Add a marker to the map
-            L.marker(latLng).addTo(map);
+            // Create a small marker
+            var marker = L.circleMarker(latLng, {
+                radius: 5,
+                color: 'red',
+                fillColor: '#f03',
+                fillOpacity: 0.5
+            }).addTo(map);
+
+            // Add click event to remove the marker
+            marker.on('click', function () {
+                var index = markers.indexOf(marker);
+                if (index > -1) {
+                    markers.splice(index, 1);
+                    pathPoints.splice(index, 1);
+                    map.removeLayer(marker);
+                    drawPolyline();
+                }
+            });
+
+            markers.push(marker);
+            drawPolyline();
+        }
+
+        // Function to draw polyline
+        function drawPolyline() {
+            if (polyline) {
+                map.removeLayer(polyline);
+            }
+            polyline = L.polyline(pathPoints, {color: 'blue'}).addTo(map);
         }
 
         // Event listener for map clicks
@@ -55,11 +84,11 @@
                 geom: pathPoints
             };
 
-            const response = await fetch("http://0.0.0.0:8000/add_path", {
+            const response = await fetch("http://{{ ip }}:8000/add_path", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcnNlcGF2IiwiZXhwIjoxNzIyOTY4NDIzfQ.bSUX9dZ93eFduP3nU3zxV608OIZswNy2Etz3Nczqxtg"
+                    "Authorization": `Bearer ${sessionStorage['access_token']}`
                 },
                 body: JSON.stringify(pathData)
             });
