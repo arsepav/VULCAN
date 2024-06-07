@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException, status, Request
 from geoalchemy2.shape import from_shape
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from shapely import Polygon, LineString
 from shapely.geometry import shape, Point
 from sqlalchemy.orm import Session
@@ -53,7 +53,9 @@ def login_for_access_token(form_data: schemas.UserLogin, db: Session = Depends(a
     access_token = auth.create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+    response = JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
+    response.set_cookie(key="access_token", value=access_token, httponly=True, samesite="lax")
+    return response
 
 
 @app.get("/users/me", response_model=schemas.UserResponse)
