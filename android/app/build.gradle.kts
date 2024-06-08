@@ -1,6 +1,9 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin)
 }
 
 android {
@@ -8,6 +11,20 @@ android {
     compileSdk = 34
 
     defaultConfig {
+        val properties = Properties()
+
+        properties.load(
+            project
+                .rootProject
+                .file("local.properties")
+                .inputStream()
+        )
+
+        manifestPlaceholders.put(
+            "MAPS_API_KEY",
+            properties.getProperty("MAPS_API_KEY")
+        )
+
         applicationId = "good.damn.kamchatka"
         minSdk = 24
         targetSdk = 34
@@ -33,6 +50,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -40,6 +60,8 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(libs.play.services.maps)
+    implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

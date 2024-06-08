@@ -5,4 +5,5 @@
     <string name="password">Password</string>
     <string name="map">Map</string>
     <string name="places">Places</string>
+    <string name="title_activity_maps">MapsActivity</string>
 </resources>

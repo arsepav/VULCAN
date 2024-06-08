@@ -10,6 +10,10 @@ class Application
 : Application() {
 
     companion object {
+
+        var WIDTH = 0
+        var HEIGHT = 0
+
         lateinit var RESOURCES: Resources
 
         @ColorInt
@@ -29,6 +33,12 @@ class Application
 
         RESOURCES = applicationContext
             .resources
+
+        val metrics = RESOURCES
+            .displayMetrics
+
+        HEIGHT = metrics.heightPixels
+        WIDTH = metrics.widthPixels
 
     }
 
