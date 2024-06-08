@@ -6,6 +6,7 @@ import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
 import android.widget.FrameLayout
+import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
 import good.damn.kamchatka.Application
@@ -13,6 +14,7 @@ import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsFrame
 import good.damn.kamchatka.fragments.StackFragment
 import good.damn.kamchatka.fragments.ui.main_navigation.MapsFragment
+import good.damn.kamchatka.fragments.ui.main_navigation.PlacesFragment
 
 class MainNavigationFragment
 : StackFragment(),
@@ -83,27 +85,22 @@ NavigationBarView.OnItemSelectedListener {
             this::onLayout
         )
 
+        replaceFragment(
+            MapsFragment()
+        )
+
         return mLayout
     }
 
     override fun onNavigationItemSelected(
         menuItem: MenuItem
     ): Boolean {
-        when (menuItem.itemId) {
-            R.id.menu_main_map -> {
-                childFragmentManager
-                    .beginTransaction()
-                    .replace(
-                        mContainer.id,
-                        MapsFragment()
-                    ).commit()
+        replaceFragment(
+            when (menuItem.itemId) {
+                R.id.menu_main_map -> MapsFragment()
+                else -> PlacesFragment()
             }
-
-            R.id.menu_main_places -> {
-
-            }
-        }
-
+        )
         return true
     }
 
@@ -115,4 +112,14 @@ NavigationBarView.OnItemSelectedListener {
         )
     }
 
+    private fun replaceFragment(
+        fragment: Fragment
+    ) {
+        childFragmentManager
+            .beginTransaction()
+            .replace(
+                mContainer.id,
+                fragment
+            ).commit()
+    }
 }
