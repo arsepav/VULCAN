@@ -27,10 +27,10 @@ class GeoService {
                 PolygonOptions()
                     .clickable(true)
                     .add(
-                        LatLng(55.527197, 158.462162),
-                        LatLng(55.477418, 159.654178),
-                        LatLng(54.773885, 159.434452),
-                        LatLng(53.773885, 159.424452)
+                        LatLng(54.527197, 158.462162),
+                        LatLng(54.477418, 159.654178),
+                        LatLng(55.773885, 159.434452),
+                        LatLng(56.773885, 159.424452)
                     ),
                 "Green zone",
                 0x5500ff00.toInt(),

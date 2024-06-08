@@ -2,16 +2,18 @@ package good.damn.kamchatka.fragments.ui.main_navigation
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Polygon
 import good.damn.kamchatka.services.GeoService
 
 class MapsFragment
 : SupportMapFragment(),
-OnMapReadyCallback {
+OnMapReadyCallback, GoogleMap.OnPolygonClickListener {
 
     companion object {
         private const val TAG = "MapsFragment"
@@ -48,6 +50,7 @@ OnMapReadyCallback {
             polygon.fillColor = it.fillColor
             polygon.strokeColor = it.strokeColor
             polygon.strokeWidth = it.strokeWidth
+            polygon.tag = it.title
         }
 
         map.moveCamera(
@@ -57,6 +60,22 @@ OnMapReadyCallback {
                     0.2f
                 )
         )
+
+        map.setOnPolygonClickListener(
+            this
+        )
+
+    }
+
+    override fun onPolygonClick(
+        poly: Polygon
+    ) {
+        Toast
+            .makeText(
+                context,
+                poly.tag as String,
+                Toast.LENGTH_SHORT
+            ).show()
     }
 
 }
