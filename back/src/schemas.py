@@ -30,6 +30,8 @@ class GeoPointResponse(BaseModel):
 class GeoPolygonAdd(BaseModel):
     name: str
     geom: Dict[str, Any]
+    description: str
+    category_id: int
 
 class GeoPolygonResponse(BaseModel):
     id: int
@@ -44,3 +46,14 @@ class GeoPathResponse(BaseModel):
     id: int
     class Config:
         orm_mode = True
+
+
+class OOPT(BaseModel):
+    id: int
+    name: str
+    description: str
+    geom: dict
+    image_url: str
+
+class GetOOPTs(BaseModel):
+    OOPT_name: str

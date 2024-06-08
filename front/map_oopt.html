@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map with Polygons</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <style>
+        #map {
+            height: 700px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Map with Polygons</h1>
+    <div id="map"></div>
+    <button id="save-polygon">Save Polygon</button>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Initialize the map
+        var map = L.map('map').setView([55.914298, 158.918540], 13);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Array to store polygon points
+        var polygonPoints = [];
+        var markers = [];
+        var polygon = null;
+
+        // Function to handle map clicks
+        function onMapClick(e) {
+            var latLng = e.latlng;
+            polygonPoints.push([latLng.lat, latLng.lng]);
+
+            // Create a small marker
+            var marker = L.circleMarker(latLng, {
+                radius: 5,
+                color: 'red',
+                fillColor: '#f03',
+                fillOpacity: 0.5
+            }).addTo(map);
+
+            // Add click event to remove the marker
+            marker.on('click', function () {
+                var index = markers.indexOf(marker);
+                if (index > -1) {
+                    markers.splice(index, 1);
+                    polygonPoints.splice(index, 1);
+                    map.removeLayer(marker);
+                    drawPolygon();
+                }
+            });
+
+            markers.push(marker);
+            drawPolygon();
+        }
+
+        // Function to draw polygon
+        function drawPolygon() {
+            if (polygon) {
+                map.removeLayer(polygon);
+            }
+            if (polygonPoints.length > 2) {
+                polygon = L.polygon(polygonPoints, {color: 'blue'}).addTo(map);
+            }
+        }
+
+        // Event listener for map clicks
+        map.on('click', onMapClick);
+
+        // Function to save the polygon
+        async function savePolygon() {
+            const name = prompt("Enter the name of the polygon:");
+            const description = prompt("Enter a description for the polygon:");
+            const category_id = prompt("Enter the category ID for the polygon:");
+
+            if (!name || !description || !category_id) {
+                alert("All fields are required!");
+                return;
+            }
+
+            const polygonData = {
+                name: name,
+                geom: {
+                    type: "Polygon",
+                    coordinates: [polygonPoints]
+                },
+                description: description,
+                category_id: parseInt(category_id)
+            };
+
+            const response = await fetch("http://{{ ip }}:8000/add_polygon", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem('access_token')}`
+                },
+                body: JSON.stringify(polygonData)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                alert("Polygon saved with ID: " + result.id);
+            } else {
+                alert("Error saving polygon");
+            }
+        }
+
+        // Event listener for save button
+        document.getElementById("save-polygon").addEventListener("click", savePolygon);
+    </script>
+</body>
+</html>

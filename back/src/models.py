@@ -36,6 +36,7 @@ class GeoPolygons(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
     geom = Column(Geometry(geometry_type='POLYGON', srid=4326))
+    description = Column(String)
     category_id = Column(Integer, ForeignKey('geo_polygons_category.id'))
 
 

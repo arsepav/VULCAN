@@ -11,6 +11,9 @@ from fastapi.templating import Jinja2Templates
 import json
 from os.path import join, exists
 import shutil
+from typing import List
+from .processing import null_to_empty, wkb_element_to_wkt
+
 models.Base.metadata.create_all(bind=database.engine)
 
 from pathlib import Path
@@ -33,6 +36,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 @app.post("/register", response_model=schemas.UserResponse)
 def register_user(user: schemas.UserCreate, db: Session = Depends(auth.get_db)):
@@ -90,7 +94,10 @@ async def add_geo_polygon(polygon_data: schemas.GeoPolygonAdd, db: Session = Dep
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Invalid GeoJSON data: {str(e)}")
 
-    db_polygon = models.GeoPolygons(name=polygon_data.name, geom=from_shape(polygon, srid=4326))
+    db_polygon = models.GeoPolygons(name=polygon_data.name,
+                                    geom=from_shape(polygon, srid=4326),
+                                    description=polygon_data.description,
+                                    category_id=polygon_data.category_id)
     db.add(db_polygon)
     db.commit()
 
@@ -128,6 +135,14 @@ async def get_map_page(request: Request, current_user: schemas.UserResponse = De
         return RedirectResponse(url="/login")
     return templates.TemplateResponse("map.html", {"request": request, "ip": d['ip']})
 
+
+@app.get("/map_oopt", response_class=HTMLResponse)
+async def get_map_page(request: Request, current_user: schemas.UserResponse = Depends(auth.get_current_user_cookie)):
+    if not current_user:
+        return RedirectResponse(url="/login")
+    return templates.TemplateResponse("map_oopt.html", {"request": request, "ip": d['ip']})
+
+
 @app.get("/upload_file_page/", response_class=HTMLResponse)
 async def read_upload_file(request: Request):
     return templates.TemplateResponse("upload.html", {"request": request})
@@ -157,3 +172,23 @@ async def download_file(file_id: int, db: Session = Depends(database.get_db)):
         raise HTTPException(status_code=404, detail="File not found on disk")
 
     return FileResponse(path=file_location, filename=db_file.name, media_type='application/octet-stream')
+
+
+@app.post("/oopts", response_model=List[schemas.OOPT])
+def read_oopts(oopt_info: schemas.GetOOPTs, db: Session = Depends(database.get_db)):
+    oopts = (db.query(models.GeoPolygons, models.GeoPolygonsCategory.image_url)
+             .filter(models.GeoPolygons.category_id == 1)
+             .filter(models.GeoPolygons.name.ilike(f"%{oopt_info.OOPT_name}%"))
+             .join(models.GeoPolygonsCategory)
+             .all())
+
+    response = []
+    for oopt in oopts:
+        oopt_dict = oopt[0].__dict__
+        oopt_dict['image_url'] = oopt[1]
+        print("\n\n\n\n", oopt_dict, "\n\n\n\n")
+        oopt_dict['geom'] = wkb_element_to_wkt(oopt_dict['geom'])
+        oopt_dict = null_to_empty(oopt_dict)
+        response.append(schemas.OOPT(**oopt_dict))
+
+    return response
