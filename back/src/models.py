@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, String, DateTime
+from sqlalchemy import Column, Integer, ForeignKey, String, DateTime, Date, Boolean
 from sqlalchemy.sql import func
 from .database import Base
 from geoalchemy2 import Geometry
@@ -54,6 +54,7 @@ class GeoPaths(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
     geom = Column(Geometry(geometry_type='LINESTRING', srid=4326))
+    oopt_id = Column(Integer, ForeignKey('geo_polygons.id'))
     category_id = Column(Integer, ForeignKey('geo_paths_category.id'))
 
 class GeoPathsCategory(Base):
@@ -70,3 +71,54 @@ class FilesInfo(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
     extension = Column(String)
+
+class Countries(Base):
+    __tablename__ = "countries"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String)
+
+
+class VisitPermissionIndividual(Base):
+    __tablename__ = "visit_permission_individual"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    arrival_date = Column(Date)
+
+    surname = Column(String)
+    name = Column(String)
+    lastname = Column(String)
+
+    birthday = Column(Date)
+    citizenship = Column(Integer, ForeignKey('countries.id'))
+
+    isMale = Column(Boolean)
+
+    passport = Column(String)
+
+    email = Column(String)
+    phone_number = Column(String)
+
+    path_id = Column(Integer, ForeignKey('geo_paths.id'))
+
+    is_one_day_only = Column(Boolean)
+
+    purpose_skis = Column(Boolean)
+    purpose_sport = Column(Boolean)
+    purpose_science = Column(Boolean)
+    purpose_photo_video = Column(Boolean)
+    purpose_mountaineering = Column(Boolean)
+    purpose_another = Column(Boolean)
+
+    photo_video_professional = Column(Boolean)
+    photo_video_drones = Column(Boolean)
+
+    reviewed = Column(Boolean, default=False)
+    approved = Column(Boolean, default=False)
+
+    reviewer = Column(Integer, ForeignKey('users.id'), default=None)
+
+    date_of_creation = Column(DateTime(timezone=True), server_default=func.now())
+
+

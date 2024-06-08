@@ -6,21 +6,92 @@
     <title>Map with Paths</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
     <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
         #map {
-            height: 700px;
+            height: calc(106%);
             width: 100%;
+            position: absolute;
+        }
+        #control-panel {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 300px;
+            height: auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        input[type="text"], input[type="number"], textarea {
+            width: 95%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+        textarea {
+            height: 100px;
+            resize: none;
+        }
+        button {
+            display: block;
+            width: 95%;
+            padding: 15px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #save-path {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #reset-path {
+            background-color: #f44336;
+            color: white;
+        }
+        button:hover {
+            opacity: 0.9;
         }
     </style>
 </head>
 <body>
-    <h1>Map with Paths</h1>
     <div id="map"></div>
-    <button id="save-path">Save Path</button>
+    <div id="control-panel">
+        <div>
+            <label for="path-name">Path Name:</label>
+            <input type="text" id="path-name" name="path-name"><br>
+            <label for="oopt-id">OOPT ID:</label>
+            <input type="number" id="oopt-id" name="oopt-id"><br>
+            <label for="category-id">Category ID:</label>
+            <input type="number" id="category-id" name="category-id"><br>
+            <label for="description">Description:</label>
+            <textarea id="description" name="description"></textarea>
+        </div>
+        <div>
+            <button id="save-path">Save Path</button>
+            <button id="reset-path">Reset Path</button>
+        </div>
+    </div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
         // Initialize the map
-        var map = L.map('map').setView([55.914298, 158.918540], 13);
+        var map = L.map('map').setView([55.914298, 158.918540], 5);
 
         // Add OpenStreetMap tiles
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -73,15 +144,22 @@
 
         // Function to save the path
         async function savePath() {
-            const name = prompt("Enter the name of the path:");
-            if (!name) {
-                alert("Name is required!");
+            const name = document.getElementById("path-name").value;
+            const oopt_id = document.getElementById("oopt-id").value;
+            const category_id = document.getElementById("category-id").value;
+            const description = document.getElementById("description").value;
+
+            if (!name || !oopt_id || !category_id || !description) {
+                alert("All fields are required!");
                 return;
             }
 
             const pathData = {
                 name: name,
-                geom: pathPoints
+                geom: pathPoints,
+                oopt_id: parseInt(oopt_id),
+                category_id: parseInt(category_id),
+                description: description
             };
 
             const response = await fetch("http://{{ ip }}:8000/add_path", {
@@ -101,8 +179,20 @@
             }
         }
 
-        // Event listener for save button
+        // Function to reset the path
+        function resetPath() {
+            pathPoints = [];
+            markers.forEach(marker => map.removeLayer(marker));
+            markers = [];
+            if (polyline) {
+                map.removeLayer(polyline);
+                polyline = null;
+            }
+        }
+
+        // Event listeners for buttons
         document.getElementById("save-path").addEventListener("click", savePath);
+        document.getElementById("reset-path").addEventListener("click", resetPath);
     </script>
 </body>
 </html>

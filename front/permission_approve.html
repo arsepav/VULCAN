@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visit Permissions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            margin: 0;
+        }
+        .sidebar {
+            width: 25%;
+            background-color: #f8f8f8;
+            padding: 10px;
+            overflow-y: auto;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .permission-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1;
+        }
+        .permission-list li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+        }
+        .permission-list li.not-reviewed {
+            background-color: #f0f0f0;
+        }
+        .permission-list li.approved {
+            background-color: #d4edda;
+        }
+        .permission-list li.rejected {
+            background-color: #f8d7da;
+        }
+        .permission-list li:hover {
+            background-color: #e0e0e0;
+        }
+        .permission-details {
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-top: 10px;
+            display: none;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .button.approve {
+            background-color: #28a745;
+        }
+        .button.reject {
+            background-color: #dc3545;
+        }
+        .filter-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .filter-container select {
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h1>Visit Permissions</h1>
+        <div class="filter-container">
+            <label for="filter-select">Filter: </label>
+            <select id="filter-select">
+                <option value="all">Show All</option>
+                <option value="not-reviewed">Not Reviewed</option>
+            </select>
+        </div>
+        <ul class="permission-list" id="permission-list"></ul>
+    </div>
+    <div class="content">
+        <div class="permission-details" id="permission-details"></div>
+        <div class="buttons">
+            <button class="button approve" id="approve-button">Approve</button>
+            <button class="button reject" id="reject-button">Reject</button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('filter-select').addEventListener('change', fetchPermissions);
+
+        async function fetchPermissions() {
+            const filter = document.getElementById('filter-select').value;
+            const notReviewedOnly = filter === 'not-reviewed';
+
+            let url = 'http://{{ ip }}:8000/visit-permissions';
+            if (notReviewedOnly) {
+                url += '?not_reviewed_only=true';
+            }
+
+            try {
+                let response = await fetch(url);
+                if (response.ok) {
+                    let permissions = await response.json();
+                    let list = document.getElementById('permission-list');
+                    list.innerHTML = '';  // Clear the list before adding new items
+
+                    permissions.forEach(permission => {
+                        let listItem = document.createElement('li');
+                        listItem.textContent = `${permission.surname} ${permission.name} ${permission.lastname} - OOPT ID: ${permission.path_id}`;
+                        listItem.className = permission.reviewed ? (permission.approved ? 'approved' : 'rejected') : 'not-reviewed';
+                        listItem.addEventListener('click', () => showPermissionDetails(permission.id));
+                        list.appendChild(listItem);
+                    });
+                } else {
+                    alert('Failed to fetch permissions');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function showPermissionDetails(permissionId) {
+            try {
+                let response = await fetch(`http://{{ ip }}:8000/visit-permissions/${permissionId}`);
+                if (response.ok) {
+                    let permission = await response.json();
+                    let detailsDiv = document.getElementById('permission-details');
+                    detailsDiv.innerHTML = `
+                        <h2>Permission Details</h2>
+                        <p><strong>Arrival Date:</strong> ${permission.arrival_date}</p>
+                        <p><strong>Surname:</strong> ${permission.surname}</p>
+                        <p><strong>Name:</strong> ${permission.name}</p>
+                        <p><strong>Lastname:</strong> ${permission.lastname}</p>
+                        <p><strong>Birthday:</strong> ${permission.birthday}</p>
+                        <p><strong>Citizenship:</strong> ${permission.citizenship}</p>
+                        <p><strong>Gender:</strong> ${permission.isMale ? 'Male' : 'Female'}</p>
+                        <p><strong>Passport:</strong> ${permission.passport}</p>
+                        <p><strong>Email:</strong> ${permission.email}</p>
+                        <p><strong>Phone Number:</strong> ${permission.phone_number}</p>
+                        <p><strong>Path ID:</strong> ${permission.path_id}</p>
+                        <p><strong>One Day Only:</strong> ${permission.is_one_day_only}</p>
+                        <p><strong>Purpose Skis:</strong> ${permission.purpose_skis}</p>
+                        <p><strong>Purpose Sport:</strong> ${permission.purpose_sport}</p>
+                        <p><strong>Purpose Science:</strong> ${permission.purpose_science}</p>
+                        <p><strong>Purpose Photo/Video:</strong> ${permission.purpose_photo_video}</p>
+                        <p><strong>Purpose Mountaineering:</strong> ${permission.purpose_mountaineering}</p>
+                        <p><strong>Purpose Another:</strong> ${permission.purpose_another}</p>
+                        <p><strong>Photo/Video Professional:</strong> ${permission.photo_video_professional}</p>
+                        <p><strong>Photo/Video Drones:</strong> ${permission.photo_video_drones}</p>
+                        <p><strong>Reviewed:</strong> ${permission.reviewed}</p>
+                        <p><strong>Approved:</strong> ${permission.approved}</p>
+                    `;
+                    detailsDiv.style.display = 'block';
+
+                    document.getElementById('approve-button').onclick = () => reviewPermission(permission.id, true);
+                    document.getElementById('reject-button').onclick = () => reviewPermission(permission.id, false);
+                } else {
+                    alert('Failed to fetch permission details');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function reviewPermission(permissionId, approved) {
+            try {
+                let response = await fetch(`http://{{ ip }}:8000/visit-permissions/${permissionId}/review?approved=${approved}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                    }
+                });
+
+                if (response.ok) {
+                    alert('Permission updated successfully');
+                    fetchPermissions();
+                } else {
+                    alert('Failed to update permission');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        window.onload = fetchPermissions;
+    </script>
+</body>
+</html>

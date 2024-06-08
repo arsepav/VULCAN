@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, status, File, UploadFile, Request
+from fastapi import FastAPI, Depends, HTTPException, status, File, UploadFile, Request, Query
 from geoalchemy2.shape import from_shape
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse, FileResponse
 from shapely import Polygon, LineString
@@ -13,6 +13,7 @@ from os.path import join, exists
 import shutil
 from typing import List
 from .processing import null_to_empty, wkb_element_to_wkt
+from typing import List, Optional
 
 models.Base.metadata.create_all(bind=database.engine)
 
@@ -104,7 +105,7 @@ async def add_geo_polygon(polygon_data: schemas.GeoPolygonAdd, db: Session = Dep
     return schemas.GeoPolygonResponse(id=db_polygon.id)
 
 
-@app.post("/add_path", response_model=schemas.GeoPathResponse)
+@app.post("/add_path", response_model=schemas.GeoPathAddResponse)
 async def add_path(path_data: schemas.GeoPathAdd, db: Session = Depends(database.get_db),
                    current_user: schemas.UserResponse = Depends(auth.get_current_user)):
     try:
@@ -112,12 +113,16 @@ async def add_path(path_data: schemas.GeoPathAdd, db: Session = Depends(database
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Invalid path data: {str(e)}")
 
-    db_path = models.GeoPaths(name=path_data.name, geom=from_shape(path, srid=4326))
+    db_path = models.GeoPaths(name=path_data.name,
+                              geom=from_shape(path, srid=4326),
+                              category_id=path_data.category_id,
+                              oopt_id=path_data.oopt_id)
+
     db.add(db_path)
     db.commit()
     db.refresh(db_path)
 
-    return schemas.GeoPathResponse(id=db_path.id)
+    return schemas.GeoPathAddResponse(id=db_path.id)
 
 
 @app.get("/login", response_class=HTMLResponse)
@@ -141,6 +146,12 @@ async def get_map_page(request: Request, current_user: schemas.UserResponse = De
     if not current_user:
         return RedirectResponse(url="/login")
     return templates.TemplateResponse("map_oopt.html", {"request": request, "ip": d['ip']})
+
+@app.get("/permission_approve_page", response_class=HTMLResponse)
+async def get_permissions_page(request: Request, current_user: schemas.UserResponse = Depends(auth.get_current_user_cookie)):
+    if not current_user:
+        return RedirectResponse(url="/login")
+    return templates.TemplateResponse("permission_approve.html", {"request": request, "ip": d['ip']})
 
 
 @app.get("/upload_file_page/", response_class=HTMLResponse)
@@ -186,9 +197,99 @@ def read_oopts(oopt_info: schemas.GetOOPTs, db: Session = Depends(database.get_d
     for oopt in oopts:
         oopt_dict = oopt[0].__dict__
         oopt_dict['image_url'] = oopt[1]
-        print("\n\n\n\n", oopt_dict, "\n\n\n\n")
         oopt_dict['geom'] = wkb_element_to_wkt(oopt_dict['geom'])
         oopt_dict = null_to_empty(oopt_dict)
         response.append(schemas.OOPT(**oopt_dict))
 
     return response
+
+
+@app.post("/create_visit_permission/", response_model=schemas.VisitPermissionIndividualCreate)
+async def create_visit_permission_individual(visit_permission_data: schemas.VisitPermissionIndividualCreate,
+                                             db: Session = Depends(database.get_db)):
+    # Create a new VisitPermissionIndividual instance
+    db_visit_permission = models.VisitPermissionIndividual(
+        arrival_date=visit_permission_data.arrival_date,
+        surname=visit_permission_data.surname,
+        name=visit_permission_data.name,
+        lastname=visit_permission_data.lastname,
+        birthday=visit_permission_data.birthday,
+        citizenship=visit_permission_data.citizenship,
+        isMale=visit_permission_data.isMale,
+        passport=visit_permission_data.passport,
+        email=visit_permission_data.email,
+        phone_number=visit_permission_data.phone_number,
+        path_id=visit_permission_data.path_id,
+        is_one_day_only=visit_permission_data.is_one_day_only,
+        purpose_skis=visit_permission_data.purpose_skis,
+        purpose_sport=visit_permission_data.purpose_sport,
+        purpose_science=visit_permission_data.purpose_science,
+        purpose_photo_video=visit_permission_data.purpose_photo_video,
+        purpose_mountaineering=visit_permission_data.purpose_mountaineering,
+        purpose_another=visit_permission_data.purpose_another,
+        photo_video_professional=visit_permission_data.photo_video_professional,
+        photo_video_drones=visit_permission_data.photo_video_drones
+    )
+
+    # Add the new instance to the session and commit
+    db.add(db_visit_permission)
+    db.commit()
+    db.refresh(db_visit_permission)
+
+    return db_visit_permission
+
+
+@app.get("/geopaths/", response_model=List[schemas.GeoPathResponse])
+async def get_geopaths(oopt_id: Optional[int] = Query(None), db: Session = Depends(database.get_db)):
+    if oopt_id is not None:
+        geopaths = db.query(models.GeoPaths).filter(models.GeoPaths.oopt_id == oopt_id).all()
+    else:
+        geopaths = db.query(models.GeoPaths).all()
+
+    for i in range(len(geopaths)):
+        geopaths[i].geom = wkb_element_to_wkt(geopaths[i].geom)
+
+    return geopaths
+
+
+@app.get("/countries/", response_model=List[schemas.Country])
+def read_countries(name_part: Optional[str] = None, db: Session = Depends(database.get_db)):
+    if name_part:
+        countries = db.query(models.Countries).filter(models.Countries.name.ilike(f"%{name_part}%")).all()
+    else:
+        countries = db.query(models.Countries).all()
+    return countries
+
+
+@app.get("/visit-permissions/", response_model=List[schemas.VisitPermissionIndividualResponse])
+def get_visit_permissions(
+        not_reviewed_only: Optional[bool] = Query(None), db: Session = Depends(database.get_db)
+):
+    if not_reviewed_only:
+        permissions = db.query(models.VisitPermissionIndividual).filter(
+            models.VisitPermissionIndividual.reviewed == False).all()
+    else:
+        permissions = db.query(models.VisitPermissionIndividual).order_by(
+            models.VisitPermissionIndividual.date_of_creation).limit(50).all()
+    return permissions
+
+@app.get("/visit-permissions/{permission_id}", response_model=schemas.VisitPermissionIndividualResponse)
+def get_permission(permission_id: int, db: Session = Depends(database.get_db)):
+    permission = db.query(models.VisitPermissionIndividual).filter(models.VisitPermissionIndividual.id == permission_id).first()
+    if not permission:
+        raise HTTPException(status_code=404, detail="Permission not found")
+    return permission
+
+@app.put("/visit-permissions/{permission_id}/review", response_model=schemas.VisitPermissionIndividualResponse)
+def review_permission(permission_id: int, approved: bool, db: Session = Depends(database.get_db), current_user: schemas.UserResponse = Depends(auth.get_current_user)):
+    permission = db.query(models.VisitPermissionIndividual).filter(models.VisitPermissionIndividual.id == permission_id).first()
+    if not permission:
+        raise HTTPException(status_code=404, detail="Permission not found")
+
+    permission.reviewed = True
+    permission.reviewer = current_user.id
+    permission.approved = approved
+    db.commit()
+    db.refresh(permission)
+    return permission
+
