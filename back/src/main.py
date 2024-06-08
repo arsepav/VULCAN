@@ -1,6 +1,6 @@
-from fastapi import FastAPI, Depends, HTTPException, status, Request
+from fastapi import FastAPI, Depends, HTTPException, status, File, UploadFile, Request
 from geoalchemy2.shape import from_shape
-from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse, FileResponse
 from shapely import Polygon, LineString
 from shapely.geometry import shape, Point
 from sqlalchemy.orm import Session
@@ -9,6 +9,8 @@ from datetime import datetime, timedelta
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.templating import Jinja2Templates
 import json
+from os.path import join, exists
+import shutil
 models.Base.metadata.create_all(bind=database.engine)
 
 from pathlib import Path
@@ -19,6 +21,8 @@ with open('config.json') as f:
     d = json.load(f)
 
 templates = Jinja2Templates(directory='../front')
+
+UPLOAD_DIRECTORY = d['upload_dir']
 
 app = FastAPI()
 
@@ -123,3 +127,33 @@ async def get_map_page(request: Request, current_user: schemas.UserResponse = De
     if not current_user:
         return RedirectResponse(url="/login")
     return templates.TemplateResponse("map.html", {"request": request, "ip": d['ip']})
+
+@app.get("/upload_file_page/", response_class=HTMLResponse)
+async def read_upload_file(request: Request):
+    return templates.TemplateResponse("upload.html", {"request": request})
+
+
+@app.post("/uploadfile/")
+async def create_upload_file(file: UploadFile = File(...), db: Session = Depends(database.get_db)):
+    db_file = models.FilesInfo(name=file.filename, extension=file.filename.split('.')[-1])
+    db.add(db_file)
+    db.commit()
+
+    file_location = join(UPLOAD_DIRECTORY, f'file_{db_file.id}')
+    with open(file_location, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    return JSONResponse(content={"file_id": db_file.id})
+
+
+@app.get("/downloadfile/{file_id}")
+async def download_file(file_id: int, db: Session = Depends(database.get_db)):
+    db_file = db.query(models.FilesInfo).filter(models.FilesInfo.id == file_id).first()
+    if not db_file:
+        raise HTTPException(status_code=404, detail="File not found")
+
+    file_location = join(UPLOAD_DIRECTORY, f'file_{db_file.id}')
+    if not exists(file_location):
+        raise HTTPException(status_code=404, detail="File not found on disk")
+
+    return FileResponse(path=file_location, filename=db_file.name, media_type='application/octet-stream')
