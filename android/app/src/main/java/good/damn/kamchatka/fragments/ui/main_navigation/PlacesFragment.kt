@@ -1,6 +1,7 @@
 package good.damn.kamchatka.fragments.ui.main_navigation
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,12 +11,18 @@ import androidx.fragment.app.Fragment
 class PlacesFragment
 : Fragment() {
 
+    companion object {
+        private const val TAG = "PlacesFragment"
+    }
+    
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
+        Log.d(TAG, "onCreateView: ")
+        
         val context = context ?: return null
 
         val layout = FrameLayout(

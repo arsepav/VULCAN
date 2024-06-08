@@ -7,10 +7,13 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
+import good.damn.kamchatka.adapters.fragment_adapters.FragmentAdapter
 import good.damn.kamchatka.extensions.boundsFrame
 import good.damn.kamchatka.fragments.StackFragment
 import good.damn.kamchatka.fragments.ui.main_navigation.MapsFragment
@@ -21,8 +24,13 @@ class MainNavigationFragment
 NavigationBarView.OnItemSelectedListener {
 
     private lateinit var mLayout: FrameLayout
-    private lateinit var mContainer: FrameLayout
+    private lateinit var mViewPager: ViewPager2
     private lateinit var mBottomNavigation: BottomNavigationView
+
+    private val mFragments = arrayOf(
+        MapsFragment(),
+        PlacesFragment()
+    )
 
     override fun onCreateView(
         context: Context
@@ -31,7 +39,7 @@ NavigationBarView.OnItemSelectedListener {
             context
         )
 
-        mContainer = FrameLayout(
+        mViewPager = ViewPager2(
             context
         )
 
@@ -39,7 +47,13 @@ NavigationBarView.OnItemSelectedListener {
             context
         )
 
-        mContainer.id = View.generateViewId()
+        mViewPager.id = View.generateViewId()
+        mViewPager.adapter = FragmentAdapter(
+            childFragmentManager,
+            lifecycle,
+            mFragments
+        )
+        mViewPager.isUserInputEnabled = false
 
         mLayout.setBackgroundColor(
             Application.color(
@@ -74,7 +88,7 @@ NavigationBarView.OnItemSelectedListener {
         )
 
         mLayout.addView(
-            mContainer
+            mViewPager
         )
 
         mLayout.addView(
@@ -85,9 +99,7 @@ NavigationBarView.OnItemSelectedListener {
             this::onLayout
         )
 
-        replaceFragment(
-            MapsFragment()
-        )
+        mViewPager.currentItem = 0
 
         return mLayout
     }
@@ -95,31 +107,22 @@ NavigationBarView.OnItemSelectedListener {
     override fun onNavigationItemSelected(
         menuItem: MenuItem
     ): Boolean {
-        replaceFragment(
-            when (menuItem.itemId) {
-                R.id.menu_main_map -> MapsFragment()
-                else -> PlacesFragment()
-            }
-        )
+
+        mViewPager.currentItem = when (
+            menuItem.itemId
+        ) {
+            R.id.menu_main_map -> 0
+            else -> 1
+        }
+
         return true
     }
 
     private fun onLayout() {
-        mContainer.boundsFrame(
+        mViewPager.boundsFrame(
             Gravity.NO_GRAVITY,
             -1,
             mLayout.height - mBottomNavigation.height
         )
-    }
-
-    private fun replaceFragment(
-        fragment: Fragment
-    ) {
-        childFragmentManager
-            .beginTransaction()
-            .replace(
-                mContainer.id,
-                fragment
-            ).commit()
     }
 }

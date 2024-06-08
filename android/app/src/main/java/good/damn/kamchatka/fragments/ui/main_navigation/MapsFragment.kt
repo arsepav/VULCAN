@@ -1,6 +1,7 @@
 package good.damn.kamchatka.fragments.ui.main_navigation
 
 import android.os.Bundle
+import android.util.Log
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -12,12 +13,18 @@ class MapsFragment
 : SupportMapFragment(),
 OnMapReadyCallback {
 
+    companion object {
+        private const val TAG = "MapsFragment"
+    }
+
     private lateinit var map: GoogleMap
 
     override fun onCreate(
         savedInstanceState: Bundle?
     ) {
         super.onCreate(savedInstanceState)
+
+        Log.d(TAG, "onCreate: ")
 
         getMapAsync(
             this
