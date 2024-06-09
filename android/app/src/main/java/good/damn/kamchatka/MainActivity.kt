@@ -27,6 +27,12 @@ ViewTreeObserver.OnGlobalLayoutListener {
             savedInstanceState
         )
 
+        mNavigationBarColor = Application.color(
+            R.color.background
+        )
+
+        mStatusBarColor = mNavigationBarColor
+
         val context = this
 
         mContainer = FrameLayout(

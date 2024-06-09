@@ -1,6 +1,7 @@
 package good.damn.kamchatka.fragments.ui
 
 import android.content.Context
+import android.graphics.Color
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -87,6 +88,11 @@ class SplashFragment
         textViewFactLabel.setTextColor(
             Application.color(
                 R.color.titleColor
+            )
+        )
+        mountainsView.setMountainsBackgroundColor(
+            Application.color(
+                R.color.mountainsColorTransp
             )
         )
         mountainsView.setProgressColor(

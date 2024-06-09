@@ -10,5 +10,6 @@
     <color name="titleColor">#18191F</color>
     <color name="largeTextColor">#3D405B</color>
     <color name="mountainsColor">#AAEE4A</color>
+    <color name="mountainsColorTransp">#F4FFE4</color>
 
 </resources>

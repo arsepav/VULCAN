@@ -21,8 +21,10 @@ class MountainsView(
 ) {
 
     var points = arrayOf(PointF())
+    var progress: Float = 0.5f
 
     private val mPaint = Paint()
+    private val mPaintBack = Paint()
     private val mClipPath = Path()
 
     private var mWidth = 0f
@@ -32,6 +34,7 @@ class MountainsView(
 
     init {
         mPaint.color = 0xffff0000.toInt()
+        mPaintBack.color = 0x55ff0000.toInt()
     }
 
     override fun onLayout(
@@ -42,11 +45,12 @@ class MountainsView(
         bottom: Int
     ) {
         super.onLayout(changed, left, top, right, bottom)
-        mRectView.right = width.toFloat()
-        mRectView.bottom = height.toFloat()
 
-        mWidth = mRectView.right
-        mHeight = mRectView.bottom
+        mWidth = width.toFloat()
+        mHeight = height.toFloat()
+
+        mRectView.bottom = mHeight
+        mRectView.right = mWidth * progress
 
         setPointsFromNormal(
             points
@@ -89,6 +93,11 @@ class MountainsView(
         )
 
         canvas.drawPaint(
+            mPaintBack
+        )
+
+        canvas.drawRect(
+            mRectView,
             mPaint
         )
     }
@@ -127,6 +136,12 @@ class MountainsView(
         @ColorInt color: Int
     ) {
         mPaint.color = color
+    }
+
+    fun setMountainsBackgroundColor(
+        @ColorInt color: Int
+    ) {
+        mPaintBack.color = color
     }
 
 }
