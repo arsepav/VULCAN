@@ -1,12 +1,13 @@
 package good.damn.kamchatka
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
+import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowInsetsControllerCompat
-import good.damn.kamchatka.fragments.ui.AuthFragment
 import good.damn.kamchatka.fragments.StackFragment
 import good.damn.kamchatka.fragments.ui.SplashFragment
 
@@ -15,6 +16,9 @@ class MainActivity
 ViewTreeObserver.OnGlobalLayoutListener {
 
     private lateinit var mContainer: FrameLayout
+
+    private var mNavigationBarColor = Color.WHITE
+    private var mStatusBarColor = Color.WHITE
 
     override fun onCreate(
         savedInstanceState: Bundle?
@@ -54,6 +58,24 @@ ViewTreeObserver.OnGlobalLayoutListener {
             )
     }
 
+    override fun onWindowFocusChanged(
+        hasFocus: Boolean
+    ) {
+
+        val wic = WindowInsetsControllerCompat(
+            window,
+            window.decorView
+        )
+
+        wic.isAppearanceLightStatusBars = true
+        wic.isAppearanceLightNavigationBars = true
+
+        window.statusBarColor = mStatusBarColor
+        window.navigationBarColor = mNavigationBarColor
+
+        super.onWindowFocusChanged(hasFocus)
+    }
+
     fun popFragment() {
         val fragment = supportFragmentManager
             .fragments
@@ -81,26 +103,11 @@ ViewTreeObserver.OnGlobalLayoutListener {
             .commit()
     }
 
-    override fun onWindowFocusChanged(
-        hasFocus: Boolean
+    fun setNavigationBarColor(
+        @ColorInt color: Int
     ) {
-
-        val wic = WindowInsetsControllerCompat(
-            window,
-            window.decorView
-        )
-
-        wic.isAppearanceLightStatusBars = true
-        wic.isAppearanceLightNavigationBars = true
-
-        window.statusBarColor = Application.color(
-            R.color.background
-        )
-
-        window.navigationBarColor = Application.color(
-            R.color.background
-        )
-        super.onWindowFocusChanged(hasFocus)
+        mNavigationBarColor = color
+        window.decorView.requestFocus()
     }
 
 }

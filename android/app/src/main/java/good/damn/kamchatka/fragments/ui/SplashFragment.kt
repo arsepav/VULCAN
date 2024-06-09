@@ -94,7 +94,11 @@ class SplashFragment
                 R.color.mountainsColor
             )
         )
-
+        navigationBarColor(
+            Application.color(
+                R.color.mountainsColor
+            )
+        )
 
 
 
@@ -167,8 +171,10 @@ class SplashFragment
         textViewFact.gravity = Gravity
             .CENTER_HORIZONTAL
 
+
         // Mountains points
         mountainsView.randomizePoints()
+
 
 
         // LinearLayout params

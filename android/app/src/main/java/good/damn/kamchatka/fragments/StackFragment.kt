@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.ColorInt
 import androidx.fragment.app.Fragment
 import good.damn.kamchatka.MainActivity
 
@@ -47,6 +48,14 @@ abstract class StackFragment
     ) {
         mainActivity().pushFragment(
             fragment
+        )
+    }
+
+    fun navigationBarColor(
+        @ColorInt color: Int
+    ) {
+        mainActivity().setNavigationBarColor(
+            color
         )
     }
 
