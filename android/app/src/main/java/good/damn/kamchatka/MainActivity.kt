@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowInsetsControllerCompat
 import good.damn.kamchatka.fragments.ui.AuthFragment
 import good.damn.kamchatka.fragments.StackFragment
 import good.damn.kamchatka.fragments.ui.SplashFragment
@@ -78,6 +79,28 @@ ViewTreeObserver.OnGlobalLayoutListener {
             .beginTransaction()
             .add(mContainer.id, fragment)
             .commit()
+    }
+
+    override fun onWindowFocusChanged(
+        hasFocus: Boolean
+    ) {
+
+        val wic = WindowInsetsControllerCompat(
+            window,
+            window.decorView
+        )
+
+        wic.isAppearanceLightStatusBars = true
+        wic.isAppearanceLightNavigationBars = true
+
+        window.statusBarColor = Application.color(
+            R.color.background
+        )
+
+        window.navigationBarColor = Application.color(
+            R.color.background
+        )
+        super.onWindowFocusChanged(hasFocus)
     }
 
 }
