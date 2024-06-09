@@ -2,13 +2,16 @@ package good.damn.kamchatka
 
 import android.os.Bundle
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import good.damn.kamchatka.fragments.ui.AuthFragment
 import good.damn.kamchatka.fragments.StackFragment
+import good.damn.kamchatka.fragments.ui.SplashFragment
 
 class MainActivity
-: AppCompatActivity() {
+: AppCompatActivity(),
+ViewTreeObserver.OnGlobalLayoutListener {
 
     private lateinit var mContainer: FrameLayout
 
@@ -26,16 +29,29 @@ class MainActivity
         )
 
         mContainer.id = View.generateViewId()
+        mContainer.viewTreeObserver
+            .addOnGlobalLayoutListener(
+                this
+            )
 
         setContentView(
             mContainer
         )
 
         pushFragment(
-            AuthFragment()
+            SplashFragment()
         )
     }
 
+    override fun onGlobalLayout() {
+        Application.WIDTH = mContainer.width
+        Application.HEIGHT = mContainer.height
+
+        mContainer.viewTreeObserver
+            .removeOnGlobalLayoutListener(
+                this
+            )
+    }
 
     fun popFragment() {
         val fragment = supportFragmentManager

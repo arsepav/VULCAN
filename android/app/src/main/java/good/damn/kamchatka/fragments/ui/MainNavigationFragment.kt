@@ -124,5 +124,10 @@ NavigationBarView.OnItemSelectedListener {
             -1,
             mLayout.height - mBottomNavigation.height
         )
+
+        mLayout.viewTreeObserver
+            .removeOnGlobalLayoutListener(
+                this::onLayout
+            )
     }
 }

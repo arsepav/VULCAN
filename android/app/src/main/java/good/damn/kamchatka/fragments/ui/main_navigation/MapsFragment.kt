@@ -8,7 +8,9 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.PatternItem
 import com.google.android.gms.maps.model.Polygon
+import com.google.android.gms.maps.model.StrokeStyle
 import good.damn.kamchatka.services.GeoService
 
 class MapsFragment
