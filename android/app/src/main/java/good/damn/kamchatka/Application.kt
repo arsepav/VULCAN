@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
+import android.os.Handler
+import android.os.Looper
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
@@ -20,6 +22,10 @@ class Application
         var HEIGHT = 0
 
         lateinit var RESOURCES: Resources
+
+        private val mHandler = Handler(
+            Looper.getMainLooper()
+        )
 
         fun drawable(
             @DrawableRes id: Int
@@ -51,6 +57,15 @@ class Application
                 null
             )
         }
+
+        fun ui(
+            task: Runnable
+        ) {
+            mHandler.post(
+                task
+            )
+        }
+
     }
 
     override fun onCreate() {

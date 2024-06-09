@@ -9,6 +9,8 @@ import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowInsetsControllerCompat
 import good.damn.kamchatka.fragments.StackFragment
+import good.damn.kamchatka.fragments.ui.AuthFragment
+import good.damn.kamchatka.fragments.ui.MainNavigationFragment
 import good.damn.kamchatka.fragments.ui.SplashFragment
 
 class MainActivity
@@ -39,6 +41,12 @@ ViewTreeObserver.OnGlobalLayoutListener {
             context
         )
 
+        mContainer.setBackgroundColor(
+            Application.color(
+                R.color.background
+            )
+        )
+
         mContainer.id = View.generateViewId()
         mContainer.viewTreeObserver
             .addOnGlobalLayoutListener(
@@ -49,8 +57,16 @@ ViewTreeObserver.OnGlobalLayoutListener {
             mContainer
         )
 
+        val splashFragment = SplashFragment()
+        splashFragment.onEndAnimation = {
+            pushFragment(
+                AuthFragment()
+            )
+            removeFragment(splashFragment)
+        }
+
         pushFragment(
-            SplashFragment()
+            splashFragment
         )
     }
 

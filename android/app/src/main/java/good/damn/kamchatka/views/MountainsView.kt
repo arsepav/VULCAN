@@ -1,5 +1,6 @@
 package good.damn.kamchatka.views
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -18,10 +19,16 @@ class MountainsView(
     context: Context
 ): View(
     context
-) {
+){
 
     var points = arrayOf(PointF())
     var progress: Float = 0.5f
+        set(v) {
+            mRectView.right = mWidth * v
+            field = v
+            invalidate()
+        }
+
 
     private val mPaint = Paint()
     private val mPaintBack = Paint()

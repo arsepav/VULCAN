@@ -18,6 +18,8 @@ import good.damn.kamchatka.views.RoundedImageView
 class SplashFragment
 : StackFragment() {
 
+    var onEndAnimation: (()->Unit)? = null
+
     override fun onCreateView(
         context: Context
     ): View {
@@ -142,8 +144,6 @@ class SplashFragment
         )
 
 
-
-
         // Font
         val fontNunitoRegular = Application.font(
             R.font.nunito_regular,
@@ -176,6 +176,8 @@ class SplashFragment
         // Gravity
         textViewFact.gravity = Gravity
             .CENTER_HORIZONTAL
+
+        mountainsView.progress = 0.0f
 
 
         // Mountains points
@@ -238,6 +240,23 @@ class SplashFragment
             -1
         )
 
+        layout.post {
+            Thread {
+                var f = 0.0f
+
+                while (f < 1.0f) {
+                    Thread.sleep(1)
+                    f += 0.0005f
+                    Application.ui {
+                        mountainsView.progress = f
+                    }
+                }
+
+                Application.ui {
+                    onEndAnimation?.invoke()
+                }
+            }.start()
+        }
         return layout
     }
 

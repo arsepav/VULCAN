@@ -5,6 +5,7 @@ import android.text.method.PasswordTransformationMethod
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
+import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.fragments.StackFragment
 import good.damn.kamchatka.views.TextField
@@ -20,6 +21,8 @@ class AuthFragment
     override fun onCreateView(
         context: Context
     ): View {
+
+        // Allocating views
         val layout = LinearLayout(
             context
         )
@@ -36,24 +39,28 @@ class AuthFragment
             context
         )
 
+
+        // Some props
         editTextPassword.transformationMethod =
             PasswordTransformationMethod()
 
         layout.orientation = LinearLayout
             .VERTICAL
 
+
+
+        // Text
         editTextEmail.setHint(
             R.string.email
         )
-
         editTextPassword.setHint(
             R.string.password
         )
-
         btnLogin.setText(
             R.string.log_in
         )
 
+        // Adding views
         layout.addView(
             editTextEmail,
             -1,
@@ -75,6 +82,14 @@ class AuthFragment
         btnLogin.setOnClickListener(
             this::onClickBtnLogIn
         )
+
+        layout.post {
+            navigationBarColor(
+                Application.color(
+                    R.color.background
+                )
+            )
+        }
 
         return layout
     }

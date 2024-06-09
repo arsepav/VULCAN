@@ -4,6 +4,7 @@
         <item name="colorAccent">@color/editTextText</item>
         <item name="colorPrimary">@color/editTextText</item>
         <item name="colorSecondary">@color/editTextText</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
 </resources>
