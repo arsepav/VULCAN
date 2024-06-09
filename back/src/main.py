@@ -17,10 +17,6 @@ from typing import List, Optional
 
 models.Base.metadata.create_all(bind=database.engine)
 
-from pathlib import Path
-
-BASE_DIR = Path(__file__).resolve().parent
-
 with open('config.json') as f:
     d = json.load(f)
 
@@ -147,8 +143,65 @@ async def get_map_page(request: Request, current_user: schemas.UserResponse = De
         return RedirectResponse(url="/login")
     return templates.TemplateResponse("map_oopt.html", {"request": request, "ip": d['ip']})
 
+
+@app.get("/ecology_problems_list_viewer", response_class=HTMLResponse)
+async def get_map_page(
+        request: Request,
+        ecology_problem_id: Optional[int] = None,
+        current_user: schemas.UserResponse = Depends(auth.get_current_user_cookie)
+):
+    if not current_user:
+        return RedirectResponse(url="/login")
+
+    return templates.TemplateResponse(
+        "ecology_problems_list_viewer.html",
+        {
+            "request": request,
+            "ip": d['ip'],
+            "ecology_problem_id": ecology_problem_id if ecology_problem_id else 'null'
+        }
+    )
+
+
+@app.get("/ecology_problems_viewer", response_class=HTMLResponse)
+async def get_map_page(
+        request: Request,
+        ecology_problem_id: Optional[int] = Query(None),
+        current_user: schemas.UserResponse = Depends(auth.get_current_user_cookie),
+        db: Session = Depends(database.get_db)
+):
+    if not current_user:
+        return RedirectResponse(url="/login")
+
+    if ecology_problem_id:
+        problem = db.query(models.EcologyProblems).filter(models.EcologyProblems.id == ecology_problem_id).first()
+        if problem:
+            problem.geom = wkb_element_to_wkt(problem.geom)
+            print(problem.geom)
+            center_lat = problem.geom['coordinates'][1]
+            center_lng = problem.geom['coordinates'][0]
+            zoom_level = 9
+        else:
+            center_lat = 55.914298
+            center_lng = 158.918540
+            zoom_level = 6
+    else:
+        center_lat = 55.914298
+        center_lng = 158.918540
+        zoom_level = 6
+
+    return templates.TemplateResponse("ecology_problem_viewer.html", {
+        "request": request,
+        "center_lat": center_lat,
+        "center_lng": center_lng,
+        "zoom_level": zoom_level,
+        "ip": d['ip'],
+        "highlighted_problem_id": ecology_problem_id
+    })
+
 @app.get("/permission_approve_page", response_class=HTMLResponse)
-async def get_permissions_page(request: Request, current_user: schemas.UserResponse = Depends(auth.get_current_user_cookie)):
+async def get_permissions_page(request: Request,
+                               current_user: schemas.UserResponse = Depends(auth.get_current_user_cookie)):
     if not current_user:
         return RedirectResponse(url="/login")
     return templates.TemplateResponse("permission_approve.html", {"request": request, "ip": d['ip']})
@@ -261,7 +314,7 @@ def read_countries(name_part: Optional[str] = None, db: Session = Depends(databa
     return countries
 
 
-@app.get("/visit-permissions/", response_model=List[schemas.VisitPermissionIndividualResponse])
+@app.get("/visit_permissions/", response_model=List[schemas.VisitPermissionIndividualResponse])
 def get_visit_permissions(
         not_reviewed_only: Optional[bool] = Query(None), db: Session = Depends(database.get_db)
 ):
@@ -273,16 +326,21 @@ def get_visit_permissions(
             models.VisitPermissionIndividual.date_of_creation).limit(50).all()
     return permissions
 
+
 @app.get("/visit-permissions/{permission_id}", response_model=schemas.VisitPermissionIndividualResponse)
 def get_permission(permission_id: int, db: Session = Depends(database.get_db)):
-    permission = db.query(models.VisitPermissionIndividual).filter(models.VisitPermissionIndividual.id == permission_id).first()
+    permission = db.query(models.VisitPermissionIndividual).filter(
+        models.VisitPermissionIndividual.id == permission_id).first()
     if not permission:
         raise HTTPException(status_code=404, detail="Permission not found")
     return permission
 
+
 @app.put("/visit-permissions/{permission_id}/review", response_model=schemas.VisitPermissionIndividualResponse)
-def review_permission(permission_id: int, approved: bool, db: Session = Depends(database.get_db), current_user: schemas.UserResponse = Depends(auth.get_current_user)):
-    permission = db.query(models.VisitPermissionIndividual).filter(models.VisitPermissionIndividual.id == permission_id).first()
+def review_permission(permission_id: int, approved: bool, db: Session = Depends(database.get_db),
+                      current_user: schemas.UserResponse = Depends(auth.get_current_user)):
+    permission = db.query(models.VisitPermissionIndividual).filter(
+        models.VisitPermissionIndividual.id == permission_id).first()
     if not permission:
         raise HTTPException(status_code=404, detail="Permission not found")
 
@@ -293,3 +351,62 @@ def review_permission(permission_id: int, approved: bool, db: Session = Depends(
     db.refresh(permission)
     return permission
 
+
+@app.get("/ecology_problem_categories", response_model=List[schemas.EcologyProblemCategory])
+def get_categories(db: Session = Depends(database.get_db)):
+    categories = db.query(models.EcologyProblemCategories).all()
+    for i in range(len(categories)):
+        categories[i] = categories[i].__dict__
+        categories[i]['image_url'] = f'http://{d['ip']}:8000/downloadfile/{categories[i]['image_file_id']}'
+    return categories
+
+
+@app.post("/ecology_problems", response_model=schemas.EcologyProblemResponse)
+def create_ecology_problem(problem: schemas.EcologyProblemCreate, db: Session = Depends(database.get_db),
+                           current_user: schemas.UserResponse = Depends(auth.get_current_user)):
+
+    try:
+        point = shape(problem.geom)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Invalid GeoJSON data: {str(e)}")
+
+    new_problem = models.EcologyProblems(
+        name=problem.name,
+        description=problem.description,
+        geom=from_shape(point, srid=4326),
+        reporter_id=current_user.id,
+        category_id=problem.category_id,
+        file_id=problem.file_id,
+        state_id=1
+    )
+    db.add(new_problem)
+    db.commit()
+    db.refresh(new_problem)
+
+    new_problem = new_problem.__dict__
+    new_problem['geom'] = wkb_element_to_wkt(new_problem['geom'])
+    new_problem['image_url'] = f'http://{d['ip']}:8000/downloadfile/{new_problem['file_id']}'
+    return new_problem
+
+
+@app.get("/ecology_problems", response_model=List[schemas.EcologyProblemResponse])
+def get_ecology_problems(
+        category_id: Optional[int] = Query(None),
+        state_id: Optional[int] = Query(None),
+        db: Session = Depends(database.get_db)
+):
+    query = db.query(models.EcologyProblems)
+
+    if category_id is not None:
+        query = query.filter(models.EcologyProblems.category_id == category_id)
+    if state_id is not None:
+        query = query.filter(models.EcologyProblems.state_id == state_id)
+
+    problems = query.all()
+
+    for i in range(len(problems)):
+        problems[i] = problems[i].__dict__
+        problems[i]['geom'] = wkb_element_to_wkt(problems[i]['geom'])
+        problems[i]['image_url'] = f'http://{d['ip']}:8000/downloadfile/{problems[i]['file_id']}'
+
+    return problems

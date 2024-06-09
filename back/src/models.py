@@ -13,6 +13,7 @@ class User(Base):
     hashed_password = Column(String)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
+
 class GeoPoints(Base):
     __tablename__ = 'geo_points'
 
@@ -20,6 +21,7 @@ class GeoPoints(Base):
     name = Column(String(100))
     geom = Column(Geometry(geometry_type='POINT', srid=4326))
     category_id = Column(Integer, ForeignKey('geo_points_category.id'))
+
 
 class GeoPointsCategory(Base):
     __tablename__ = 'geo_points_category'
@@ -48,6 +50,7 @@ class GeoPolygonsCategory(Base):
     description = Column(String)
     image_url = Column(String)
 
+
 class GeoPaths(Base):
     __tablename__ = 'geo_paths'
 
@@ -57,6 +60,7 @@ class GeoPaths(Base):
     oopt_id = Column(Integer, ForeignKey('geo_polygons.id'))
     category_id = Column(Integer, ForeignKey('geo_paths_category.id'))
 
+
 class GeoPathsCategory(Base):
     __tablename__ = 'geo_paths_category'
 
@@ -65,12 +69,14 @@ class GeoPathsCategory(Base):
     description = Column(String)
     image_url = Column(String)
 
+
 class FilesInfo(Base):
     __tablename__ = "files_info"
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
     extension = Column(String)
+
 
 class Countries(Base):
     __tablename__ = "countries"
@@ -122,3 +128,49 @@ class VisitPermissionIndividual(Base):
     date_of_creation = Column(DateTime(timezone=True), server_default=func.now())
 
 
+class EcologyProblems(Base):
+    __tablename__ = "ecology_problems"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    description = Column(String)
+    geom = Column(Geometry(geometry_type='POINT', srid=4326))
+
+    reporter_id = Column(Integer, ForeignKey('users.id'))
+    category_id = Column(Integer, ForeignKey('ecology_problem_categories.id'))
+    file_id = Column(Integer, ForeignKey('files_info.id'))
+    state_id = Column(Integer, ForeignKey('ecology_problem_states.id'))
+
+
+class EcologyProblemCategories(Base):
+    __tablename__ = "ecology_problem_categories"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    description = Column(String)
+
+    image_file_id = Column(Integer, ForeignKey('files_info.id'))
+
+
+class EcologyProblemStates(Base):
+    __tablename__ = "ecology_problem_states"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    description = Column(String)
+
+
+class EcologyProblemReports(Base):
+    __tablename__ = "ecology_problem_reports"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    description = Column(String)
+
+    old_state = Column(Integer, ForeignKey('ecology_problem_states.id'))
+    new_state = Column(Integer, ForeignKey('ecology_problem_states.id'))
+
+    ecology_problem_id = Column(Integer, ForeignKey('ecology_problems.id'))
+    file_id = Column(Integer, ForeignKey('files_info.id'))
+
+    reporter_id = Column(Integer, ForeignKey('users.id'))

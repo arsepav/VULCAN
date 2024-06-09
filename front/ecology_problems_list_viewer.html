@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecology Problems List</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            overflow: hidden;
+        }
+        #filters {
+            width: 300px;
+            padding: 10px;
+            background: #f4f4f4;
+            border-right: 1px solid #ccc;
+        }
+        #problem-list {
+            width: 300px;
+            overflow-y: auto;
+        }
+        #problem-details {
+            flex-grow: 1;
+            padding: 10px;
+        }
+        .problem-item {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+            cursor: pointer;
+        }
+        .problem-item:hover {
+            background-color: #e0e0e0;
+        }
+        .problem-item.selected {
+            background-color: #d0d0d0;
+        }
+        #map-link {
+            display: block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="filters">
+        <h3>Filters</h3>
+        <label for="category-filter">Category:</label>
+        <select id="category-filter">
+            <option value="">All</option>
+            <!-- Options will be dynamically added here -->
+        </select>
+        <br><br>
+        <label for="state-filter">State:</label>
+        <select id="state-filter">
+            <option value="">All</option>
+            <!-- Options will be dynamically added here -->
+        </select>
+        <br><br>
+        <button id="apply-filters">Apply Filters</button>
+    </div>
+    <div id="problem-list">
+        <!-- Problem list will be dynamically added here -->
+    </div>
+    <div id="problem-details">
+        <h2 id="problem-name"></h2>
+        <p id="problem-description"></p>
+        <img id="problem-image" src="" alt="Problem Image">
+        <a id="map-link" href="" target="_blank">View on Map</a>
+    </div>
+    <script>
+        const apiBaseUrl = 'http://{{ ip }}:8000';
+        const activeProblemId = {{ ecology_problem_id }};
+
+        async function fetchCategories() {
+            const response = await fetch(`${apiBaseUrl}/ecology_problem_categories`);
+            return await response.json();
+        }
+
+        async function fetchStates() {
+            const response = await fetch(`${apiBaseUrl}/ecology_problem_states`);
+            return await response.json();
+        }
+
+        async function fetchProblems(categoryId, stateId) {
+            let url = `${apiBaseUrl}/ecology_problems?`;
+            if (categoryId) {
+                url += `category_id=${categoryId}&`;
+            }
+            if (stateId) {
+                url += `state_id=${stateId}&`;
+            }
+            const response = await fetch(url);
+            return await response.json();
+        }
+
+        function populateFilters(categories, states) {
+            const categoryFilter = document.getElementById('category-filter');
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.id;
+                option.text = category.name;
+                categoryFilter.add(option);
+            });
+
+            const stateFilter = document.getElementById('state-filter');
+            states.forEach(state => {
+                const option = document.createElement('option');
+                option.value = state.id;
+                option.text = state.name;
+                stateFilter.add(option);
+            });
+        }
+
+        function displayProblemDetails(problem) {
+            document.getElementById('problem-name').innerText = problem.name;
+            document.getElementById('problem-description').innerText = problem.description;
+            document.getElementById('problem-image').src = problem.image_url;
+            document.getElementById('map-link').href = `${apiBaseUrl}/ecology_problems_viewer?ecology_problem_id=${problem.id}`;
+        }
+
+        function displayProblems(problems) {
+            const problemList = document.getElementById('problem-list');
+            problemList.innerHTML = '';
+            problems.forEach(problem => {
+                const problemItem = document.createElement('div');
+                problemItem.className = 'problem-item';
+                problemItem.innerText = problem.name;
+                problemItem.addEventListener('click', () => {
+                    displayProblemDetails(problem);
+                    document.querySelectorAll('.problem-item').forEach(item => item.classList.remove('selected'));
+                    problemItem.classList.add('selected');
+                });
+                problemList.appendChild(problemItem);
+
+                if (activeProblemId && problem.id === activeProblemId) {
+                    problemItem.click();
+                    problemItem.scrollIntoView();
+                }
+            });
+        }
+
+        async function applyFilters() {
+            const categoryId = document.getElementById('category-filter').value;
+            const stateId = document.getElementById('state-filter').value;
+            const problems = await fetchProblems(categoryId, stateId);
+            displayProblems(problems);
+        }
+
+        document.getElementById('apply-filters').addEventListener('click', applyFilters);
+
+        async function init() {
+            const categories = await fetchCategories();
+            const states = await fetchStates();
+            populateFilters(categories, states);
+            await applyFilters();
+        }
+
+        init();
+        applyFilters();
+    </script>
+</body>
+</html>

@@ -117,6 +117,7 @@ class Country(BaseModel):
     class Config:
         orm_mode = True
 
+
 class VisitPermissionIndividualResponse(BaseModel):
     id: int
     arrival_date: date
@@ -143,6 +144,39 @@ class VisitPermissionIndividualResponse(BaseModel):
     approved: bool
     reviewer: Optional[int]
     date_of_creation: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class EcologyProblemCreate(BaseModel):
+    name: str
+    description: str
+    geom: Dict[str, Any]
+    category_id: int
+    file_id: int
+
+
+class EcologyProblemResponse(BaseModel):
+    id: int
+    name: str
+    description: str
+    geom: Dict[str, Any]
+    reporter_id: int
+    category_id: int
+    image_url: str
+    state_id: int
+
+    class Config:
+        orm_mode = True
+
+
+class EcologyProblemCategory(BaseModel):
+    id: int
+    name: str
+    description: str
+
+    image_url: str
 
     class Config:
         orm_mode = True

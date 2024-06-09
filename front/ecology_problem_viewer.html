@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecology Problems Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+        #map {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        #info-panel {
+            position: absolute;
+            top: 50%;
+            left: 10px;
+            width: 300px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 8px;
+            display: none;
+            transform: translateY(-50%);
+            z-index: 1000;
+        }
+        #info-panel img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        #info-link {
+            display: block;
+            margin-top: 10px;
+            text-align: center;
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div id="info-panel">
+        <h2 id="problem-name"></h2>
+        <p id="problem-description"></p>
+        <img id="problem-image" src="" alt="Problem Image">
+        <a id="info-link" href="#" target="_blank">View More Details</a>
+    </div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Initialize the map with template variables for coordinates and zoom level
+        var map = L.map('map').setView([{{ center_lat }}, {{ center_lng }}], {{ zoom_level }});
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        var markers = [];
+
+        // Function to fetch ecology problems from API
+        async function fetchProblems() {
+            const response = await fetch('http://{{ ip }}:8000/ecology_problems');
+            const problems = await response.json();
+            return problems;
+        }
+
+        // Function to add problems to the map
+        async function addProblemsToMap() {
+            const problems = await fetchProblems();
+            const highlightedProblemId = {{ highlighted_problem_id | default('null', true) }};
+            problems.forEach(problem => {
+                const isHighlighted = problem.id === highlightedProblemId;
+                const marker = L.circleMarker([problem.geom.coordinates[1], problem.geom.coordinates[0]], {
+                    radius: 5,
+                    color: isHighlighted ? 'blue' : 'red',
+                    fillColor: isHighlighted ? 'blue' : '#f03',
+                    fillOpacity: 0.5
+                }).addTo(map);
+
+                marker.on('click', function () {
+                    markers.forEach(m => {
+                        m.setStyle({ color: 'red', fillColor: '#f03' });
+                    });
+                    marker.setStyle({ color: 'blue', fillColor: 'blue' });
+
+                    document.getElementById('problem-name').innerText = problem.name;
+                    document.getElementById('problem-description').innerText = problem.description;
+                    document.getElementById('problem-image').src = problem.image_url;
+                    document.getElementById('info-link').href = `http://{{ ip }}:8000/ecology_problems_list_viewer?ecology_problem_id=${problem.id}`;
+                    document.getElementById('info-panel').style.display = 'block';
+                });
+
+                markers.push(marker);
+            });
+        }
+
+        // Call the function to add problems to the map
+        addProblemsToMap();
+    </script>
+</body>
+</html>
