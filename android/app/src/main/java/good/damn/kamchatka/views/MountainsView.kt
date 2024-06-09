@@ -60,10 +60,9 @@ class MountainsView(
 
         mClipPath.reset()
 
-        val beginPoint = points[0]
         mClipPath.moveTo(
             0f,
-            beginPoint.y
+            0f
         )
 
         for (point in points) {
