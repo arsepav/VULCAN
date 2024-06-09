@@ -357,7 +357,7 @@ def get_categories(db: Session = Depends(database.get_db)):
     categories = db.query(models.EcologyProblemCategories).all()
     for i in range(len(categories)):
         categories[i] = categories[i].__dict__
-        categories[i]['image_url'] = f'http://{d['ip']}:8000/downloadfile/{categories[i]['image_file_id']}'
+        categories[i]['image_url'] = f"http://{d['ip']}:8000/downloadfile/{categories[i]['image_file_id']}"
     return categories
 
 
@@ -385,7 +385,7 @@ def create_ecology_problem(problem: schemas.EcologyProblemCreate, db: Session = 
 
     new_problem = new_problem.__dict__
     new_problem['geom'] = wkb_element_to_wkt(new_problem['geom'])
-    new_problem['image_url'] = f'http://{d['ip']}:8000/downloadfile/{new_problem['file_id']}'
+    new_problem['image_url'] = f"http://{d['ip']}:8000/downloadfile/{new_problem['file_id']}"
     return new_problem
 
 
@@ -407,6 +407,6 @@ def get_ecology_problems(
     for i in range(len(problems)):
         problems[i] = problems[i].__dict__
         problems[i]['geom'] = wkb_element_to_wkt(problems[i]['geom'])
-        problems[i]['image_url'] = f'http://{d['ip']}:8000/downloadfile/{problems[i]['file_id']}'
+        problems[i]['image_url'] = f"http://{d['ip']}:8000/downloadfile/{problems[i]['file_id']}"
 
     return problems
