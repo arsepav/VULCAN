@@ -5,9 +5,11 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 
 fun View.boundsLinear(
-    gravity: Int,
-    width: Int,
-    height: Int
+    gravity: Int = Gravity.NO_GRAVITY,
+    width: Int = -2,
+    height: Int = -2,
+    top: Int = 0,
+    left: Int = 0
 ) {
     val params = LinearLayout
         .LayoutParams(
@@ -15,6 +17,8 @@ fun View.boundsLinear(
             height
         )
     params.gravity = gravity
+    params.topMargin = top
+    params.leftMargin = left
     layoutParams = params
 }
 

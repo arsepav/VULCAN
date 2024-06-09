@@ -104,6 +104,7 @@ class SplashFragment
         )
 
 
+
         // Text Size
         textViewAppName.setTextPx(
             measureUnit * 0.077f
@@ -117,6 +118,8 @@ class SplashFragment
         textViewFactLabel.setTextPx(
             measureUnit * 0.03f
         )
+
+
 
 
         // Font
@@ -134,9 +137,12 @@ class SplashFragment
         textViewFactLabel.typeface  = fontOpenSansExtraBold
 
 
+        // Alpha
+        textViewPowered.alpha = 0.2f
+        textViewFactLabel.alpha = 0.5f
 
 
-        // Text Gravity
+        // Gravity
         textViewFact.gravity = Gravity
             .CENTER_HORIZONTAL
 
@@ -145,24 +151,24 @@ class SplashFragment
         // LinearLayout params
         textViewAppName.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
-            -2,
-            -2
+            top = (Application.HEIGHT * 0.231f)
+                .toInt()
         )
         textViewPowered.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
-            -2,
-            -2
+            top = (Application.HEIGHT * 0.011f).toInt()
         )
         textViewFact.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
-            (measureUnit * 0.773f)
+            width = (measureUnit * 0.773f)
                 .toInt(),
-            -2
+            top = (Application.HEIGHT * 0.071f)
+                .toInt()
         )
         textViewFactLabel.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
-            -2,
-            -2
+            top = (Application.HEIGHT * 0.016f)
+                .toInt()
         )
 
 
