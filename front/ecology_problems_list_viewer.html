@@ -67,11 +67,78 @@
         <h2 id="problem-name"></h2>
         <p id="problem-description"></p>
         <img id="problem-image" src="" alt="Problem Image">
+        <form id="report-form">
+            <label for="report-name">Report Name:</label>
+            <input type="text" id="report-name" name="report-name"><br><br>
+            <label for="report-description">Report Description:</label><br>
+            <textarea id="report-description" name="report-description"></textarea><br><br>
+            <label for="report-file">Attach File (optional):</label>
+            <input type="file" id="report-file" name="report-file"><br><br>
+            <label for="new-state">New State:</label>
+            <select id="new-state" name="new-state">
+                <!-- Options will be dynamically added here -->
+            </select><br><br>
+            <button type="submit" id="submit-report">Submit</button>
+        </form>
         <a id="map-link" href="" target="_blank">View on Map</a>
     </div>
     <script>
+
         const apiBaseUrl = 'http://{{ ip }}:8000';
-        const activeProblemId = {{ ecology_problem_id }};
+        activeProblemId = {{ ecology_problem_id }};
+
+        async function uploadFile(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const response = await fetch(`${apiBaseUrl}/uploadfile/`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                return data.file_id;
+            } else {
+                throw new Error('Failed to upload file');
+            }
+        }
+
+
+        document.getElementById('report-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+            const reportData = {
+                'name': formData.get('report-name'),
+                'description': formData.get('report-description'),
+                'file_id': formData.get('report-file') ? await uploadFile(formData.get('report-file')) : null,
+                'new_state': parseInt(formData.get('new-state')),
+                'ecology_problem_id': activeProblemId
+            };
+
+            
+
+            const problemId = document.querySelector('.problem-item.selected').dataset.id;
+
+            jsonn = JSON.stringify(reportData)
+            console.log(jsonn)
+            const response = await fetch(`${apiBaseUrl}/update_problem_status_and_report`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: jsonn
+            });
+
+            if (response.ok) {
+                alert('Report submitted successfully');
+                // Обновляем список проблем после успешного добавления отчета
+                applyFilters();
+            } else {
+                alert('Failed to submit report');
+            }
+        });
 
         async function fetchCategories() {
             const response = await fetch(`${apiBaseUrl}/ecology_problem_categories`);
@@ -131,6 +198,7 @@
                     displayProblemDetails(problem);
                     document.querySelectorAll('.problem-item').forEach(item => item.classList.remove('selected'));
                     problemItem.classList.add('selected');
+                    activeProblemId=problem.id
                 });
                 problemList.appendChild(problemItem);
 
@@ -157,8 +225,27 @@
             await applyFilters();
         }
 
+        async function fetchStates() {
+            const response = await fetch(`${apiBaseUrl}/ecology_problem_states`);
+            return await response.json();
+        }
+
+        async function populateStates() {
+            const states = await fetchStates();
+            const selectElement = document.getElementById('new-state');
+            states.forEach(state => {
+                const option = document.createElement('option');
+                option.value = state.id;
+                option.text = state.name;
+                selectElement.appendChild(option);
+            });
+        }
+
+        
+
         init();
         applyFilters();
+        populateStates();
     </script>
 </body>
 </html>

@@ -174,3 +174,4 @@ class EcologyProblemReports(Base):
     file_id = Column(Integer, ForeignKey('files_info.id'))
 
     reporter_id = Column(Integer, ForeignKey('users.id'))
+    date_of_creation = Column(DateTime(timezone=True), server_default=func.now())

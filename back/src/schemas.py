@@ -180,3 +180,40 @@ class EcologyProblemCategory(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class EcologyProblemState(BaseModel):
+    id: int
+    name: str
+    description: str
+
+    class Config:
+        orm_mode = True
+
+class ReportCreate(BaseModel):
+    name: str
+    description: str
+    new_state: int
+    file_id: int
+
+
+class EcologyProblemReportResponse(BaseModel):
+    id: int
+    name: str
+    description: str
+    old_state: int
+    new_state: int
+    ecology_problem_id: int
+    file_id: int
+    reporter_id: int
+
+    class Config:
+        orm_mode = True
+
+
+class EcologyProblemReportCreate(BaseModel):
+    name: str
+    description: str
+    new_state: int
+    file_id: int
+    ecology_problem_id: int

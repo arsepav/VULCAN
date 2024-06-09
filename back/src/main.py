@@ -361,6 +361,11 @@ def get_categories(db: Session = Depends(database.get_db)):
     return categories
 
 
+@app.get("/ecology_problem_states", response_model=List[schemas.EcologyProblemState])
+def get_categories(db: Session = Depends(database.get_db)):
+    states = db.query(models.EcologyProblemStates).all()
+    return states
+
 @app.post("/ecology_problems", response_model=schemas.EcologyProblemResponse)
 def create_ecology_problem(problem: schemas.EcologyProblemCreate, db: Session = Depends(database.get_db),
                            current_user: schemas.UserResponse = Depends(auth.get_current_user)):
@@ -410,3 +415,35 @@ def get_ecology_problems(
         problems[i]['image_url'] = f"http://{d['ip']}:8000/downloadfile/{problems[i]['file_id']}"
 
     return problems
+
+@app.post("/update_problem_status_and_report")
+def update_problem_status_and_report(
+    report_data: schemas.EcologyProblemReportCreate,
+    db: Session = Depends(database.get_db),
+    current_user: schemas.UserResponse = Depends(auth.get_current_user_cookie),
+):
+    problem = db.query(models.EcologyProblems).filter(models.EcologyProblems.id == report_data.ecology_problem_id).first()
+    if not problem:
+        raise HTTPException(status_code=404, detail="Ecology problem not found")
+
+    new_state = db.query(models.EcologyProblemStates).filter(models.EcologyProblemStates.id == report_data.new_state).first()
+    if not new_state:
+        raise HTTPException(status_code=404, detail="New state not found")
+
+    report = models.EcologyProblemReports(
+        name=report_data.name,
+        description=report_data.description,
+        old_state=problem.state_id,
+        new_state=report_data.new_state,
+        ecology_problem_id=report_data.ecology_problem_id,
+        file_id=report_data.file_id,
+        reporter_id=current_user.id
+    )
+    db.add(report)
+
+    problem.state_id = report_data.new_state
+
+    db.commit()
+    return {"message": "Report added and problem status updated successfully"}
+
+
