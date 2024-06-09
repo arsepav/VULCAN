@@ -4,8 +4,10 @@ import android.app.Application
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
 import androidx.annotation.FontRes
 import androidx.core.content.res.ResourcesCompat
 
@@ -18,6 +20,16 @@ class Application
         var HEIGHT = 0
 
         lateinit var RESOURCES: Resources
+
+        fun drawable(
+            @DrawableRes id: Int
+        ): Drawable? {
+            return ResourcesCompat.getDrawable(
+                RESOURCES,
+                id,
+                null
+            )
+        }
 
         fun font(
             @FontRes id: Int,

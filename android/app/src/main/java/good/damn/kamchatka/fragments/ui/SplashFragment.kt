@@ -1,8 +1,6 @@
 package good.damn.kamchatka.fragments.ui
 
 import android.content.Context
-import android.graphics.Point
-import android.graphics.PointF
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -14,6 +12,7 @@ import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.fragments.StackFragment
 import good.damn.kamchatka.services.FactsService
 import good.damn.kamchatka.views.MountainsView
+import good.damn.kamchatka.views.RoundedImageView
 
 class SplashFragment
 : StackFragment() {
@@ -26,10 +25,15 @@ class SplashFragment
             Application.RESOURCES
         )
         val measureUnit = Application.WIDTH
+        val appIconSize = (measureUnit * 0.248f)
+            .toInt()
 
 
         // Allocating views
         val layout = LinearLayout(
+            context
+        )
+        val imageViewAppIcon = RoundedImageView(
             context
         )
         val textViewAppName = TextView(
@@ -49,8 +53,6 @@ class SplashFragment
         )
 
 
-
-
         // Setup orientation
         layout.orientation = LinearLayout
             .VERTICAL
@@ -63,6 +65,9 @@ class SplashFragment
             Application.color(
                 R.color.background
             )
+        )
+        imageViewAppIcon.setCardBackgroundColor(
+            0xff000000.toInt()
         )
         textViewAppName.setTextColor(
             Application.color(
@@ -148,6 +153,15 @@ class SplashFragment
         textViewPowered.alpha = 0.2f
         textViewFactLabel.alpha = 0.5f
 
+        // Image
+        imageViewAppIcon.imageView.setImageDrawable(
+            Application.drawable(
+                R.mipmap.ic_launcher
+            )
+        )
+
+        // Corner radius
+        imageViewAppIcon.radius = appIconSize * 0.25f
 
         // Gravity
         textViewFact.gravity = Gravity
@@ -158,9 +172,16 @@ class SplashFragment
 
 
         // LinearLayout params
+        imageViewAppIcon.boundsLinear(
+            Gravity.CENTER_HORIZONTAL,
+            width = appIconSize,
+            height = appIconSize,
+            top = (Application.HEIGHT * 0.111f)
+                .toInt()
+        )
         textViewAppName.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
-            top = (Application.HEIGHT * 0.231f)
+            top = (Application.HEIGHT * 0.016f)
                 .toInt()
         )
         textViewPowered.boundsLinear(
@@ -184,6 +205,9 @@ class SplashFragment
 
 
         // Adding views
+        layout.addView(
+            imageViewAppIcon
+        )
         layout.addView(
             textViewAppName
         )
