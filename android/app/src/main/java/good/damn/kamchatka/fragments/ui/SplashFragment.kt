@@ -1,6 +1,8 @@
 package good.damn.kamchatka.fragments.ui
 
 import android.content.Context
+import android.graphics.Point
+import android.graphics.PointF
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -82,6 +84,11 @@ class SplashFragment
                 R.color.titleColor
             )
         )
+        mountainsView.setProgressColor(
+            Application.color(
+                R.color.mountainsColor
+            )
+        )
 
 
 
@@ -146,6 +153,8 @@ class SplashFragment
         textViewFact.gravity = Gravity
             .CENTER_HORIZONTAL
 
+        // Mountains points
+        mountainsView.randomizePoints()
 
 
         // LinearLayout params
@@ -174,7 +183,6 @@ class SplashFragment
 
 
 
-
         // Adding views
         layout.addView(
             textViewAppName
@@ -189,7 +197,9 @@ class SplashFragment
             textViewFactLabel
         )
         layout.addView(
-            mountainsView
+            mountainsView,
+            -1,
+            -1
         )
 
         return layout
