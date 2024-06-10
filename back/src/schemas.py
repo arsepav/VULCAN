@@ -53,6 +53,7 @@ class GeoPolygonResponse(BaseModel):
 class GeoPathAdd(BaseModel):
     name: str
     geom: List[Tuple[float, float]]
+    points: List[int]
     oopt_id: int
     category_id: int
 
@@ -190,6 +191,7 @@ class EcologyProblemState(BaseModel):
     class Config:
         orm_mode = True
 
+
 class ReportCreate(BaseModel):
     name: str
     description: str
@@ -226,6 +228,18 @@ class OOPTObjectCategories(BaseModel):
     description: str
     image_url: str
 
+
+class OOPTObject(BaseModel):
+    id: int
+
+    name: str
+    description: str
+    geom: dict
+
+    image_url: str
+    oopt_id: int
+
+
 class OOPTObjectsCreate(BaseModel):
     name: str
     description: str
@@ -239,3 +253,6 @@ class OOPTObjectsCreate(BaseModel):
     person_area: float
     Rf_coefficient: float
     t_coefficient: float
+
+
+

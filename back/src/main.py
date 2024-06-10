@@ -109,6 +109,8 @@ async def add_path(path_data: schemas.GeoPathAdd, db: Session = Depends(database
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Invalid path data: {str(e)}")
 
+
+
     db_path = models.GeoPaths(name=path_data.name,
                               geom=from_shape(path, srid=4326),
                               category_id=path_data.category_id,
@@ -117,6 +119,11 @@ async def add_path(path_data: schemas.GeoPathAdd, db: Session = Depends(database
     db.add(db_path)
     db.commit()
     db.refresh(db_path)
+
+    for i in path_data.points:
+        db.add(models.GeoPathPoints(path_id=db_path.id, point_id=i))
+
+    db.commit()
 
     return schemas.GeoPathAddResponse(id=db_path.id)
 
@@ -142,8 +149,6 @@ async def get_map_page(request: Request, current_user: schemas.UserResponse = De
     if not current_user:
         return RedirectResponse(url="/login")
     return templates.TemplateResponse("map_objects_creation.html", {"request": request, "ip": d['ip']})
-
-
 
 
 @app.get("/ecology_problems_list_viewer", response_class=HTMLResponse)
@@ -487,3 +492,17 @@ def add_oopt_object(
     db.commit()
 
     return {'result': 'success', 'id': object.id}
+
+
+@app.get("/oopt_objects/", response_model=List[schemas.OOPTObject])
+def get_oopt_objects(oopt_id: Optional[int] = None, db: Session = Depends(database.get_db)):
+    if oopt_id:
+        objects = db.query(models.OOPTObjects).filter(models.OOPTObjects.oopt_id == oopt_id).all()
+    else:
+        objects = db.query(models.OOPTObjects).all()
+
+    for i in range(len(objects)):
+        objects[i] = objects[i].__dict__
+        objects[i]['geom'] = wkb_element_to_wkt(objects[i]['geom'])
+        objects[i]['image_url'] = f"http://{d['ip']}:8000/downloadfile/{objects[i]['file_id']}"
+    return objects

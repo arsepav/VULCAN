@@ -60,6 +60,13 @@ class GeoPaths(Base):
     oopt_id = Column(Integer, ForeignKey('geo_polygons.id'))
     category_id = Column(Integer, ForeignKey('geo_paths_category.id'))
 
+class GeoPathPoints(Base):
+    __tablename__ = 'geo_paths_points'
+    id = Column(Integer, primary_key=True, index=True)
+
+    path_id = Column(Integer, ForeignKey('geo_paths.id'))
+    point_id = Column(Integer, ForeignKey('oopt_object.id'))
+
 
 class GeoPathsCategory(Base):
     __tablename__ = 'geo_paths_category'
