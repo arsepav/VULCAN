@@ -11,7 +11,9 @@ import androidx.annotation.ColorInt
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsLinear
+import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.fragments.StackFragment
+import good.damn.kamchatka.views.button.ButtonRound
 import good.damn.kamchatka.views.text_fields.TextField
 import good.damn.kamchatka.views.text_fields.TextFieldRound
 
@@ -34,13 +36,14 @@ class AuthFragment
         context: Context
     ): View {
 
-        val measureUnit = Application.WIDTH
-        val widthField = (measureUnit * 0.816f)
+        val width = Application.WIDTH
+        val height = Application.HEIGHT
+        val widthField = (width * 0.816f)
             .toInt()
-        val heightField = (measureUnit * 0.113f)
+        val heightField = (height * 0.051f)
             .toInt()
-
-
+        val heightBtnLogin = (height * 0.057f)
+            .toInt()
 
 
 
@@ -73,7 +76,7 @@ class AuthFragment
             context
         )
 
-        val btnLogin = Button(
+        val btnLogin = ButtonRound(
             context
         )
         val textViewHaveAccount = TextView(
@@ -89,7 +92,7 @@ class AuthFragment
             .VERTICAL
 
 
-        // Styling TextFields
+        //Colors
         val fieldColor = Application.color(
             R.color.mountainsColor
         )
@@ -99,41 +102,112 @@ class AuthFragment
         val fieldColor3 = Application.color(
             R.color.signInStrokeColor3
         )
+        textViewLetSign.setTextColor(
+            Application.color(
+                R.color.titleColor
+            )
+        )
+        btnLogin.setBackgroundColor(
+            Application.color(
+                R.color.titleColor
+            )
+        )
+        btnLogin.setTextColor(
+            Application.color(
+                R.color.textColorBtn
+            )
+        )
+        textViewHaveAccount.setTextColor(
+            Application.color(
+                R.color.accentColor
+            )
+        )
+
+
+        // Fonts
+        textViewLetSign.typeface = Application.font(
+            R.font.open_sans_extra_bold,
+            context
+        )
+        btnLogin.typeface = Application.font(
+            R.font.open_sans_bold,
+            context
+        )
+        textViewHaveAccount.typeface = Application.font(
+            R.font.open_sans_bold,
+            context
+        )
+
+
+
+        // Styling TextFields
+        val offsetBetween = height * 0.013f
+        val offsetPart = height * 0.025f
         styleTextFieldRound(
             mEditTextLastName,
             fieldColor,
-            heightField
+            heightField,
+            widthField,
+            topMargin = height * 0.057f
         )
         styleTextFieldRound(
             mEditTextFirstName,
             fieldColor,
-            heightField
+            heightField,
+            widthField,
+            topMargin = offsetBetween
         )
         styleTextFieldRound(
             mEditTextSecondName,
             fieldColor,
-            heightField
+            heightField,
+            widthField,
+            topMargin = offsetBetween
         )
         styleTextFieldRound(
             mEditTextTelephone,
             fieldColor2,
-            heightField
+            heightField,
+            widthField,
+            topMargin = offsetPart
         )
         styleTextFieldRound(
             mEditTextEmail,
             fieldColor2,
-            heightField
+            heightField,
+            widthField,
+            topMargin = offsetBetween
         )
         styleTextFieldRound(
             mEditTextPassword,
             fieldColor3,
-            heightField
+            heightField,
+            widthField,
+            topMargin = offsetPart
         )
         styleTextFieldRound(
             mEditTextPasswordRepeat,
             fieldColor3,
-            heightField
+            heightField,
+            widthField,
+            topMargin = offsetBetween
         )
+
+
+        // Gravity
+        textViewLetSign.gravity = Gravity
+            .CENTER_HORIZONTAL
+
+
+
+        // TextSize
+        textViewLetSign.setTextPx(
+            height * 0.03f
+        )
+
+        // Corners
+        btnLogin.cornerRadius = heightBtnLogin * 0.5f
+
 
         // Text
         textViewLetSign.setHint(
@@ -168,45 +242,17 @@ class AuthFragment
         )
 
 
-
         // LinearLayout params
         textViewLetSign.boundsLinear(
-            Gravity.CENTER_HORIZONTAL,
-            -2,
-            -2
-        )
-        mEditTextLastName.boundsLinear(
-            Gravity.CENTER_HORIZONTAL,
-            width = widthField,
-        )
-        mEditTextFirstName.boundsLinear(
-            Gravity.CENTER_HORIZONTAL,
-            width = widthField
-        )
-        mEditTextSecondName.boundsLinear(
-            Gravity.CENTER_HORIZONTAL,
-            width = widthField
-        )
-        mEditTextTelephone.boundsLinear(
-            Gravity.CENTER_HORIZONTAL,
-            width = widthField
-        )
-        mEditTextEmail.boundsLinear(
-            Gravity.CENTER_HORIZONTAL,
-            width = widthField
-        )
-        mEditTextPassword.boundsLinear(
-            Gravity.CENTER_HORIZONTAL,
-            width = widthField
-        )
-        mEditTextPasswordRepeat.boundsLinear(
-            Gravity.CENTER_HORIZONTAL,
-            width = widthField
+            Gravity.CENTER_HORIZONTAL
         )
         textViewHaveAccount.boundsLinear(
+            Gravity.CENTER_HORIZONTAL
+        )
+        btnLogin.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
-            -2,
-            -2
+            (width * 0.925f).toInt(),
+            heightBtnLogin
         )
 
 
@@ -236,9 +282,7 @@ class AuthFragment
             mEditTextPasswordRepeat
         )
         layout.addView(
-            btnLogin,
-            -1,
-            -2
+            btnLogin
         )
         layout.addView(
             textViewHaveAccount
@@ -264,7 +308,9 @@ class AuthFragment
 private fun AuthFragment.styleTextFieldRound(
     field: TextFieldRound,
     @ColorInt strokeColor: Int,
-    heightField: Int
+    heightField: Int,
+    widthField: Int,
+    topMargin: Float
 ) {
     field.cornerRadius = heightField * 0.5f
     field.setStrokeColor(
@@ -281,6 +327,10 @@ private fun AuthFragment.styleTextFieldRound(
         )
     }
 
+    field.setTextPx(
+        heightField * 0.319f
+    )
+
     field.gravity = Gravity
         .CENTER_HORIZONTAL
 
@@ -294,6 +344,12 @@ private fun AuthFragment.styleTextFieldRound(
         Application.color(
             R.color.accentColor30
         )
+    )
+
+    field.boundsLinear(
+        Gravity.CENTER_HORIZONTAL,
+        width = widthField,
+        top = topMargin.toInt()
     )
 }
 
