@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, String, DateTime, Date, Boolean
+from sqlalchemy import Column, Integer, ForeignKey, String, DateTime, Date, Boolean, Float
 from sqlalchemy.sql import func
 from .database import Base
 from geoalchemy2 import Geometry
@@ -175,3 +175,31 @@ class EcologyProblemReports(Base):
 
     reporter_id = Column(Integer, ForeignKey('users.id'))
     date_of_creation = Column(DateTime(timezone=True), server_default=func.now())
+
+class OOPTObjects(Base):
+    __tablename__ = 'oopt_object'
+
+    id = Column(Integer, primary_key=True)
+
+    name = Column(String)
+    geom = Column(Geometry(geometry_type='POINT', srid=4326))
+    description = Column(String)
+
+    file_id = Column(Integer, ForeignKey('files_info.id'))
+    category_id = Column(Integer, ForeignKey('oopt_object_category.id'))
+    oopt_id = Column(Integer, ForeignKey('geo_polygons.id'))
+
+    area = Column(Float)  # площать объекта
+    person_area = Column(Float)  # площадь необходимая для одного человека
+    Rf_coefficient = Column(Integer)  # количество раз которое один человек может посетить объект
+    t_coefficient = Column(Integer)  # количество дней в рассматриваемую еденицу времени
+
+class OOPTObjectCategories(Base):
+    __tablename__ = 'oopt_object_category'
+
+    id = Column(Integer, primary_key=True)
+
+    name = Column(String, unique=True, index=True)
+    description = Column(String)
+    image_url = Column(String)
+

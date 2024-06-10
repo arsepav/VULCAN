@@ -137,11 +137,13 @@ async def get_map_page(request: Request, current_user: schemas.UserResponse = De
     return templates.TemplateResponse("map.html", {"request": request, "ip": d['ip']})
 
 
-@app.get("/map_oopt", response_class=HTMLResponse)
+@app.get("/map_objects_creation", response_class=HTMLResponse)
 async def get_map_page(request: Request, current_user: schemas.UserResponse = Depends(auth.get_current_user_cookie)):
     if not current_user:
         return RedirectResponse(url="/login")
-    return templates.TemplateResponse("map_oopt.html", {"request": request, "ip": d['ip']})
+    return templates.TemplateResponse("map_objects_creation.html", {"request": request, "ip": d['ip']})
+
+
 
 
 @app.get("/ecology_problems_list_viewer", response_class=HTMLResponse)
@@ -198,6 +200,7 @@ async def get_map_page(
         "ip": d['ip'],
         "highlighted_problem_id": ecology_problem_id
     })
+
 
 @app.get("/permission_approve_page", response_class=HTMLResponse)
 async def get_permissions_page(request: Request,
@@ -366,10 +369,10 @@ def get_categories(db: Session = Depends(database.get_db)):
     states = db.query(models.EcologyProblemStates).all()
     return states
 
+
 @app.post("/ecology_problems", response_model=schemas.EcologyProblemResponse)
 def create_ecology_problem(problem: schemas.EcologyProblemCreate, db: Session = Depends(database.get_db),
                            current_user: schemas.UserResponse = Depends(auth.get_current_user)):
-
     try:
         point = shape(problem.geom)
     except Exception as e:
@@ -416,17 +419,20 @@ def get_ecology_problems(
 
     return problems
 
+
 @app.post("/update_problem_status_and_report")
 def update_problem_status_and_report(
-    report_data: schemas.EcologyProblemReportCreate,
-    db: Session = Depends(database.get_db),
-    current_user: schemas.UserResponse = Depends(auth.get_current_user_cookie),
+        report_data: schemas.EcologyProblemReportCreate,
+        db: Session = Depends(database.get_db),
+        current_user: schemas.UserResponse = Depends(auth.get_current_user_cookie),
 ):
-    problem = db.query(models.EcologyProblems).filter(models.EcologyProblems.id == report_data.ecology_problem_id).first()
+    problem = db.query(models.EcologyProblems).filter(
+        models.EcologyProblems.id == report_data.ecology_problem_id).first()
     if not problem:
         raise HTTPException(status_code=404, detail="Ecology problem not found")
 
-    new_state = db.query(models.EcologyProblemStates).filter(models.EcologyProblemStates.id == report_data.new_state).first()
+    new_state = db.query(models.EcologyProblemStates).filter(
+        models.EcologyProblemStates.id == report_data.new_state).first()
     if not new_state:
         raise HTTPException(status_code=404, detail="New state not found")
 
@@ -447,3 +453,37 @@ def update_problem_status_and_report(
     return {"message": "Report added and problem status updated successfully"}
 
 
+@app.get("/oopt_objects_categories", response_model=List[schemas.OOPTObjectCategories])
+def get_categories(db: Session = Depends(database.get_db)):
+    states = db.query(models.OOPTObjectCategories).all()
+    return states
+
+
+@app.post("/add_oopt_object")
+def add_oopt_object(
+        oopt_obj_data: schemas.OOPTObjectsCreate,
+        db: Session = Depends(database.get_db)
+):
+    try:
+        point = Point(oopt_obj_data.geom['coordinates'])
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Invalid path data: {str(e)}")
+
+    object = models.OOPTObjects(
+        name=oopt_obj_data.name,
+        description=oopt_obj_data.description,
+        geom=from_shape(point, srid=4326),
+        file_id=oopt_obj_data.file_id,
+        category_id=oopt_obj_data.category_id,
+        oopt_id=oopt_obj_data.oopt_id,
+
+        area=oopt_obj_data.area,
+        person_area=oopt_obj_data.person_area,
+        Rf_coefficient=oopt_obj_data.Rf_coefficient,
+        t_coefficient=oopt_obj_data.t_coefficient
+    )
+
+    db.add(object)
+    db.commit()
+
+    return {'result': 'success', 'id': object.id}

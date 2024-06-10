@@ -217,3 +217,25 @@ class EcologyProblemReportCreate(BaseModel):
     new_state: int
     file_id: int
     ecology_problem_id: int
+
+
+class OOPTObjectCategories(BaseModel):
+    id: int
+
+    name: str
+    description: str
+    image_url: str
+
+class OOPTObjectsCreate(BaseModel):
+    name: str
+    description: str
+    geom: dict
+
+    file_id: int
+    oopt_id: int
+    category_id: int
+
+    area: float
+    person_area: float
+    Rf_coefficient: float
+    t_coefficient: float

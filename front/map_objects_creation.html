@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Points on Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+        #map {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+        }
+        #form-container {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 300px;
+            height: auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        input[type="text"], input[type="number"], select, input[type="file"], button {
+            width: 95%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+        button {
+            display: block;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        #save-point {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div id="form-container">
+        <form id="point-form">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required><br>
+            
+            <label for="description">Description:</label>
+            <input type="text" id="description" name="description" required><br>
+            
+            <label for="category">Category:</label>
+            <select id="category" name="category" required></select><br>
+            
+            <label for="oopt">OOPT:</label>
+            <select id="oopt" name="oopt" required></select><br>
+            
+            <label for="file">File:</label>
+            <input type="file" id="file" name="file"><br>
+            
+            <label for="area">Area:</label>
+            <input type="number" id="area" name="area" required><br>
+            
+            <label for="person_area">Person Area:</label>
+            <input type="number" id="person_area" name="person_area" required><br>
+            
+            <label for="Rf_coefficient">Rf Coefficient:</label>
+            <input type="number" id="Rf_coefficient" name="Rf_coefficient" required><br>
+            
+            <label for="t_coefficient">T Coefficient:</label>
+            <input type="number" id="t_coefficient" name="t_coefficient" required><br>
+            
+            <button id="save-point" type="submit">Save Point</button>
+        </form>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        const apiBaseUrl = 'http://{{ ip }}:8000';
+        
+        // Initialize the map
+        var map = L.map('map').setView([55.914298, 158.918540], 7);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Array to store point coordinates
+        var pointCoordinates = [];
+
+        // Function to handle map clicks
+        function onMapClick(e) {
+            var latLng = e.latlng;
+            pointCoordinates = [latLng.lat, latLng.lng];
+
+            // Remove any existing markers
+            map.eachLayer(function(layer) {
+                if (layer instanceof L.Marker) {
+                    map.removeLayer(layer);
+                }
+            });
+
+            // Create a new marker
+            L.marker(latLng).addTo(map);
+        }
+
+        // Event listener for map clicks
+        map.on('click', onMapClick);
+
+        // Function to fetch categories and populate the select element
+        async function fetchCategories() {
+            const response = await fetch(`${apiBaseUrl}/oopt_objects_categories`);
+            const categories = await response.json();
+            const categorySelect = document.getElementById('category');
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.id;
+                option.text = category.name;
+                categorySelect.add(option);
+            });
+        }
+
+        // Function to fetch OOPTs and populate the select element
+        async function fetchOOPTs() {
+            const response = await fetch(`${apiBaseUrl}/oopts`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ OOPT_name: '' })
+            });
+            const oopts = await response.json();
+            const ooptSelect = document.getElementById('oopt');
+            oopts.forEach(oopt => {
+                const option = document.createElement('option');
+                option.value = oopt.id;
+                option.text = oopt.name;
+                ooptSelect.add(option);
+            });
+        }
+
+        // Fetch categories and OOPTs on page load
+        fetchCategories();
+        fetchOOPTs();
+
+        // Function to upload file
+        async function uploadFile(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const response = await fetch(`${apiBaseUrl}/uploadfile/`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                return data.file_id;
+            } else {
+                throw new Error('Ошибка загрузки файла');
+            }
+        }
+
+        // Function to save the point
+        async function savePoint(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const description = document.getElementById('description').value;
+            const category_id = document.getElementById('category').value;
+            const oopt_id = document.getElementById('oopt').value;
+            const area = document.getElementById('area').value;
+            const person_area = document.getElementById('person_area').value;
+            const Rf_coefficient = document.getElementById('Rf_coefficient').value;
+            const t_coefficient = document.getElementById('t_coefficient').value;
+            const file = document.getElementById('file').files[0];
+
+            console.log('category_id', category_id, 'oopt_id', oopt_id)
+
+            let file_id = null;
+            if (file) {
+                try {
+                    file_id = await uploadFile(file);
+                } catch (error) {
+                    alert("Ошибка загрузки файла: " + error.message);
+                    return;
+                }
+            }
+
+            if (!name || !description || !category_id || !oopt_id) {
+                alert("Все поля обязательны!");
+                return;
+            }
+
+            if (pointCoordinates.length === 0){
+                alert('Выберете точку на карте!')
+                return;
+            }
+
+            const pointData = {
+                name: name,
+                description: description,
+                category_id: parseInt(category_id),
+                oopt_id: parseInt(oopt_id),
+                geom: {
+                    type: "Point",
+                    coordinates: pointCoordinates
+                },
+                file_id: file_id,
+                area: parseFloat(area),
+                person_area: parseFloat(person_area),
+                Rf_coefficient: parseInt(Rf_coefficient),
+                t_coefficient: parseInt(t_coefficient)
+            };
+
+            console.log(pointData)
+
+            const response = await fetch(`${apiBaseUrl}/add_oopt_object`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(pointData)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                alert("Точка сохранена с id: " + result.id);
+            } else {
+                alert("Ошибка сохранения точки");
+            }
+        }
+
+        // Event listener for form submission
+        document.getElementById('point-form').addEventListener('submit', savePoint);
+    </script>
+</body>
+</html>
