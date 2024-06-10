@@ -246,7 +246,7 @@ class SplashFragment
 
                 while (f < 1.0f) {
                     Thread.sleep(1)
-                    f += 0.0005f
+                    f += 0.0004f
                     Application.ui {
                         mountainsView.progress = f
                     }

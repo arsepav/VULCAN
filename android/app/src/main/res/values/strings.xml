@@ -2,7 +2,16 @@
     <string name="app_name">Зелёная Кнопка</string>
     <string name="log_in">Войти</string>
     <string name="email">Email</string>
+    <string name="firstName">Имя</string>
+    <string name="secondName">Отчество</string>
+    <string name="lastName">Фамилия</string>
+    <string name="telephone">Телефон</string>
+    <string name="passwordRepeat">Подтвердите пароль</string>
     <string name="password">Пароль</string>
+    <string name="sign_in">Зарегистрироваться</string>
+    <string name="have_an_account">Уже есть аккаунт?</string>
+    <string name="let_sign_in">Давайте\nзарегистрируемся!</string>
+    <string name="policy_terms">Продолжая, вы соглашаетесь с\nПолитикой конфиденциальности &amp; Условиями использования</string>
     <string name="map">Карта</string>
     <string name="places">Места</string>
     <string name="poweredByVulkan">POWERED BY VULCAN</string>
