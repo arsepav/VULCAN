@@ -1,6 +1,7 @@
 package good.damn.kamchatka.fragments.ui
 
 import android.content.Context
+import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
 import android.view.View
@@ -32,6 +33,13 @@ class AuthFragment
     private lateinit var mEditTextEmail: TextFieldRound
     private lateinit var mEditTextPassword: TextFieldRound
     private lateinit var mEditTextPasswordRepeat: TextFieldRound
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        activity?.window?.navigationBarColor = Application.color(
+            R.color.background
+        )
+    }
 
     override fun onCreateView(
         context: Context
@@ -337,14 +345,6 @@ class AuthFragment
         btnLogin.setOnClickListener(
             this::onClickBtnLogIn
         )
-
-        layout.post {
-            navigationBarColor(
-                Application.color(
-                    R.color.background
-                )
-            )
-        }
 
         return layout
     }
