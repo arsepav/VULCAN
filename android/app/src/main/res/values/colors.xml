@@ -12,4 +12,7 @@
     <color name="mountainsColor">#AAEE4A</color>
     <color name="mountainsColorTransp">#F4FFE4</color>
 
+    <color name="signInStrokeColor2">#6BA351</color>
+    <color name="signInStrokeColor3">#365F46</color>
+
 </resources>

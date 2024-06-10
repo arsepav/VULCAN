@@ -7,11 +7,13 @@ import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.ColorInt
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.fragments.StackFragment
-import good.damn.kamchatka.views.TextField
+import good.damn.kamchatka.views.text_fields.TextField
+import good.damn.kamchatka.views.text_fields.TextFieldRound
 
 class AuthFragment
 : StackFragment() {
@@ -20,13 +22,13 @@ class AuthFragment
         private const val TAG = "AuthFragment"
     }
 
-    private lateinit var mEditTextLastName: TextField
-    private lateinit var mEditTextFirstName: TextField
-    private lateinit var mEditTextSecondName: TextField
-    private lateinit var mEditTextTelephone: TextField
-    private lateinit var mEditTextEmail: TextField
-    private lateinit var mEditTextPassword: TextField
-    private lateinit var mEditTextPasswordRepeat: TextField
+    private lateinit var mEditTextLastName: TextFieldRound
+    private lateinit var mEditTextFirstName: TextFieldRound
+    private lateinit var mEditTextSecondName: TextFieldRound
+    private lateinit var mEditTextTelephone: TextFieldRound
+    private lateinit var mEditTextEmail: TextFieldRound
+    private lateinit var mEditTextPassword: TextFieldRound
+    private lateinit var mEditTextPasswordRepeat: TextFieldRound
 
     override fun onCreateView(
         context: Context
@@ -34,6 +36,8 @@ class AuthFragment
 
         val measureUnit = Application.WIDTH
         val widthField = (measureUnit * 0.816f)
+            .toInt()
+        val heightField = (measureUnit * 0.113f)
             .toInt()
 
 
@@ -47,25 +51,25 @@ class AuthFragment
         val textViewLetSign = TextView(
             context
         )
-        mEditTextLastName = TextField(
+        mEditTextLastName = TextFieldRound(
             context
         )
-        mEditTextFirstName = TextField(
+        mEditTextFirstName = TextFieldRound(
             context
         )
-        mEditTextSecondName = TextField(
+        mEditTextSecondName = TextFieldRound(
             context
         )
-        mEditTextTelephone = TextField(
+        mEditTextTelephone = TextFieldRound(
             context
         )
-        mEditTextEmail = TextField(
+        mEditTextEmail = TextFieldRound(
             context
         )
-        mEditTextPassword = TextField(
+        mEditTextPassword = TextFieldRound(
             context
         )
-        mEditTextPasswordRepeat = TextField(
+        mEditTextPasswordRepeat = TextFieldRound(
             context
         )
 
@@ -85,7 +89,51 @@ class AuthFragment
             .VERTICAL
 
 
-
+        // Styling TextFields
+        val fieldColor = Application.color(
+            R.color.mountainsColor
+        )
+        val fieldColor2 = Application.color(
+            R.color.signInStrokeColor2
+        )
+        val fieldColor3 = Application.color(
+            R.color.signInStrokeColor3
+        )
+        styleTextFieldRound(
+            mEditTextLastName,
+            fieldColor,
+            heightField
+        )
+        styleTextFieldRound(
+            mEditTextFirstName,
+            fieldColor,
+            heightField
+        )
+        styleTextFieldRound(
+            mEditTextSecondName,
+            fieldColor,
+            heightField
+        )
+        styleTextFieldRound(
+            mEditTextTelephone,
+            fieldColor2,
+            heightField
+        )
+        styleTextFieldRound(
+            mEditTextEmail,
+            fieldColor2,
+            heightField
+        )
+        styleTextFieldRound(
+            mEditTextPassword,
+            fieldColor3,
+            heightField
+        )
+        styleTextFieldRound(
+            mEditTextPasswordRepeat,
+            fieldColor3,
+            heightField
+        )
 
         // Text
         textViewLetSign.setHint(
@@ -211,6 +259,20 @@ class AuthFragment
         return layout
     }
 
+}
+
+private fun AuthFragment.styleTextFieldRound(
+    field: TextFieldRound,
+    @ColorInt strokeColor: Int,
+    heightField: Int
+) {
+    field.cornerRadius = heightField * 0.5f
+    field.setStrokeColor(
+        strokeColor
+    )
+    field.setStrokeWidth(
+        heightField * 0.042f
+    )
 }
 
 private fun AuthFragment.onClickBtnLogIn(
