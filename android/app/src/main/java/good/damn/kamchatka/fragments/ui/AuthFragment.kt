@@ -13,6 +13,7 @@ import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.fragments.StackFragment
+import good.damn.kamchatka.utils.ViewUtils
 import good.damn.kamchatka.views.button.ButtonRound
 import good.damn.kamchatka.views.text_fields.TextField
 import good.damn.kamchatka.views.text_fields.TextFieldRound
@@ -76,7 +77,10 @@ class AuthFragment
         mEditTextPasswordRepeat = TextFieldRound(
             context
         )
-
+        val textViewPolicy = ViewUtils.policyTerms(
+            context,
+            measureUnit
+        )
         val btnLogin = ButtonRound(
             context
         )
@@ -161,7 +165,7 @@ class AuthFragment
             fieldColor,
             heightField,
             widthField,
-            topMargin = 0.128f * measureUnit
+            topMargin = 0.11f * measureUnit
         )
         styleTextFieldRound(
             mEditTextFirstName,
@@ -203,7 +207,7 @@ class AuthFragment
             fieldColor3,
             heightField,
             widthField,
-            topMargin = offsetBetween
+            topMargin = 0.03381f * measureUnit
         )
 
 
@@ -270,11 +274,15 @@ class AuthFragment
         // LinearLayout params
         textViewLetSign.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
-            top = (0.106f * measureUnit).toInt()
+            top = (0.082f * measureUnit).toInt()
         )
         textViewPasswordInfo.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             top = (0.01932f * measureUnit).toInt()
+        )
+        textViewPolicy.boundsLinear(
+            Gravity.CENTER_HORIZONTAL,
+            top = (0.099f * measureUnit).toInt()
         )
         btnLogin.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
@@ -315,6 +323,9 @@ class AuthFragment
         )
         layout.addView(
             mEditTextPasswordRepeat
+        )
+        layout.addView(
+            textViewPolicy
         )
         layout.addView(
             btnLogin
