@@ -36,15 +36,13 @@ class AuthFragment
         context: Context
     ): View {
 
-        val width = Application.WIDTH
-        val height = Application.HEIGHT
-        val widthField = (width * 0.816f)
+        val measureUnit = Application.WIDTH
+        val widthField = (measureUnit * 0.816f)
             .toInt()
-        val heightField = (height * 0.051f)
+        val heightField = (measureUnit * 0.1135f)
             .toInt()
-        val heightBtnLogin = (height * 0.057f)
+        val heightBtnLogin = (measureUnit * 0.128f)
             .toInt()
-
 
 
         // Allocating views
@@ -72,6 +70,9 @@ class AuthFragment
         mEditTextPassword = TextFieldRound(
             context
         )
+        val textViewPasswordInfo = TextView(
+            context
+        )
         mEditTextPasswordRepeat = TextFieldRound(
             context
         )
@@ -91,8 +92,28 @@ class AuthFragment
         layout.orientation = LinearLayout
             .VERTICAL
 
+        // Fonts
+        textViewLetSign.typeface = Application.font(
+            R.font.open_sans_extra_bold,
+            context
+        )
+        textViewPasswordInfo.typeface = Application.font(
+            R.font.nunito_regular,
+            context
+        )
+        btnLogin.typeface = Application.font(
+            R.font.open_sans_bold,
+            context
+        )
+        textViewHaveAccount.typeface = Application.font(
+            R.font.open_sans_bold,
+            context
+        )
 
-        //Colors
+
+
+
+        // Colors
         val fieldColor = Application.color(
             R.color.mountainsColor
         )
@@ -117,6 +138,12 @@ class AuthFragment
                 R.color.textColorBtn
             )
         )
+
+        textViewPasswordInfo.setTextColor(
+            Application.color(
+                R.color.largeTextColor
+            )
+        )
         textViewHaveAccount.setTextColor(
             Application.color(
                 R.color.accentColor
@@ -124,31 +151,17 @@ class AuthFragment
         )
 
 
-        // Fonts
-        textViewLetSign.typeface = Application.font(
-            R.font.open_sans_extra_bold,
-            context
-        )
-        btnLogin.typeface = Application.font(
-            R.font.open_sans_bold,
-            context
-        )
-        textViewHaveAccount.typeface = Application.font(
-            R.font.open_sans_bold,
-            context
-        )
-
 
 
         // Styling TextFields
-        val offsetBetween = height * 0.013f
-        val offsetPart = height * 0.025f
+        val offsetBetween = 0.0289f * measureUnit
+        val offsetPart = 0.055f * measureUnit
         styleTextFieldRound(
             mEditTextLastName,
             fieldColor,
             heightField,
             widthField,
-            topMargin = height * 0.057f
+            topMargin = 0.128f * measureUnit
         )
         styleTextFieldRound(
             mEditTextFirstName,
@@ -202,7 +215,16 @@ class AuthFragment
 
         // TextSize
         textViewLetSign.setTextPx(
-            height * 0.03f
+            measureUnit * 0.0676f
+        )
+        textViewPasswordInfo.setTextPx(
+            measureUnit * 0.03f
+        )
+        btnLogin.setTextPx(
+            heightBtnLogin * 0.283f
+        )
+        textViewHaveAccount.setTextPx(
+            btnLogin.textSize
         )
 
         // Corners
@@ -210,7 +232,7 @@ class AuthFragment
 
 
         // Text
-        textViewLetSign.setHint(
+        textViewLetSign.setText(
             R.string.let_sign_in
         )
         mEditTextLastName.setHint(
@@ -231,28 +253,38 @@ class AuthFragment
         mEditTextPassword.setHint(
             R.string.password
         )
+        textViewPasswordInfo.setText(
+            R.string.latin_spells_numbers
+        )
         mEditTextPasswordRepeat.setHint(
             R.string.passwordRepeat
         )
         btnLogin.setText(
             R.string.sign_in
         )
-        textViewHaveAccount.setHint(
+        textViewHaveAccount.setText(
             R.string.have_an_account
         )
 
 
         // LinearLayout params
         textViewLetSign.boundsLinear(
-            Gravity.CENTER_HORIZONTAL
+            Gravity.CENTER_HORIZONTAL,
+            top = (0.106f * measureUnit).toInt()
         )
-        textViewHaveAccount.boundsLinear(
-            Gravity.CENTER_HORIZONTAL
+        textViewPasswordInfo.boundsLinear(
+            Gravity.CENTER_HORIZONTAL,
+            top = (0.01932f * measureUnit).toInt()
         )
         btnLogin.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
-            (width * 0.925f).toInt(),
-            heightBtnLogin
+            width = (measureUnit * 0.925f).toInt(),
+            top = (measureUnit * 0.10149f).toInt(),
+            height = heightBtnLogin
+        )
+        textViewHaveAccount.boundsLinear(
+            Gravity.CENTER_HORIZONTAL,
+            top = (measureUnit * 0.04589f).toInt()
         )
 
 
@@ -277,6 +309,9 @@ class AuthFragment
         )
         layout.addView(
             mEditTextPassword
+        )
+        layout.addView(
+            textViewPasswordInfo
         )
         layout.addView(
             mEditTextPasswordRepeat
