@@ -7,6 +7,9 @@
     <color name="btnText">#1A1A1A</color>
     <color name="btnBack">#FF000000</color>
 
+    <color name="accentColor">#08193A</color>
+    <color name="accentColor30">#4C08193A</color>
+
     <color name="titleColor">#18191F</color>
     <color name="largeTextColor">#3D405B</color>
     <color name="mountainsColor">#AAEE4A</color>

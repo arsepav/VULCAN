@@ -273,6 +273,28 @@ private fun AuthFragment.styleTextFieldRound(
     field.setStrokeWidth(
         heightField * 0.042f
     )
+
+    field.typeface = context?.let {
+        Application.font(
+            R.font.open_sans_semi_bold,
+            it
+        )
+    }
+
+    field.gravity = Gravity
+        .CENTER_HORIZONTAL
+
+    field.setTextColor(
+        Application.color(
+            R.color.accentColor
+        )
+    )
+
+    field.setHintTextColor(
+        Application.color(
+            R.color.accentColor30
+        )
+    )
 }
 
 private fun AuthFragment.onClickBtnLogIn(
