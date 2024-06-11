@@ -4,6 +4,18 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 
+
+fun View.checkBounds(
+    touchX: Float,
+    touchY: Float
+): Boolean {
+    return !(touchX < 0
+        || touchX > width
+        || touchY < 0
+        || touchY > height
+        )
+}
+
 fun View.boundsLinear(
     gravity: Int = Gravity.NO_GRAVITY,
     width: Int = -2,

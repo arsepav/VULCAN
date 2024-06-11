@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AccelerateInterpolator
@@ -17,6 +18,7 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.constraintlayout.widget.ConstraintSet.Motion
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
+import good.damn.kamchatka.extensions.checkBounds
 import good.damn.kamchatka.extensions.setTextPx
 
 class ButtonRound(
@@ -102,27 +104,36 @@ class ButtonRound(
         if (event == null) {
             return false
         }
-
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 mAnimator.setFloatValues(
                     1.0f, 0.75f
                 )
+                mAnimator.start()
             }
 
             MotionEvent.ACTION_UP -> {
                 mAnimator.setFloatValues(
                     alpha, 1.0f
                 )
+                mAnimator.start()
+
+                if (checkBounds(
+                    event.x,
+                    event.y
+                )) {
+                    mOnClickListener?.onClick(
+                        this
+                    )
+                }
             }
         }
-
-        mAnimator.start()
 
         return true
     }
 
     companion object {
+        private const val TAG = "ButtonRound"
         fun createDefault(
             context: Context,
             heightBtn: Int,
