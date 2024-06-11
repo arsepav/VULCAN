@@ -27,7 +27,6 @@ ValueAnimator.AnimatorUpdateListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d(TAG, "onViewCreated: ")
     }
 
     final override fun onCreateView(
@@ -41,10 +40,7 @@ ValueAnimator.AnimatorUpdateListener {
             return null
         }
 
-        mAnimator.duration = 350
-        mAnimator.interpolator = AccelerateInterpolator(
-            2.0f
-        )
+        mAnimator.duration = 200
         mAnimator.addUpdateListener(
             this
         )
