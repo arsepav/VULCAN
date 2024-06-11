@@ -37,12 +37,27 @@ app.add_middleware(
 
 @app.post("/register", response_model=schemas.UserResponse)
 def register_user(user: schemas.UserCreate, db: Session = Depends(auth.get_db)):
-    hashed_password = auth.get_password_hash(user.password)
-    db_user = models.User(username=user.username, email=user.email, hashed_password=hashed_password)
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return db_user
+    users = db.query(models.User).where(models.User.username == user.username).all()
+
+    if not users:
+        hashed_password = auth.get_password_hash(user.password)
+        db_user = models.User(username=user.username, email=user.email, hashed_password=hashed_password)
+        db.add(db_user)
+        db.commit()
+        db.refresh(db_user)
+        return {'id': db_user.id,
+                'success': True,
+                'message': 'ok',
+                'username': user.username,
+                'email': user.email
+                }
+
+    return {'id': -1,
+            'success': False,
+            'message': 'user with such name or email already exists',
+            'username': user.username,
+            'email': user.email
+            }
 
 
 @app.post("/token")
@@ -108,8 +123,6 @@ async def add_path(path_data: schemas.GeoPathAdd, db: Session = Depends(database
         path = LineString(path_data.geom)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Invalid path data: {str(e)}")
-
-
 
     db_path = models.GeoPaths(name=path_data.name,
                               geom=from_shape(path, srid=4326),
