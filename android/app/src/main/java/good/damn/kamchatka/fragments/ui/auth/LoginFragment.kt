@@ -177,6 +177,10 @@ class LoginFragment
             )
         }
 
+        textViewForgetPas.setOnClickListener(
+            this::onClickTextViewForgotPassword
+        )
+
         return layout
     }
 
@@ -188,4 +192,13 @@ class LoginFragment
         )
         removeFragment()
     }
+}
+
+private fun LoginFragment.onClickTextViewForgotPassword(
+    view: View
+) {
+    pushFragment(
+        ForgotPasswordLoginFragment()
+    )
+    removeFragment()
 }
