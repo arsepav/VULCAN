@@ -6,8 +6,6 @@ import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
 import android.widget.FrameLayout
-import androidx.fragment.app.Fragment
-import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
@@ -64,7 +62,7 @@ NavigationBarView.OnItemSelectedListener {
 
         mBottomNavigation.itemTextColor = ColorStateList.valueOf(
             Application.color(
-                R.color.editTextText
+                R.color.signInStrokeColor2
             )
         )
 
@@ -112,7 +110,7 @@ NavigationBarView.OnItemSelectedListener {
         mViewPager.currentItem = when (
             menuItem.itemId
         ) {
-            R.id.menu_main_map -> 0
+            R.id.menu_main_home -> 0
             else -> 1
         }
 

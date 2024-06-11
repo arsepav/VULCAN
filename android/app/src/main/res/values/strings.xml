@@ -12,8 +12,8 @@
     <string name="have_an_account">Уже есть аккаунт?</string>
     <string name="let_sign_in">Давайте\nзарегистрируемся!</string>
     <string name="policy_terms">Продолжая, вы соглашаетесь с\nПолитикой конфиденциальности &amp; Условиями использования</string>
-    <string name="map">Карта</string>
-    <string name="places">Места</string>
+    <string name="home">Главная</string>
+    <string name="profile">Профиль</string>
     <string name="poweredByVulkan">POWERED BY VULCAN</string>
     <string-array name="facts">
         <item>Камчатка — это одно из красивейших мест в России. Сегодня сюда приезжают туристы со всех уголков планеты, а ведь во времена, когда самолеты еще не бороздили небо, на путь от Москвы до Камчатки мог уйти целый год.</item>

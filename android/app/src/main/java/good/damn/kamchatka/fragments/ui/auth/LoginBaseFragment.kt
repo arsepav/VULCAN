@@ -43,6 +43,11 @@ abstract class LoginBaseFragment
             measureUnit
         )
 
+        layout.setBackgroundColor(
+            Application.color(
+                R.color.background
+            )
+        )
 
         // Bounds
         btnBack.boundsFrame(

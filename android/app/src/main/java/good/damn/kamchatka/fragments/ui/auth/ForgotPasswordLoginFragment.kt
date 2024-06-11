@@ -10,10 +10,7 @@ class ForgotPasswordLoginFragment
     override fun onClickBtnBack(
         view: View
     ) {
-        pushFragment(
-            LoginFragment()
-        )
-        removeFragment()
+        popFragment()
     }
 
     override fun onCreateContentFrameView(

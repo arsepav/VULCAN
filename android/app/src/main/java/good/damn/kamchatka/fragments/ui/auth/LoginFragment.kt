@@ -187,10 +187,7 @@ class LoginFragment
     override fun onClickBtnBack(
         view: View
     ) {
-        pushFragment(
-            SignInFragment()
-        )
-        removeFragment()
+        popFragment()
     }
 }
 
@@ -200,5 +197,4 @@ private fun LoginFragment.onClickTextViewForgotPassword(
     pushFragment(
         ForgotPasswordLoginFragment()
     )
-    removeFragment()
 }

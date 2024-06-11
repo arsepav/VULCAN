@@ -1,8 +1,11 @@
 package good.damn.kamchatka
 
+import android.animation.ValueAnimator
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
+import android.view.animation.AccelerateInterpolator
 import android.widget.FrameLayout
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
@@ -13,10 +16,14 @@ import good.damn.kamchatka.fragments.ui.SplashFragment
 
 class MainActivity
 : AppCompatActivity(),
-ViewTreeObserver.OnGlobalLayoutListener {
+ViewTreeObserver.OnGlobalLayoutListener{
 
     private lateinit var mContainer: FrameLayout
 
+    companion object {
+        private const val TAG = "MainActivity"
+    }
+    
     override fun onCreate(
         savedInstanceState: Bundle?
     ) {
@@ -60,10 +67,10 @@ ViewTreeObserver.OnGlobalLayoutListener {
 
         val splashFragment = SplashFragment()
         splashFragment.onEndAnimation = {
+            splashFragment.popFragment()
             pushFragment(
                 SignInFragment()
             )
-            removeFragment(splashFragment)
         }
 
         pushFragment(
@@ -100,9 +107,14 @@ ViewTreeObserver.OnGlobalLayoutListener {
         val fragment = supportFragmentManager
             .fragments
             .last() ?: return
-        removeFragment(
-            fragment as StackFragment
-        )
+
+        (fragment as? StackFragment)?.let {
+            it.hideFragment {
+                removeFragment(
+                    it
+                )
+            }
+        }
     }
 
     fun removeFragment(
@@ -121,6 +133,9 @@ ViewTreeObserver.OnGlobalLayoutListener {
             .beginTransaction()
             .add(mContainer.id, fragment)
             .commit()
+
+        Log.d(TAG, "pushFragment: ")
+        fragment.showFragment()
     }
 
     fun setStatusBarColor(

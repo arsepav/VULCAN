@@ -434,5 +434,4 @@ private fun SignInFragment.onClickTextViewHaveAccount(
     pushFragment(
         LoginFragment()
     )
-    removeFragment()
 }
