@@ -2,19 +2,22 @@ package good.damn.kamchatka.fragments.ui.auth
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.StringRes
+import androidx.annotation.WorkerThread
+import okhttp3.Response
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.extensions.setTextPx
-import good.damn.kamchatka.fragments.StackFragment
 import good.damn.kamchatka.fragments.ui.MainNavigationFragment
 import good.damn.kamchatka.fragments.ui.ScrollableFragment
+import good.damn.kamchatka.services.AuthService
 import good.damn.kamchatka.utils.StyleUtils
 import good.damn.kamchatka.utils.ViewUtils
 import good.damn.kamchatka.views.button.ButtonRound
@@ -27,6 +30,8 @@ class SignInFragment
     companion object {
         private const val TAG = "AuthFragment"
     }
+
+    private val mAuthService = AuthService()
 
     private lateinit var mEditTextLastName: TextFieldRound
     private lateinit var mEditTextFirstName: TextFieldRound
@@ -304,6 +309,102 @@ class SignInFragment
         return layout
     }
 
+
+    private fun onClickBtnLogIn(
+        view: View
+    ) {
+        getCredentials { email, password ->
+            mAuthService.registerUser(
+                email,
+                password,
+                this::onResponseRegister
+            )
+        }
+    }
+
+    @WorkerThread
+    private fun onResponseRegister(
+        response: Response
+    ) {
+        Application.ui {
+            Log.d(TAG, "onResponseRegister: $response")
+            val context = context
+                ?: return@ui
+
+            if (response.code != 200) {
+                Application.toast(
+                    "Error: ${response.code} ${response.body}",
+                    context
+                )
+                return@ui
+            }
+
+            Application.toast(
+                R.string.almostReady,
+                context
+            )
+
+            getCredentials { email, password ->
+                mAuthService.token(
+                    email,
+                    password,
+                    this::onResponseToken
+                )
+            }
+        }
+    }
+
+    @WorkerThread
+    private fun onResponseToken(
+        response: Response
+    ) {
+        Application.ui {
+
+            Log.d(TAG, "onResponseToken: $response")
+            
+            val context = context
+                ?: return@ui
+
+            if (response.code != 200) {
+                Application.toast(
+                    "Error: ${response.code} ${response.body}",
+                    context
+                )
+                return@ui
+            }
+
+            Application.toast(
+                R.string.successRegister,
+                context
+            )
+
+            pushFragment(
+                MainNavigationFragment()
+            )
+            removeFragment()
+        }
+    }
+
+
+    private fun getCredentials(
+        completion: (String, String) -> Unit
+    ) {
+        val email = mEditTextEmail
+            .text?.toString()
+
+        val password = mEditTextPassword
+            .text?.toString()
+
+        if (email == null || password == null) {
+            return
+        }
+
+        completion(
+            email,
+            password
+        )
+    }
+
 }
 
 private fun SignInFragment.styleTextFieldRound(
@@ -332,15 +433,6 @@ private fun SignInFragment.onClickTextViewHaveAccount(
 ) {
     pushFragment(
         LoginFragment()
-    )
-    removeFragment()
-}
-
-private fun SignInFragment.onClickBtnLogIn(
-    view: View
-) {
-    pushFragment(
-        MainNavigationFragment()
     )
     removeFragment()
 }

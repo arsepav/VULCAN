@@ -7,10 +7,12 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Looper
+import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.FontRes
+import androidx.annotation.StringRes
 import androidx.core.content.res.ResourcesCompat
 
 class Application
@@ -56,6 +58,28 @@ class Application
                 id,
                 null
             )
+        }
+
+        fun toast(
+            @StringRes msgId: Int,
+            context: Context
+        ) {
+            Toast.makeText(
+                context,
+                msgId,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+        fun toast(
+            msg: String,
+            context: Context
+        ) {
+            Toast.makeText(
+                context,
+                msg,
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
         fun ui(
