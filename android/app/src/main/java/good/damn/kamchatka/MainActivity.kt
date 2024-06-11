@@ -8,7 +8,7 @@ import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowInsetsControllerCompat
 import good.damn.kamchatka.fragments.StackFragment
-import good.damn.kamchatka.fragments.ui.SignInFragment
+import good.damn.kamchatka.fragments.ui.auth.SignInFragment
 import good.damn.kamchatka.fragments.ui.SplashFragment
 
 class MainActivity

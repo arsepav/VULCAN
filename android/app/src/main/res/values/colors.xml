@@ -6,6 +6,7 @@
     <color name="editTextBack">#FFFFFF</color>
     <color name="btnText">#1A1A1A</color>
     <color name="btnBack">#FF000000</color>
+    <color name="btnBackArrow">#C5C5C5</color>
 
     <color name="accentColor">#08193A</color>
     <color name="accentColor30">#4C08193A</color>

@@ -23,9 +23,12 @@ fun View.boundsLinear(
 }
 
 fun View.boundsFrame(
-    gravity: Int,
-    width: Int,
-    height: Int
+    gravity: Int = Gravity.NO_GRAVITY,
+    width: Int = -2,
+    height: Int = -2,
+    top: Float = 0f,
+    bottom: Float = 0f,
+    left: Float = 0f
 ) {
     val params = FrameLayout
         .LayoutParams(
@@ -33,5 +36,8 @@ fun View.boundsFrame(
             height
         )
     params.gravity = gravity
+    params.bottomMargin = bottom.toInt()
+    params.topMargin = top.toInt()
+    params.leftMargin = left.toInt()
     layoutParams = params
 }
