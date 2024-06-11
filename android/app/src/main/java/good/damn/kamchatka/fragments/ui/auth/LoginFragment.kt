@@ -1,7 +1,6 @@
 package good.damn.kamchatka.fragments.ui.auth
 
 import android.content.Context
-import android.icu.util.MeasureUnit
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -10,7 +9,6 @@ import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsFrame
 import good.damn.kamchatka.extensions.boundsLinear
-import good.damn.kamchatka.fragments.StackFragment
 import good.damn.kamchatka.utils.StyleUtils
 import good.damn.kamchatka.utils.ViewUtils
 import good.damn.kamchatka.views.button.ButtonRound
@@ -30,14 +28,14 @@ class LoginFragment
 
         val heightField = (measureUnit * 0.1135f)
             .toInt()
+
         val widthField = (measureUnit * 0.816f)
             .toInt()
 
-        val offsetBetween = 0.0289f * measureUnit
+        val offsetBetween = 0.0289f * measureUnit;
 
 
-        val heightContent = heightField + offsetBetween
-
+        // Allocating views
         val layout = LinearLayout(
             context
         )
@@ -59,6 +57,9 @@ class LoginFragment
             textColorId = R.color.textColorBtn,
             backgroundColorId = R.color.accentColor
         )
+        val textViewForgetPas = TextView(
+            context
+        )
 
 
 
@@ -67,10 +68,35 @@ class LoginFragment
             .VERTICAL
 
 
+
+
         // Text
         btnLogin.setText(
             R.string.log_in
         )
+        textViewForgetPas.setText(
+            R.string.forgetPassword
+        )
+
+
+
+        // Text color
+        textViewForgetPas.setTextColor(
+            Application.color(
+                R.color.accentColor
+            )
+        )
+
+
+
+        // Font
+        textViewForgetPas.typeface = Application.font(
+            R.font.open_sans_bold,
+            context
+        )
+
+
+
 
         // Style
         val fieldColor2 = Application.color(
@@ -90,10 +116,13 @@ class LoginFragment
             heightField
         )
 
+
+
+
+
         // Bounds
         layout.boundsFrame(
-            Gravity.CENTER,
-            bottom = heightContent * 0.1f
+            Gravity.CENTER
         )
         textViewBack.boundsLinear(
             Gravity.CENTER_HORIZONTAL
@@ -101,7 +130,8 @@ class LoginFragment
         mTextFieldEmail.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             width = widthField,
-            height = heightField
+            height = heightField,
+            top = measureUnit * 0.099f
         )
         mTextFieldPassword.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
@@ -111,8 +141,13 @@ class LoginFragment
         )
         btnLogin.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
-            width = widthField,
-            height = heightField
+            width = (measureUnit * 0.925f).toInt(),
+            height = (measureUnit * 0.128f).toInt(),
+            top = measureUnit * 0.111f
+        )
+        textViewForgetPas.boundsLinear(
+            Gravity.CENTER_HORIZONTAL,
+            top = measureUnit * 0.04589f
         )
 
 
@@ -131,6 +166,16 @@ class LoginFragment
         layout.addView(
             btnLogin
         )
+        layout.addView(
+            textViewForgetPas
+        )
+
+        layout.post {
+            layout.boundsFrame(
+                Gravity.CENTER,
+                bottom = layout.height * 0.189f
+            )
+        }
 
         return layout
     }

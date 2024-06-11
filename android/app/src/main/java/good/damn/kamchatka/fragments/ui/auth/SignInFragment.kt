@@ -2,7 +2,6 @@ package good.damn.kamchatka.fragments.ui.auth
 
 import android.content.Context
 import android.os.Bundle
-import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -96,7 +95,7 @@ class SignInFragment
             context,
             measureUnit
         )
-        val btnLogin = ButtonRound.createDefault(
+        val btnSignIn = ButtonRound.createDefault(
             context,
             heightBtnLogin,
             textId = R.string.sign_in,
@@ -219,7 +218,7 @@ class SignInFragment
             measureUnit * 0.03f
         )
         textViewHaveAccount.setTextPx(
-            btnLogin.textSize
+            btnSignIn.textSize
         )
 
         // Text
@@ -244,7 +243,7 @@ class SignInFragment
             Gravity.CENTER_HORIZONTAL,
             top = 0.099f * measureUnit
         )
-        btnLogin.boundsLinear(
+        btnSignIn.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             width = (measureUnit * 0.925f).toInt(),
             top = measureUnit * 0.10149f,
@@ -288,13 +287,13 @@ class SignInFragment
             textViewPolicy
         )
         layout.addView(
-            btnLogin
+            btnSignIn
         )
         layout.addView(
             textViewHaveAccount
         )
 
-        btnLogin.setOnClickListener(
+        btnSignIn.setOnClickListener(
             this::onClickBtnLogIn
         )
         textViewHaveAccount.setOnClickListener(
