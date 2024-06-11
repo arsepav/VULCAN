@@ -8,12 +8,14 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.ColorInt
+import androidx.annotation.StringRes
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.fragments.StackFragment
 import good.damn.kamchatka.fragments.ui.MainNavigationFragment
+import good.damn.kamchatka.utils.StyleUtils
 import good.damn.kamchatka.utils.ViewUtils
 import good.damn.kamchatka.views.button.ButtonRound
 import good.damn.kamchatka.views.text_fields.TextFieldRound
@@ -51,10 +53,8 @@ class SignInFragment
         measureUnit: Int
     ): View {
 
-        val widthField = (measureUnit * 0.816f)
-            .toInt()
-        val heightField = (measureUnit * 0.1135f)
-            .toInt()
+        val widthField = measureUnit * 0.816f
+        val heightField = measureUnit * 0.1135f
         val heightBtnLogin = (measureUnit * 0.128f)
             .toInt()
 
@@ -63,8 +63,10 @@ class SignInFragment
         val layout = LinearLayout(
             context
         )
-        val textViewLetSign = TextView(
-            context
+        val textViewLetSign = ViewUtils.titleBig(
+            context,
+            R.string.let_sign_in,
+            measureUnit
         )
         mEditTextLastName = TextFieldRound(
             context
@@ -107,10 +109,6 @@ class SignInFragment
             .VERTICAL
 
         // Fonts
-        textViewLetSign.typeface = Application.font(
-            R.font.open_sans_extra_bold,
-            context
-        )
         textViewPasswordInfo.typeface = Application.font(
             R.font.nunito_regular,
             context
@@ -136,11 +134,6 @@ class SignInFragment
         )
         val fieldColor3 = Application.color(
             R.color.signInStrokeColor3
-        )
-        textViewLetSign.setTextColor(
-            Application.color(
-                R.color.titleColor
-            )
         )
         btnLogin.setBackgroundColor(
             Application.color(
@@ -172,6 +165,7 @@ class SignInFragment
         val offsetPart = 0.055f * measureUnit
         styleTextFieldRound(
             mEditTextLastName,
+            R.string.lastName,
             fieldColor,
             heightField,
             widthField,
@@ -179,6 +173,7 @@ class SignInFragment
         )
         styleTextFieldRound(
             mEditTextFirstName,
+            R.string.firstName,
             fieldColor,
             heightField,
             widthField,
@@ -186,6 +181,7 @@ class SignInFragment
         )
         styleTextFieldRound(
             mEditTextSecondName,
+            R.string.secondName,
             fieldColor,
             heightField,
             widthField,
@@ -193,6 +189,7 @@ class SignInFragment
         )
         styleTextFieldRound(
             mEditTextTelephone,
+            R.string.telephone,
             fieldColor2,
             heightField,
             widthField,
@@ -200,6 +197,7 @@ class SignInFragment
         )
         styleTextFieldRound(
             mEditTextEmail,
+            R.string.email,
             fieldColor2,
             heightField,
             widthField,
@@ -207,6 +205,7 @@ class SignInFragment
         )
         styleTextFieldRound(
             mEditTextPassword,
+            R.string.password,
             fieldColor3,
             heightField,
             widthField,
@@ -214,6 +213,7 @@ class SignInFragment
         )
         styleTextFieldRound(
             mEditTextPasswordRepeat,
+            R.string.passwordRepeat,
             fieldColor3,
             heightField,
             widthField,
@@ -221,16 +221,9 @@ class SignInFragment
         )
 
 
-        // Gravity
-        textViewLetSign.gravity = Gravity
-            .CENTER_HORIZONTAL
-
 
 
         // TextSize
-        textViewLetSign.setTextPx(
-            measureUnit * 0.0676f
-        )
         textViewPasswordInfo.setTextPx(
             measureUnit * 0.03f
         )
@@ -246,32 +239,8 @@ class SignInFragment
 
 
         // Text
-        textViewLetSign.setText(
-            R.string.let_sign_in
-        )
-        mEditTextLastName.setHint(
-            R.string.lastName
-        )
-        mEditTextFirstName.setHint(
-            R.string.firstName
-        )
-        mEditTextSecondName.setHint(
-            R.string.secondName
-        )
-        mEditTextTelephone.setHint(
-            R.string.telephone
-        )
-        mEditTextEmail.setHint(
-            R.string.email
-        )
-        mEditTextPassword.setHint(
-            R.string.password
-        )
         textViewPasswordInfo.setText(
             R.string.latin_spells_numbers
-        )
-        mEditTextPasswordRepeat.setHint(
-            R.string.passwordRepeat
         )
         btnLogin.setText(
             R.string.sign_in
@@ -284,25 +253,25 @@ class SignInFragment
         // LinearLayout params
         textViewLetSign.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
-            top = (0.082f * measureUnit).toInt()
+            top = 0.082f * measureUnit
         )
         textViewPasswordInfo.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
-            top = (0.01932f * measureUnit).toInt()
+            top = 0.01932f * measureUnit
         )
         textViewPolicy.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
-            top = (0.099f * measureUnit).toInt()
+            top = 0.099f * measureUnit
         )
         btnLogin.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             width = (measureUnit * 0.925f).toInt(),
-            top = (measureUnit * 0.10149f).toInt(),
+            top = measureUnit * 0.10149f,
             height = heightBtnLogin
         )
         textViewHaveAccount.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
-            top = (measureUnit * 0.04589f).toInt()
+            top = measureUnit * 0.04589f
         )
 
 
@@ -358,49 +327,22 @@ class SignInFragment
 
 private fun SignInFragment.styleTextFieldRound(
     field: TextFieldRound,
+    @StringRes hintId: Int,
     @ColorInt strokeColor: Int,
-    heightField: Int,
-    widthField: Int,
+    heightField: Float,
+    widthField: Float,
     topMargin: Float
 ) {
-    field.cornerRadius = heightField * 0.5f
-    field.setStrokeColor(
-        strokeColor
+    StyleUtils.textFieldRoundAuth(
+        field,
+        hintId,
+        strokeColor,
+        heightField.toInt()
     )
-    field.setStrokeWidth(
-        heightField * 0.042f
-    )
-
-    field.typeface = context?.let {
-        Application.font(
-            R.font.open_sans_semi_bold,
-            it
-        )
-    }
-
-    field.setTextPx(
-        heightField * 0.319f
-    )
-
-    field.gravity = Gravity
-        .CENTER_HORIZONTAL
-
-    field.setTextColor(
-        Application.color(
-            R.color.accentColor
-        )
-    )
-
-    field.setHintTextColor(
-        Application.color(
-            R.color.accentColor30
-        )
-    )
-
     field.boundsLinear(
         Gravity.CENTER_HORIZONTAL,
-        width = widthField,
-        top = topMargin.toInt()
+        width = widthField.toInt(),
+        top = topMargin
     )
 }
 

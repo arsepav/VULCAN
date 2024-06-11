@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsFrame
@@ -39,7 +38,7 @@ abstract class LoginBaseFragment
             width
         )
 
-        val contentView = onCreateContentView(
+        val contentView = onCreateContentFrameView(
             context,
             measureUnit
         )
@@ -92,7 +91,7 @@ abstract class LoginBaseFragment
         view: View
     )
 
-    abstract fun onCreateContentView(
+    abstract fun onCreateContentFrameView(
         context: Context,
         measureUnit: Int
     ): View

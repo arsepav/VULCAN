@@ -8,8 +8,8 @@ fun View.boundsLinear(
     gravity: Int = Gravity.NO_GRAVITY,
     width: Int = -2,
     height: Int = -2,
-    top: Int = 0,
-    left: Int = 0
+    top: Float = 0f,
+    left: Float = 0f
 ) {
     val params = LinearLayout
         .LayoutParams(
@@ -17,8 +17,8 @@ fun View.boundsLinear(
             height
         )
     params.gravity = gravity
-    params.topMargin = top
-    params.leftMargin = left
+    params.topMargin = top.toInt()
+    params.leftMargin = left.toInt()
     layoutParams = params
 }
 

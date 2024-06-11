@@ -27,4 +27,5 @@
     </string-array>
     <string name="INTERESTING_FACT">ИНТЕРЕСНЫЙ ФАКТ</string>
     <string name="latin_spells_numbers">Латинские символы, цифры, знак подчеркивания</string>
+    <string name="youAreBack">С возвращением в\nЗелёную Кнопку!</string>
 </resources>

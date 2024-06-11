@@ -191,29 +191,25 @@ class SplashFragment
             Gravity.CENTER_HORIZONTAL,
             width = appIconSize,
             height = appIconSize,
-            top = (Application.HEIGHT * 0.111f)
-                .toInt()
+            top = Application.HEIGHT * 0.111f
         )
         textViewAppName.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
-            top = (Application.HEIGHT * 0.016f)
-                .toInt()
+            top = Application.HEIGHT * 0.016f
         )
         textViewPowered.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
-            top = (Application.HEIGHT * 0.011f).toInt()
+            top = Application.HEIGHT * 0.011f
         )
         textViewFact.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             width = (measureUnit * 0.773f)
                 .toInt(),
-            top = (Application.HEIGHT * 0.071f)
-                .toInt()
+            top = Application.HEIGHT * 0.071f
         )
         textViewFactLabel.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
-            top = (Application.HEIGHT * 0.016f)
-                .toInt()
+            top = Application.HEIGHT * 0.016f
         )
 
 
