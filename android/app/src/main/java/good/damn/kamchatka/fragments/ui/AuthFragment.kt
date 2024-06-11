@@ -34,10 +34,15 @@ class AuthFragment
     private lateinit var mEditTextPassword: TextFieldRound
     private lateinit var mEditTextPasswordRepeat: TextFieldRound
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?
+    ) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.window?.navigationBarColor = Application.color(
-            R.color.background
+        navigationBarColor(
+            Application.color(
+                R.color.background
+            )
         )
     }
 

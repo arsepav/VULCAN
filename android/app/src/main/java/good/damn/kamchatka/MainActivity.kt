@@ -19,9 +19,6 @@ ViewTreeObserver.OnGlobalLayoutListener {
 
     private lateinit var mContainer: FrameLayout
 
-    private var mNavigationBarColor = Color.WHITE
-    private var mStatusBarColor = Color.WHITE
-
     override fun onCreate(
         savedInstanceState: Bundle?
     ) {
@@ -29,11 +26,17 @@ ViewTreeObserver.OnGlobalLayoutListener {
             savedInstanceState
         )
 
-        mNavigationBarColor = Application.color(
-            R.color.background
+        setNavigationBarColor(
+            Application.color(
+                R.color.background
+            )
         )
 
-        mStatusBarColor = mNavigationBarColor
+        setStatusBarColor(
+            Application.color(
+                R.color.background
+            )
+        )
 
         val context = this
 
@@ -92,9 +95,6 @@ ViewTreeObserver.OnGlobalLayoutListener {
         wic.isAppearanceLightStatusBars = true
         wic.isAppearanceLightNavigationBars = true
 
-        window.statusBarColor = mStatusBarColor
-        window.navigationBarColor = mNavigationBarColor
-
         super.onWindowFocusChanged(hasFocus)
     }
 
@@ -125,11 +125,16 @@ ViewTreeObserver.OnGlobalLayoutListener {
             .commit()
     }
 
+    fun setStatusBarColor(
+        @ColorInt color: Int
+    ) {
+        window.statusBarColor = color
+    }
+
     fun setNavigationBarColor(
         @ColorInt color: Int
     ) {
-        mNavigationBarColor = color
-        window.decorView.requestFocus()
+        window.navigationBarColor = color
     }
 
 }

@@ -51,6 +51,14 @@ abstract class StackFragment
         )
     }
 
+    fun statusBarColor(
+        @ColorInt color: Int
+    ) {
+        mainActivity().setStatusBarColor(
+            color
+        )
+    }
+
     fun navigationBarColor(
         @ColorInt color: Int
     ) {
