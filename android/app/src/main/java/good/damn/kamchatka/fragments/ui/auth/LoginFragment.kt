@@ -13,6 +13,7 @@ import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.fragments.StackFragment
 import good.damn.kamchatka.utils.StyleUtils
 import good.damn.kamchatka.utils.ViewUtils
+import good.damn.kamchatka.views.button.ButtonRound
 import good.damn.kamchatka.views.text_fields.TextFieldRound
 import good.damn.kamchatka.views.text_fields.TextFieldRoundPassword
 
@@ -51,11 +52,25 @@ class LoginFragment
         mTextFieldPassword = TextFieldRoundPassword(
             context
         )
+        val btnLogin = ButtonRound.createDefault(
+            context,
+            heightField,
+            textId = R.string.log_in,
+            textColorId = R.color.textColorBtn,
+            backgroundColorId = R.color.accentColor
+        )
+
+
 
         // Orientation
         layout.orientation = LinearLayout
             .VERTICAL
 
+
+        // Text
+        btnLogin.setText(
+            R.string.log_in
+        )
 
         // Style
         val fieldColor2 = Application.color(
@@ -94,6 +109,11 @@ class LoginFragment
             height = heightField,
             top = offsetBetween
         )
+        btnLogin.boundsLinear(
+            Gravity.CENTER_HORIZONTAL,
+            width = widthField,
+            height = heightField
+        )
 
 
 
@@ -107,6 +127,9 @@ class LoginFragment
         )
         layout.addView(
             mTextFieldPassword
+        )
+        layout.addView(
+            btnLogin
         )
 
         return layout

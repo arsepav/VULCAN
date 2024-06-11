@@ -96,8 +96,12 @@ class SignInFragment
             context,
             measureUnit
         )
-        val btnLogin = ButtonRound(
-            context
+        val btnLogin = ButtonRound.createDefault(
+            context,
+            heightBtnLogin,
+            textId = R.string.sign_in,
+            textColorId = R.color.textColorBtn,
+            backgroundColorId = R.color.titleColor
         )
         val textViewHaveAccount = TextView(
             context
@@ -108,13 +112,11 @@ class SignInFragment
         layout.orientation = LinearLayout
             .VERTICAL
 
+
+
         // Fonts
         textViewPasswordInfo.typeface = Application.font(
             R.font.nunito_regular,
-            context
-        )
-        btnLogin.typeface = Application.font(
-            R.font.open_sans_bold,
             context
         )
         textViewHaveAccount.typeface = Application.font(
@@ -135,17 +137,6 @@ class SignInFragment
         val fieldColor3 = Application.color(
             R.color.signInStrokeColor3
         )
-        btnLogin.setBackgroundColor(
-            Application.color(
-                R.color.titleColor
-            )
-        )
-        btnLogin.setTextColor(
-            Application.color(
-                R.color.textColorBtn
-            )
-        )
-
         textViewPasswordInfo.setTextColor(
             Application.color(
                 R.color.largeTextColor
@@ -227,23 +218,13 @@ class SignInFragment
         textViewPasswordInfo.setTextPx(
             measureUnit * 0.03f
         )
-        btnLogin.setTextPx(
-            heightBtnLogin * 0.283f
-        )
         textViewHaveAccount.setTextPx(
             btnLogin.textSize
         )
 
-        // Corners
-        btnLogin.cornerRadius = heightBtnLogin * 0.5f
-
-
         // Text
         textViewPasswordInfo.setText(
             R.string.latin_spells_numbers
-        )
-        btnLogin.setText(
-            R.string.sign_in
         )
         textViewHaveAccount.setText(
             R.string.have_an_account

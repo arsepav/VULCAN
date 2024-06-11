@@ -6,7 +6,12 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
+import androidx.annotation.ColorRes
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatButton
+import good.damn.kamchatka.Application
+import good.damn.kamchatka.R
+import good.damn.kamchatka.extensions.setTextPx
 
 class ButtonRound(
     context: Context
@@ -45,5 +50,48 @@ class ButtonRound(
             mPaint
         )
         super.onDraw(canvas)
+    }
+
+    companion object {
+        fun createDefault(
+            context: Context,
+            heightBtn: Int,
+            @StringRes textId: Int,
+            @ColorRes textColorId: Int,
+            @ColorRes backgroundColorId: Int
+        ): ButtonRound {
+            val btnRound = ButtonRound(
+                context
+            )
+
+            btnRound.setTextColor(
+                Application.color(
+                    textColorId
+                )
+            )
+
+            btnRound.setText(
+                textId
+            )
+
+            btnRound.setTextPx(
+                heightBtn * 0.283f
+            )
+
+            btnRound.typeface = Application.font(
+                R.font.open_sans_bold,
+                context
+            )
+
+            btnRound.setBackgroundColor(
+                Application.color(
+                    backgroundColorId
+                )
+            )
+
+            btnRound.cornerRadius = heightBtn * 0.5f
+
+            return btnRound
+        }
     }
 }

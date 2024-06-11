@@ -4,15 +4,16 @@ import android.content.Context
 import android.view.Gravity
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.setTextPx
+import good.damn.kamchatka.views.button.ButtonRound
 import good.damn.kamchatka.views.text_fields.TextFieldRound
 
 class ViewUtils {
    companion object {
-
        fun policyTerms(
            context: Context,
            measureUnit: Int
