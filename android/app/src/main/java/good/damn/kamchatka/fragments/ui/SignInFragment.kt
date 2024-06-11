@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
 import android.view.View
-import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.ColorInt
@@ -16,10 +15,9 @@ import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.fragments.StackFragment
 import good.damn.kamchatka.utils.ViewUtils
 import good.damn.kamchatka.views.button.ButtonRound
-import good.damn.kamchatka.views.text_fields.TextField
 import good.damn.kamchatka.views.text_fields.TextFieldRound
 
-class AuthFragment
+class SignInFragment
 : StackFragment() {
 
     companion object {
@@ -356,7 +354,7 @@ class AuthFragment
 
 }
 
-private fun AuthFragment.styleTextFieldRound(
+private fun SignInFragment.styleTextFieldRound(
     field: TextFieldRound,
     @ColorInt strokeColor: Int,
     heightField: Int,
@@ -404,7 +402,7 @@ private fun AuthFragment.styleTextFieldRound(
     )
 }
 
-private fun AuthFragment.onClickBtnLogIn(
+private fun SignInFragment.onClickBtnLogIn(
     view: View
 ) {
     pushFragment(

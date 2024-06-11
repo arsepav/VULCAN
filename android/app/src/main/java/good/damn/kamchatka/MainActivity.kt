@@ -1,6 +1,5 @@
 package good.damn.kamchatka
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver
@@ -9,8 +8,7 @@ import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowInsetsControllerCompat
 import good.damn.kamchatka.fragments.StackFragment
-import good.damn.kamchatka.fragments.ui.AuthFragment
-import good.damn.kamchatka.fragments.ui.MainNavigationFragment
+import good.damn.kamchatka.fragments.ui.SignInFragment
 import good.damn.kamchatka.fragments.ui.SplashFragment
 
 class MainActivity
@@ -63,7 +61,7 @@ ViewTreeObserver.OnGlobalLayoutListener {
         val splashFragment = SplashFragment()
         splashFragment.onEndAnimation = {
             pushFragment(
-                AuthFragment()
+                SignInFragment()
             )
             removeFragment(splashFragment)
         }
