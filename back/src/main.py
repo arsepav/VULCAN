@@ -14,6 +14,7 @@ import shutil
 from typing import List
 from .processing import null_to_empty, wkb_element_to_wkt
 from typing import List, Optional
+from fastapi.staticfiles import StaticFiles
 
 models.Base.metadata.create_all(bind=database.engine)
 
@@ -21,6 +22,7 @@ with open('config.json') as f:
     d = json.load(f)
 
 templates = Jinja2Templates(directory='../front')
+
 
 UPLOAD_DIRECTORY = d['upload_dir']
 
@@ -34,7 +36,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
+app.mount("/static", StaticFiles(directory="../static"), name="static")
 @app.post("/register", response_model=schemas.UserResponse)
 def register_user(user: schemas.UserCreate, db: Session = Depends(auth.get_db)):
     users = db.query(models.User).where(models.User.username == user.username).all()
@@ -150,12 +152,23 @@ async def get_login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request, 'ip': ip})
 
 
+@app.get("/", response_class=HTMLResponse)
+async def get_map_page(request: Request, current_user: schemas.UserResponse = Depends(auth.get_current_user_cookie)):
+    if not current_user:
+        return RedirectResponse(url="/login")
+    return templates.TemplateResponse("home.html", {"request": request, "ip": d['ip']})
+
 @app.get("/map", response_class=HTMLResponse)
 async def get_map_page(request: Request, current_user: schemas.UserResponse = Depends(auth.get_current_user_cookie)):
     if not current_user:
         return RedirectResponse(url="/login")
     return templates.TemplateResponse("map.html", {"request": request, "ip": d['ip']})
 
+@app.get("/map_oopt", response_class=HTMLResponse)
+async def get_map_page(request: Request, current_user: schemas.UserResponse = Depends(auth.get_current_user_cookie)):
+    if not current_user:
+        return RedirectResponse(url="/login")
+    return templates.TemplateResponse("map_oopt.html", {"request": request, "ip": d['ip']})
 
 @app.get("/map_objects_creation", response_class=HTMLResponse)
 async def get_map_page(request: Request, current_user: schemas.UserResponse = Depends(auth.get_current_user_cookie)):
@@ -415,25 +428,30 @@ def create_ecology_problem(problem: schemas.EcologyProblemCreate, db: Session = 
     return new_problem
 
 
-@app.get("/ecology_problems", response_model=List[schemas.EcologyProblemResponse])
+@app.get("/ecology_problems", response_model=List[schemas.EcologyProblemResponseExt])
 def get_ecology_problems(
         category_id: Optional[int] = Query(None),
         state_id: Optional[int] = Query(None),
         db: Session = Depends(database.get_db)
 ):
-    query = db.query(models.EcologyProblems)
+    query = db.query(models.EcologyProblems, models.EcologyProblemStates.name, models.EcologyProblemCategories.name)
 
     if category_id is not None:
         query = query.filter(models.EcologyProblems.category_id == category_id)
     if state_id is not None:
         query = query.filter(models.EcologyProblems.state_id == state_id)
 
-    problems = query.all()
+    problems = query.join(models.EcologyProblemStates).join(models.EcologyProblemCategories).all()
+
 
     for i in range(len(problems)):
-        problems[i] = problems[i].__dict__
+        s = problems[i][1]
+        c = problems[i][2]
+        problems[i] = problems[i][0].__dict__
         problems[i]['geom'] = wkb_element_to_wkt(problems[i]['geom'])
         problems[i]['image_url'] = f"http://{d['ip']}:8000/downloadfile/{problems[i]['file_id']}"
+        problems[i]['state'] = s
+        problems[i]['category'] = c
 
     return problems
 
@@ -519,3 +537,39 @@ def get_oopt_objects(oopt_id: Optional[int] = None, db: Session = Depends(databa
         objects[i]['geom'] = wkb_element_to_wkt(objects[i]['geom'])
         objects[i]['image_url'] = f"http://{d['ip']}:8000/downloadfile/{objects[i]['file_id']}"
     return objects
+
+
+@app.get("/oopt_load/", response_model=schemas.OOPTLoad)
+def get_oopt_objects(oopt_id: int, date: str, db: Session = Depends(database.get_db)):
+    objects = db.query(models.OOPTObjects).where(models.OOPTObjects.oopt_id == oopt_id).all()
+
+    target_date = datetime.strptime(date, '%Y-%m-%d')
+
+    s = 0
+
+    for obj in objects:
+        s += obj.area / obj.person_area * obj.Rf_coefficient * obj.t_coefficient
+
+    max_date = target_date + timedelta(days=3)
+    min_date = target_date - timedelta(days=4)
+
+    visits = (db.query(models.VisitPermissionIndividual)
+              .where(models.VisitPermissionIndividual.reviewed)
+              .where(models.VisitPermissionIndividual.approved)
+              .where(models.VisitPermissionIndividual.arrival_date <= max_date)
+              .where(models.VisitPermissionIndividual.arrival_date >= min_date)
+              .join(models.GeoPaths)
+              .join(models.GeoPolygons)
+              .where(models.GeoPolygons.id == oopt_id)
+              .all()
+              )
+
+    print(s, len(visits))
+
+    k = 2.5
+
+    return {
+        'id': oopt_id,
+        'load_coef': len(visits) * k / s
+    }
+

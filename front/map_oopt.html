@@ -3,24 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Map with Polygons</title>
+    <title>Карта ООПТ</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
-    <style>
-        #map {
-            height: 700px;
-            width: 100%;
-        }
-    </style>
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-    <h1>Map with Polygons</h1>
+    
+
+    <div id="control-panel">
+        <h2>Добавить ООПТ</h2>
+        <label for="polygon-name">Наз</label>
+        <input type="text" id="polygon-name">
+        <label for="polygon-description">Описение</label>
+        <textarea id="polygon-description"></textarea>
+        <button id="save-polygon">Сохранить</button>
+    </div>
+
     <div id="map"></div>
-    <button id="save-polygon">Save Polygon</button>
+
+    <div id="navigation-panel">
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/'">
+            <img src="http://91.224.86.144:8000/downloadfile/49" alt="Icon 1">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/map'">
+            <img src="http://91.224.86.144:8000/downloadfile/51" alt="Icon 2">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/map_objects_creation'">
+            <img src="http://91.224.86.144:8000/downloadfile/50" alt="Icon 3">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/ecology_problems_list_viewer'">
+            <img src="http://91.224.86.144:8000/downloadfile/55" alt="Icon 4">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/ecology_problems_viewer'">
+            <img src="http://91.224.86.144:8000/downloadfile/52" alt="Icon 5">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/permission_approve_page'">
+            <img src="http://91.224.86.144:8000/downloadfile/48" alt="Icon 6">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/map_oopt'" style="background-color: rgba(173, 173, 173, 0.295); border-radius: 10px;">
+            <img src="http://91.224.86.144:8000/downloadfile/54" alt="Icon 7">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/upload_file_page'">
+            <img src="http://91.224.86.144:8000/downloadfile/54" alt="Icon 8">
+        </button>
+    </div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
         // Initialize the map
-        var map = L.map('map').setView([55.914298, 158.918540], 13);
+        var map = L.map('map').setView([55.914298, 158.918540], 6);
 
         // Add OpenStreetMap tiles
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -75,9 +106,9 @@
 
         // Function to save the polygon
         async function savePolygon() {
-            const name = prompt("Enter the name of the polygon:");
-            const description = prompt("Enter a description for the polygon:");
-            const category_id = prompt("Enter the category ID for the polygon:");
+            const name = document.getElementById("polygon-name").value;
+            const description = document.getElementById("polygon-description").value;
+            const category_id = 1;
 
             if (!name || !description || !category_id) {
                 alert("All fields are required!");
@@ -91,7 +122,7 @@
                     coordinates: [polygonPoints]
                 },
                 description: description,
-                category_id: parseInt(category_id)
+                category_id: 1
             };
 
             const response = await fetch("http://{{ ip }}:8000/add_polygon", {

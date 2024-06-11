@@ -3,36 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Authorization Demo</title>
+    <title>Авторизация</title>
     <style>
-        #logout, #protected-content {
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            padding: 10px;
+        }
+        h1 {
+            width: 100%;
+            text-align: center;
+            color: #333;
+        }
+        #message {
+            color: red;
+            margin-bottom: 10px;
+        }
+        #login-form, #protected-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="password"] {
+            width: 75%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        a {
+            margin-top: 20px;
+            display: block;
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        #logout {
+            display: none;
+            background-color: #f44336;
+        }
+        #logout:hover {
+            background-color: #e53935;
+        }
+        #protected-content {
             display: none;
         }
     </style>
 </head>
 <body>
-    <h1>Authorization Demo</h1>
+    <h1>Авторизация</h1>
     <div id="message"></div>
 
     <div id="login-form">
-        <label for="username">Username:</label>
+        <label for="username">Имя пользователя:</label>
         <input type="text" id="username" name="username" required>
-        <br>
-        <label for="password">Password:</label>
+        <label for="password">Пароль:</label>
         <input type="password" id="password" name="password" required>
         <br>
-        <button id="login">Login</button>
+        <button id="login">Войти</button>
     </div>
 
-    <button id="logout">Logout</button>
-
-    <div id="protected-content">
-        <h2>Protected Content</h2>
-        <p id="user-info"></p>
-        <button id="fetch-data">Fetch Protected Data</button>
-    </div>
-
-    <a href="/map">Карта</a>
+    <button id="logout">Выйти</button>
 
     <script>
         const apiBase = 'http://{{ ip }}:8000'; // URL вашего API
@@ -63,6 +124,8 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
+            console.log(username, password)
+
             try {
                 const response = await fetch(`${apiBase}/token`, {
                     method: 'POST',
@@ -71,13 +134,14 @@
                     },
                     body: JSON.stringify({ username, password })
                 });
+                console.log(response)
                 if (response.ok) {
+                    console.log("okokok")
                     const data = await response.json();
                     accessToken = data.access_token;
                     localStorage.setItem('access_token', accessToken);
                     document.getElementById('logout').style.display = 'inline';
                     document.getElementById('login-form').style.display = 'none';
-                    document.getElementById('protected-content').style.display = 'block';
                     document.getElementById('message').innerText = 'Login successful';
                 } else {
                     document.getElementById('message').innerText = 'Login failed';

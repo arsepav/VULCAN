@@ -8,7 +8,8 @@ with open('config.json') as f:
 
 DATABASE_URL = d['connection_string']
 
-engine = create_engine(DATABASE_URL)
+engine = create_engine(DATABASE_URL, pool_size=40)
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 metadata = MetaData()

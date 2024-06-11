@@ -174,6 +174,13 @@ class EcologyProblemResponse(BaseModel):
         orm_mode = True
 
 
+class EcologyProblemResponseExt(EcologyProblemResponse):
+    state: str
+    category: str
+
+    class Config:
+        orm_mode = True
+
 class EcologyProblemCategory(BaseModel):
     id: int
     name: str
@@ -256,5 +263,11 @@ class OOPTObjectsCreate(BaseModel):
     Rf_coefficient: float
     t_coefficient: float
 
+class OOPTLoad(BaseModel):
+    id: int
+    load_coef: float
 
+class PathLoad(BaseModel):
+    id: int
+    load_coef: float
 

@@ -84,16 +84,49 @@
             border-radius: 5px;
             border: 1px solid #ccc;
         }
+        #navigation-panel {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 75px;
+            height: 100%;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 0;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .nav-button {
+            background: none;
+            padding: 15px;
+            border: none;
+            margin: 10px 0;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .nav-button img {
+            width: 30px;
+            height: 30px;
+        }
+
+        .nav-button:hover img {
+            opacity: 0.7;
+        }
     </style>
 </head>
 <body>
+    <div style="width: 90px;"></div>
     <div class="sidebar">
-        <h1>Visit Permissions</h1>
+        <h1>Запросы на посещение</h1>
         <div class="filter-container">
-            <label for="filter-select">Filter: </label>
+            <label for="filter-select">Фильтры: </label>
             <select id="filter-select">
-                <option value="all">Show All</option>
-                <option value="not-reviewed">Not Reviewed</option>
+                <option value="all">Показать все</option>
+                <option value="not-reviewed">Не отвеченые</option>
             </select>
         </div>
         <ul class="permission-list" id="permission-list"></ul>
@@ -101,11 +134,36 @@
     <div class="content">
         <div class="permission-details" id="permission-details"></div>
         <div class="buttons">
-            <button class="button approve" id="approve-button">Approve</button>
-            <button class="button reject" id="reject-button">Reject</button>
+            <button class="button approve" id="approve-button">Разрешить</button>
+            <button class="button reject" id="reject-button">Отклонить</button>
         </div>
     </div>
-
+    <div id="navigation-panel">
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/'">
+            <img src="http://91.224.86.144:8000/downloadfile/49" alt="Icon 1">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/map'">
+            <img src="http://91.224.86.144:8000/downloadfile/51" alt="Icon 2">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/map_objects_creation'">
+            <img src="http://91.224.86.144:8000/downloadfile/50" alt="Icon 3">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/ecology_problems_list_viewer'">
+            <img src="http://91.224.86.144:8000/downloadfile/55" alt="Icon 4">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/ecology_problems_viewer'">
+            <img src="http://91.224.86.144:8000/downloadfile/52" alt="Icon 5">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/permission_approve_page'" style="background-color: rgba(173, 173, 173, 0.295); border-radius: 10px;">
+            <img src="http://91.224.86.144:8000/downloadfile/48" alt="Icon 6">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/map_oopt'">
+            <img src="http://91.224.86.144:8000/downloadfile/54" alt="Icon 7">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/upload_file_page'">
+            <img src="http://91.224.86.144:8000/downloadfile/54" alt="Icon 8">
+        </button>
+    </div>
     <script>
         document.getElementById('filter-select').addEventListener('change', fetchPermissions);
 
@@ -113,7 +171,7 @@
             const filter = document.getElementById('filter-select').value;
             const notReviewedOnly = filter === 'not-reviewed';
 
-            let url = 'http://{{ ip }}:8000/visit-permissions';
+            let url = 'http://{{ ip }}:8000/visit_permissions';
             if (notReviewedOnly) {
                 url += '?not_reviewed_only=true';
             }
@@ -147,29 +205,31 @@
                     let permission = await response.json();
                     let detailsDiv = document.getElementById('permission-details');
                     detailsDiv.innerHTML = `
-                        <h2>Permission Details</h2>
-                        <p><strong>Arrival Date:</strong> ${permission.arrival_date}</p>
-                        <p><strong>Surname:</strong> ${permission.surname}</p>
-                        <p><strong>Name:</strong> ${permission.name}</p>
-                        <p><strong>Lastname:</strong> ${permission.lastname}</p>
-                        <p><strong>Birthday:</strong> ${permission.birthday}</p>
-                        <p><strong>Citizenship:</strong> ${permission.citizenship}</p>
-                        <p><strong>Gender:</strong> ${permission.isMale ? 'Male' : 'Female'}</p>
-                        <p><strong>Passport:</strong> ${permission.passport}</p>
+                        <h2>Детали запроса:</h2>
+                        <p><strong>Дата прибытия:</strong> ${permission.arrival_date}</p>
+                        <p><strong>Фамилия:</strong> ${permission.surname}</p>
+                        <p><strong>Имя:</strong> ${permission.name}</p>
+                        <p><strong>Отчество:</strong> ${permission.lastname}</p>
+                        <p><strong>Дата рождения:</strong> ${permission.birthday}</p>
+                        <p><strong>Гражданство:</strong> ${permission.citizenship_country}</p>
+                        <p><strong>Пол:</strong> ${permission.isMale ? 'Male' : 'Female'}</p>
+                        <p><strong>Паспорт:</strong> ${permission.passport}</p>
                         <p><strong>Email:</strong> ${permission.email}</p>
-                        <p><strong>Phone Number:</strong> ${permission.phone_number}</p>
-                        <p><strong>Path ID:</strong> ${permission.path_id}</p>
-                        <p><strong>One Day Only:</strong> ${permission.is_one_day_only}</p>
-                        <p><strong>Purpose Skis:</strong> ${permission.purpose_skis}</p>
-                        <p><strong>Purpose Sport:</strong> ${permission.purpose_sport}</p>
-                        <p><strong>Purpose Science:</strong> ${permission.purpose_science}</p>
-                        <p><strong>Purpose Photo/Video:</strong> ${permission.purpose_photo_video}</p>
-                        <p><strong>Purpose Mountaineering:</strong> ${permission.purpose_mountaineering}</p>
-                        <p><strong>Purpose Another:</strong> ${permission.purpose_another}</p>
-                        <p><strong>Photo/Video Professional:</strong> ${permission.photo_video_professional}</p>
-                        <p><strong>Photo/Video Drones:</strong> ${permission.photo_video_drones}</p>
-                        <p><strong>Reviewed:</strong> ${permission.reviewed}</p>
-                        <p><strong>Approved:</strong> ${permission.approved}</p>
+                        <p><strong>Номер телефона:</strong> ${permission.phone_number}</p>
+                        <p><strong>Путь:</strong> ${permission.path}</p>
+                        <br>
+                        <b>Цель посещения:</b><br>
+                        <p><strong>Однодневное посещение:</strong> ${permission.is_one_day_only}</p>
+                        <p><strong>Лыжный туризм:</strong> ${permission.purpose_skis}</p>
+                        <p><strong>Спортивные мероприятия:</strong> ${permission.purpose_sport}</p>
+                        <p><strong>Научные исследования:</strong> ${permission.purpose_science}</p>
+                        <p><strong>Видео/фотосъемка:</strong> ${permission.purpose_photo_video}</p>
+                        <p><strong>Альпинизм:</strong> ${permission.purpose_mountaineering}</p>
+                        <p><strong>Другое:</strong> ${permission.purpose_another}</p>
+                        <p><strong>Проведение профессиональной фото/видеоcъемки:</strong> ${permission.photo_video_professional}</p>
+                        <p><strong>Съемка с использование БПЛА:</strong> ${permission.photo_video_drones}</p>
+                        <p><strong>Рассмотрено:</strong> ${permission.reviewed}</p>
+                        <p><strong>Одобрено:</strong> ${permission.approved}</p>
                     `;
                     detailsDiv.style.display = 'block';
 
@@ -194,10 +254,10 @@
                 });
 
                 if (response.ok) {
-                    alert('Permission updated successfully');
+                    alert('Разрешение обновлено');
                     fetchPermissions();
                 } else {
-                    alert('Failed to update permission');
+                    alert('Ошибка');
                 }
             } catch (error) {
                 console.error('Error:', error);

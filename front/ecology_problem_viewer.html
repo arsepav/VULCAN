@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ecology Problems Map</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <link rel="stylesheet" href="/static/styles.css">
     <style>
         body, html {
             height: 100%;
@@ -21,7 +22,7 @@
         #info-panel {
             position: absolute;
             top: 50%;
-            left: 10px;
+            left: 90px;
             width: 300px;
             background: rgba(255, 255, 255, 0.9);
             padding: 10px;
@@ -52,6 +53,32 @@
         <p id="problem-description"></p>
         <img id="problem-image" src="" alt="Problem Image">
         <a id="info-link" href="#" target="_blank">View More Details</a>
+    </div>
+    <div id="navigation-panel">
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/map'">
+            <img src="http://91.224.86.144:8000/downloadfile/49" alt="Icon 1">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/map'">
+            <img src="http://91.224.86.144:8000/downloadfile/51" alt="Icon 2">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/map_objects_creation'">
+            <img src="http://91.224.86.144:8000/downloadfile/50" alt="Icon 3">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/ecology_problems_list_viewer'">
+            <img src="http://91.224.86.144:8000/downloadfile/55" alt="Icon 4">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/ecology_problems_viewer'" style="background-color: rgba(173, 173, 173, 0.295); border-radius: 10px;">
+            <img src="http://91.224.86.144:8000/downloadfile/52" alt="Icon 5">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/permission_approve_page'">
+            <img src="http://91.224.86.144:8000/downloadfile/48" alt="Icon 6">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/map_oopt'">
+            <img src="http://91.224.86.144:8000/downloadfile/54" alt="Icon 7">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/upload_file_page'">
+            <img src="http://91.224.86.144:8000/downloadfile/54" alt="Icon 8">
+        </button>
     </div>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
