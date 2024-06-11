@@ -1,5 +1,6 @@
 package good.damn.kamchatka.fragments
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -17,7 +18,7 @@ abstract class StackFragment
     companion object {
         private const val TAG = "StackFragment"
     }
-    
+
     final override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
