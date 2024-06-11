@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Home</title>
+    <style>
+        #navigation-panel {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 75px;
+            height: 100%;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 0;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .nav-button {
+            background: none;
+            padding: 15px;
+            border: none;
+            margin: 10px 0;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .nav-button img {
+            width: 30px;
+            height: 30px;
+        }
+
+        .nav-button:hover img {
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div style="display: flex; flex-direction: row;">
+        <div style="width: 150px;"></div>
+        <div>
+            <header>
+                <h1>Тут можно написать инфу о проекте</h1>
+            </header>
+            <main>
+                <h2>About the Project</h2>
+                <p>This project aims to provide a comprehensive solution for users to interact with various features such as authorization, file uploads, and map interactions.</p>
+                <p>The main features of this project include:</p>
+                <ul>
+                    <li><strong>Authorization:</strong> Users can log in and out securely, and access protected content that requires authentication.</li>
+                    <li><strong>File Upload:</strong> Users can upload files through a simple and intuitive interface.</li>
+                    <li><strong>Map Interaction:</strong> A map feature that allows users to view and interact with geographical data.</li>
+                </ul>
+                <p>We have implemented a robust authorization system to ensure that users' data is secure and only accessible to authorized individuals. The file upload functionality supports various file types and ensures smooth and efficient file handling. Our map feature provides a detailed and interactive experience for users to explore and interact with geographical information.</p>
+                <p>This project is designed with user experience in mind, featuring a clean and simple interface that is easy to navigate and use. We continuously strive to improve our features and provide the best possible service to our users.</p>
+            </main>
+        </div>
+    </div>
+    <div id="navigation-panel">
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/map'" style="background-color: rgba(173, 173, 173, 0.295); border-radius: 10px;">
+            <img src="http://91.224.86.144:8000/downloadfile/49" alt="Icon 1">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/map'">
+            <img src="http://91.224.86.144:8000/downloadfile/51" alt="Icon 2">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/map_objects_creation'">
+            <img src="http://91.224.86.144:8000/downloadfile/50" alt="Icon 3">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/ecology_problems_list_viewer'">
+            <img src="http://91.224.86.144:8000/downloadfile/55" alt="Icon 4">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/ecology_problems_viewer'">
+            <img src="http://91.224.86.144:8000/downloadfile/52" alt="Icon 5">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/permission_approve_page'">
+            <img src="http://91.224.86.144:8000/downloadfile/48" alt="Icon 6">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/map_oopt'">
+            <img src="http://91.224.86.144:8000/downloadfile/54" alt="Icon 7">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/upload_file_page'">
+            <img src="http://91.224.86.144:8000/downloadfile/54" alt="Icon 8">
+        </button>
+    </div>
+</body>
+</html>

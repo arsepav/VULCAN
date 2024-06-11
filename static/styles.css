@@ -1,0 +1,238 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+#map {
+    height: 104%;
+    width: 100%;
+    position: absolute;
+}
+
+#control-panel {
+    position: absolute;
+    left: 4%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 300px;
+    height: auto;
+    background: white;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#point-info {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    width: 200px;
+    background: white;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    border-radius: 10px;
+    display: none;
+}
+
+input[type="text"], input[type="number"], textarea {
+    width: 95%;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+textarea {
+    height: 100px;
+    resize: none;
+}
+
+textarea:focus {
+    border-color: #4CAF50;
+    outline: none;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+
+input:focus {
+    border-color: #4CAF50;
+    outline: none;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+
+button {
+    display: block;
+    width: 95%;
+    padding: 15px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#save-path {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#reset-path {
+    background-color: #f44336;
+    color: white;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+.delete-point {
+    background-color: #f44336;
+    color: white;
+}
+
+/* Navigation Panel Styles */
+#navigation-panel {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 75px;
+    height: 100%;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.nav-button {
+    background: none;
+    border: none;
+    margin: 10px 0;
+    cursor: pointer;
+    outline: none;
+}
+
+.nav-button img {
+    width: 30px;
+    height: 30px;
+}
+
+.nav-button:hover img {
+    opacity: 0.7;
+}
+
+/* Стиль для контейнера select */
+.select-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+/* Основной стиль для select */
+.select-container select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+    appearance: none; /* Убирает стандартный вид select */
+    -moz-appearance: none; /* Firefox */
+    -webkit-appearance: none; /* Chrome и Safari */
+    cursor: pointer;
+    background-color: white;
+}
+
+/* Стиль для контейнера при фокусе */
+.select-container select:focus {
+    border-color: #4CAF50;
+    outline: none;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+
+/* Иконка стрелки вниз для select */
+.select-container::after {
+    content: '▼'; /* Символ стрелки вниз */
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-size: 12px;
+    color: #333;
+}
+
+/* Стиль для опций в списке select */
+.select-container select option {
+    padding: 10px;
+    background-color: white;
+    color: #333;
+    font-size: 16px;
+}
+
+/* Стиль для опций при наведении */
+.select-container select option:hover {
+    background-color: #f1f1f1;
+}
+
+/* Стили для контейнера загрузки файла */
+.file-input-container {
+    position: relative;
+    width: 95%;
+    margin-top: 10px;
+}
+
+/* Скрытый элемент input[type="file"] */
+.file-input-container input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+
+/* Кнопка-заполнитель для input[type="file"] */
+.file-input-container label {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: white;
+    text-align: center;
+    font-size: 16px;
+    cursor: pointer;
+    z-index: 1;
+    position: relative;
+}
+
+/* Стиль при фокусе */
+.file-input-container input[type="file"]:focus + label {
+    border-color: #4CAF50;
+    outline: none;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+
+/* Стили для выбранного файла */
+.file-input-container .file-name {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #666;
+}
