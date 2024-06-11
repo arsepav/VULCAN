@@ -21,13 +21,14 @@ class SplashFragment
     var onEndAnimation: (()->Unit)? = null
 
     override fun onCreateView(
-        context: Context
+        context: Context,
+        measureUnit: Int
     ): View {
 
         val factsService = FactsService(
             Application.RESOURCES
         )
-        val measureUnit = Application.WIDTH
+
         val appIconSize = (measureUnit * 0.248f)
             .toInt()
 

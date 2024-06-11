@@ -33,7 +33,8 @@ NavigationBarView.OnItemSelectedListener {
     )
 
     override fun onCreateView(
-        context: Context
+        context: Context,
+        measureUnit: Int
     ): View {
         mLayout = FrameLayout(
             context

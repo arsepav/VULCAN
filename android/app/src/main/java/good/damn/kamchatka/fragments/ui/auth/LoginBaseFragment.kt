@@ -16,7 +16,8 @@ abstract class LoginBaseFragment
 : StackFragment() {
 
     final override fun onCreateView(
-        context: Context
+        context: Context,
+        measureUnit: Int
     ): View {
 
         val width = Application.WIDTH
@@ -39,7 +40,8 @@ abstract class LoginBaseFragment
         )
 
         val contentView = onCreateContentView(
-            context
+            context,
+            measureUnit
         )
 
 
@@ -91,7 +93,8 @@ abstract class LoginBaseFragment
     )
 
     abstract fun onCreateContentView(
-        context: Context
+        context: Context,
+        measureUnit: Int
     ): View
 
 }

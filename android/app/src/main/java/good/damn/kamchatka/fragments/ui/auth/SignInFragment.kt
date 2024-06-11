@@ -47,10 +47,10 @@ class SignInFragment
     }
 
     override fun onCreateView(
-        context: Context
+        context: Context,
+        measureUnit: Int
     ): View {
 
-        val measureUnit = Application.WIDTH
         val widthField = (measureUnit * 0.816f)
             .toInt()
         val heightField = (measureUnit * 0.1135f)

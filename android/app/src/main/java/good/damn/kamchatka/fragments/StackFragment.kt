@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.ColorInt
 import androidx.fragment.app.Fragment
+import good.damn.kamchatka.Application
 import good.damn.kamchatka.MainActivity
 
 abstract class StackFragment
@@ -28,8 +29,11 @@ abstract class StackFragment
             return null
         }
 
+        val measureUnit = Application.WIDTH
+
         val view = onCreateView(
-            context
+            context,
+            measureUnit
         )
 
         view.isClickable = true
@@ -68,7 +72,8 @@ abstract class StackFragment
     }
 
     abstract fun onCreateView(
-        context: Context
+        context: Context,
+        measureUnit: Int
     ): View
 }
 
