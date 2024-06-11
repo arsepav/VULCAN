@@ -78,8 +78,17 @@ abstract class LoginBaseFragment
             policy
         )
 
+
+        btnBack.setOnClickListener(
+            this::onClickBtnBack
+        )
+
         return layout
     }
+
+    abstract fun onClickBtnBack(
+        view: View
+    )
 
     abstract fun onCreateContentView(
         context: Context

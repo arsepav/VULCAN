@@ -17,6 +17,7 @@ import good.damn.kamchatka.fragments.ui.MainNavigationFragment
 import good.damn.kamchatka.utils.ViewUtils
 import good.damn.kamchatka.views.button.ButtonRound
 import good.damn.kamchatka.views.text_fields.TextFieldRound
+import good.damn.kamchatka.views.text_fields.TextFieldRoundPassword
 
 class SignInFragment
 : StackFragment() {
@@ -80,13 +81,13 @@ class SignInFragment
         mEditTextEmail = TextFieldRound(
             context
         )
-        mEditTextPassword = TextFieldRound(
+        mEditTextPassword = TextFieldRoundPassword(
             context
         )
         val textViewPasswordInfo = TextView(
             context
         )
-        mEditTextPasswordRepeat = TextFieldRound(
+        mEditTextPasswordRepeat = TextFieldRoundPassword(
             context
         )
         val textViewPolicy = ViewUtils.policyTerms(
@@ -102,9 +103,6 @@ class SignInFragment
 
 
         // Some props
-        mEditTextPassword.transformationMethod =
-            PasswordTransformationMethod()
-
         layout.orientation = LinearLayout
             .VERTICAL
 

@@ -16,8 +16,15 @@ class LoginFragment
         )
 
 
-
         return layout
     }
 
+    override fun onClickBtnBack(
+        view: View
+    ) {
+        pushFragment(
+            SignInFragment()
+        )
+        removeFragment()
+    }
 }
