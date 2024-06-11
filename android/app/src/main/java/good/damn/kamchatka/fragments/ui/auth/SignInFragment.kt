@@ -14,6 +14,7 @@ import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.fragments.StackFragment
 import good.damn.kamchatka.fragments.ui.MainNavigationFragment
+import good.damn.kamchatka.fragments.ui.ScrollableFragment
 import good.damn.kamchatka.utils.StyleUtils
 import good.damn.kamchatka.utils.ViewUtils
 import good.damn.kamchatka.views.button.ButtonRound
@@ -21,7 +22,7 @@ import good.damn.kamchatka.views.text_fields.TextFieldRound
 import good.damn.kamchatka.views.text_fields.TextFieldRoundPassword
 
 class SignInFragment
-: StackFragment() {
+: ScrollableFragment() {
 
     companion object {
         private const val TAG = "AuthFragment"
@@ -47,7 +48,7 @@ class SignInFragment
         )
     }
 
-    override fun onCreateView(
+    override fun onCreateContentView(
         context: Context,
         measureUnit: Int
     ): View {
