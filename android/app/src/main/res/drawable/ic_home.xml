@@ -6,22 +6,22 @@
     android:viewportHeight="20.0">
 
     <path
-        android:strokeColor="#000000"
+        android:strokeColor="@color/signInStrokeColor2"
         android:strokeWidth="2"
         android:pathData="M2,19 L2,9 Q2,8 10,2 Q12,0.47 14,2"/>
 
     <path
-        android:strokeColor="#000000"
+        android:strokeColor="@color/signInStrokeColor2"
         android:strokeWidth="2"
         android:pathData="M22,19 L22,9 Q22,8 14,2"/>
 
     <path
-        android:strokeColor="#000000"
+        android:strokeColor="@color/signInStrokeColor2"
         android:strokeWidth="2"
         android:pathData="M22,19 C22,19.5 2,19.5 2,19"/>
 
     <path
-        android:strokeColor="#000000"
+        android:strokeColor="@color/signInStrokeColor2"
         android:strokeWidth="6"
         android:pathData="M12.15,19 Q12,9.5 11.85,19"/>
 
