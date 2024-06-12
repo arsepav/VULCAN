@@ -23,8 +23,14 @@ class UserResponse(UserBase):
     success: bool
     message: str
 
+    avatar_url: str
+
     class Config:
         orm_mode: True
+
+
+class UpdateAvatar(BaseModel):
+    file_id: int
 
 
 class UserLogin(BaseModel):
@@ -187,6 +193,7 @@ class EcologyProblemResponseExt(EcologyProblemResponse):
     class Config:
         orm_mode = True
 
+
 class EcologyProblemCategory(BaseModel):
     id: int
     name: str
@@ -271,11 +278,12 @@ class OOPTObjectsCreate(BaseModel):
     Rf_coefficient: float
     t_coefficient: float
 
+
 class OOPTLoad(BaseModel):
     id: int
     load_coef: float
 
+
 class PathLoad(BaseModel):
     id: int
     load_coef: float
-

@@ -63,7 +63,8 @@ def register_user(user: schemas.UserCreate, db: Session = Depends(auth.get_db)):
                 'name': user.name,
                 'surname': user.surname,
                 'lastname': user.lastname,
-                'phone_number': user.phone_number
+                'phone_number': user.phone_number,
+                'avatar_url': 'null'
                 }
 
     return {'id': -1,
@@ -74,7 +75,8 @@ def register_user(user: schemas.UserCreate, db: Session = Depends(auth.get_db)):
             'name': user.name,
             'surname': user.surname,
             'lastname': user.lastname,
-            'phone_number': user.phone_number
+            'phone_number': user.phone_number,
+            'avatar_url': 'null'
             }
 
 
@@ -97,11 +99,20 @@ def login_for_access_token(form_data: schemas.UserLogin, db: Session = Depends(a
                                      'name': user.name,
                                      'surname': user.surname,
                                      'lastname': user.lastname,
-                                     'phone_number': user.phone_number
+                                     'phone_number': user.phone_number,
+                                     'avatar_url': f"http://{d['ip']}:8000/downloadfile/{user.avatar_file_id}" if user.avatar_file_id else 'null'
                                      })
     response.set_cookie(key="access_token", value=access_token, httponly=True, samesite="lax")
     return response
 
+@app.post("/update_avatar")
+def login_for_access_token(file_data: schemas.UpdateAvatar, db: Session = Depends(auth.get_db),
+                           current_user: schemas.UserResponse = Depends(auth.get_current_user)):
+    user = db.query(models.User).filter(models.User.id == current_user.id).first()
+    user.avatar_file_id = file_data.file_id
+
+    db.commit()
+    return {'status': 'ok'}
 
 @app.get("/users/me", response_model=schemas.UserResponse)
 async def read_users_me(current_user: schemas.UserResponse = Depends(auth.get_current_user)):

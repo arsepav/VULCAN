@@ -21,6 +21,8 @@ class User(Base):
 
     phone_number = Column(String)
 
+    avatar_file_id = Column(Integer, ForeignKey('files_info.id'))
+
 
 class GeoPoints(Base):
     __tablename__ = 'geo_points'
