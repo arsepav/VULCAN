@@ -21,22 +21,22 @@
             border-bottom: 1px solid #ccc;
         }
         #content {
-        display: flex;
-        height: 100%;
-    }
+            display: flex;
+            height: 100%;
+        }
 
-    #problem-list {
-        flex: 1 1 auto;
-        overflow-y: auto;
-        border-right: 1px solid #ccc;
-    }
+        #problem-list {
+            flex: 1 1 auto;
+            overflow-y: auto;
+            border-right: 1px solid #ccc;
+        }
 
-    #problem-details {
-        flex-grow: 1;
-        padding: 10px;
-        overflow-y: auto;
-        width: 1200px;
-    }
+        #problem-details {
+            flex-grow: 1;
+            padding: 10px;
+            overflow-y: auto;
+            width: 1200px;
+        }
         .problem-item {
             padding: 10px;
             border-bottom: 1px solid #ccc;
@@ -94,7 +94,7 @@
 </head>
 <body>
     <div id="navigation-panel">
-        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/map'">
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/'">
             <img src="http://91.224.86.144:8000/downloadfile/49" alt="Icon 1">
         </button>
         <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/map'">
@@ -121,7 +121,7 @@
     </div>
 
     <div id="content" class="all">
-        <div style="width: 90px;"></div>
+        <div style="width: 100px;"></div>
         <div id="column">
             <div id="filters">
                 <div>
@@ -184,6 +184,12 @@
                         <!-- Options will be dynamically added here -->
                     </select>
                 </div>
+                <label for="new-responsible">Ответственный:</label>
+                <div class="select-container">
+                    <select id="new-responsible" name="new-responsible">
+                        <!-- Options will be dynamically added here -->
+                    </select>
+                </div>
                 <button type="submit" id="submit-report">Сохранить</button>
             </form>
         </div>
@@ -214,16 +220,23 @@
         document.getElementById('report-form').addEventListener('submit', async (event) => {
             event.preventDefault();
 
+            if (!activeProblemId){
+                alert("Выберите экологическую проблему!");
+                return;
+            }
+
             const formData = new FormData(event.target);
             const reportData = {
                 'name': formData.get('report-name'),
                 'description': formData.get('report-description'),
                 'file_id': formData.get('report-file') ? await uploadFile(formData.get('report-file')) : null,
                 'new_state': parseInt(formData.get('new-state')),
+                'responsible_id': formData.get('new-responsible') ? parseInt(formData.get('new-responsible')) : 1,
                 'ecology_problem_id': activeProblemId
             };
 
             const json = JSON.stringify(reportData);
+
             console.log(json);
             const response = await fetch(`${apiBaseUrl}/update_problem_status_and_report`, {
                 method: 'POST',
@@ -251,6 +264,11 @@
             return await response.json();
         }
 
+        async function fetchAdmins() {
+            const response = await fetch(`${apiBaseUrl}/admins`);
+            return await response.json();
+        }
+
         async function fetchProblems(categoryId, stateId) {
             let url = `${apiBaseUrl}/ecology_problems`;
             if (categoryId || stateId) {
@@ -267,8 +285,10 @@
             return await response.json();
         }
 
-        function populateSelect(selectElement, options) {
-            selectElement.innerHTML = '<option value="">Все</option>';
+        function populateSelect(selectElement, options, pred) {
+            if (pred){
+                selectElement.innerHTML = '<option value="">Все</option>';
+            }
             options.forEach(option => {
                 const optionElement = document.createElement('option');
                 optionElement.value = option.id;
@@ -278,14 +298,16 @@
         }
 
         async function initializeFilters() {
-            const [categories, states] = await Promise.all([fetchCategories(), fetchStates()]);
+            const [categories, states, admins] = await Promise.all([fetchCategories(), fetchStates(), fetchAdmins()]);
             const categoryFilter = document.getElementById('category-filter');
             const stateFilter = document.getElementById('state-filter');
             const newStateSelect = document.getElementById('new-state');
+            const newAdminSelect = document.getElementById('new-responsible');
 
-            populateSelect(categoryFilter, categories);
-            populateSelect(stateFilter, states);
-            populateSelect(newStateSelect, states);
+            populateSelect(categoryFilter, categories, true);
+            populateSelect(stateFilter, states, true);
+            populateSelect(newStateSelect, states, false);
+            populateSelect(newAdminSelect, admins, false);
         }
 
         function createProblemItem(problem) {

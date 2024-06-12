@@ -23,7 +23,6 @@ with open('config.json') as f:
 
 templates = Jinja2Templates(directory='../front')
 
-
 UPLOAD_DIRECTORY = d['upload_dir']
 
 app = FastAPI()
@@ -37,13 +36,22 @@ app.add_middleware(
 )
 
 app.mount("/static", StaticFiles(directory="../static"), name="static")
+
+
 @app.post("/register", response_model=schemas.UserResponse)
 def register_user(user: schemas.UserCreate, db: Session = Depends(auth.get_db)):
     users = db.query(models.User).where(models.User.username == user.username).all()
 
     if not users:
         hashed_password = auth.get_password_hash(user.password)
-        db_user = models.User(username=user.username, email=user.email, hashed_password=hashed_password)
+        db_user = models.User(username=user.username,
+                              email=user.email,
+                              hashed_password=hashed_password,
+                              name=user.name,
+                              surname=user.surname,
+                              lastname=user.lastname,
+                              phone_number=user.phone_number
+                              )
         db.add(db_user)
         db.commit()
         db.refresh(db_user)
@@ -51,14 +59,22 @@ def register_user(user: schemas.UserCreate, db: Session = Depends(auth.get_db)):
                 'success': True,
                 'message': 'ok',
                 'username': user.username,
-                'email': user.email
+                'email': user.email,
+                'name': user.name,
+                'surname': user.surname,
+                'lastname': user.lastname,
+                'phone_number': user.phone_number
                 }
 
     return {'id': -1,
             'success': False,
             'message': 'user with such name or email already exists',
             'username': user.username,
-            'email': user.email
+            'email': user.email,
+            'name': user.name,
+            'surname': user.surname,
+            'lastname': user.lastname,
+            'phone_number': user.phone_number
             }
 
 
@@ -75,7 +91,14 @@ def login_for_access_token(form_data: schemas.UserLogin, db: Session = Depends(a
     access_token = auth.create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
-    response = JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
+    response = JSONResponse(content={"access_token": access_token,
+                                     "token_type": "bearer",
+                                     'email': user.email,
+                                     'name': user.name,
+                                     'surname': user.surname,
+                                     'lastname': user.lastname,
+                                     'phone_number': user.phone_number
+                                     })
     response.set_cookie(key="access_token", value=access_token, httponly=True, samesite="lax")
     return response
 
@@ -158,17 +181,20 @@ async def get_map_page(request: Request, current_user: schemas.UserResponse = De
         return RedirectResponse(url="/login")
     return templates.TemplateResponse("home.html", {"request": request, "ip": d['ip']})
 
+
 @app.get("/map", response_class=HTMLResponse)
 async def get_map_page(request: Request, current_user: schemas.UserResponse = Depends(auth.get_current_user_cookie)):
     if not current_user:
         return RedirectResponse(url="/login")
     return templates.TemplateResponse("map.html", {"request": request, "ip": d['ip']})
 
+
 @app.get("/map_oopt", response_class=HTMLResponse)
 async def get_map_page(request: Request, current_user: schemas.UserResponse = Depends(auth.get_current_user_cookie)):
     if not current_user:
         return RedirectResponse(url="/login")
     return templates.TemplateResponse("map_oopt.html", {"request": request, "ip": d['ip']})
+
 
 @app.get("/map_objects_creation", response_class=HTMLResponse)
 async def get_map_page(request: Request, current_user: schemas.UserResponse = Depends(auth.get_current_user_cookie)):
@@ -443,7 +469,6 @@ def get_ecology_problems(
 
     problems = query.join(models.EcologyProblemStates).join(models.EcologyProblemCategories).all()
 
-
     for i in range(len(problems)):
         s = problems[i][1]
         c = problems[i][2]
@@ -479,11 +504,12 @@ def update_problem_status_and_report(
         new_state=report_data.new_state,
         ecology_problem_id=report_data.ecology_problem_id,
         file_id=report_data.file_id,
-        reporter_id=current_user.id
+        reporter_id=current_user.id,
     )
     db.add(report)
 
     problem.state_id = report_data.new_state
+    problem.responsible_id = report_data.responsible_id
 
     db.commit()
     return {"message": "Report added and problem status updated successfully"}
@@ -573,3 +599,21 @@ def get_oopt_objects(oopt_id: int, date: str, db: Session = Depends(database.get
         'load_coef': len(visits) * k / s
     }
 
+
+@app.get("/admins/", response_model=List[schemas.UserResponse])
+def get_oopt_objects(db: Session = Depends(database.get_db)):
+    users = db.query(models.User).where(models.User.is_admin).all()
+
+    result = []
+    for user in users:
+        result.append({'id': user.id,
+                       'username': user.username,
+                       'success': True,
+                       'message': 'ok',
+                       'email': user.email,
+                       'name': user.name,
+                       'surname': user.surname,
+                       'lastname': user.lastname,
+                       'phone_number': user.phone_number
+                       })
+    return result

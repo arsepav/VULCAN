@@ -7,6 +7,12 @@ class UserBase(BaseModel):
     username: str
     email: str
 
+    name: str
+    surname: str
+    lastname: str
+
+    phone_number: str
+
 
 class UserCreate(UserBase):
     password: str
@@ -206,6 +212,7 @@ class ReportCreate(BaseModel):
     description: str
     new_state: int
     file_id: int
+    responsible_id: int
 
 
 class EcologyProblemReportResponse(BaseModel):
@@ -228,6 +235,7 @@ class EcologyProblemReportCreate(BaseModel):
     new_state: int
     file_id: int
     ecology_problem_id: int
+    responsible_id: int
 
 
 class OOPTObjectCategories(BaseModel):

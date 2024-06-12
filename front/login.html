@@ -136,13 +136,13 @@
                 });
                 console.log(response)
                 if (response.ok) {
-                    console.log("okokok")
                     const data = await response.json();
                     accessToken = data.access_token;
                     localStorage.setItem('access_token', accessToken);
                     document.getElementById('logout').style.display = 'inline';
                     document.getElementById('login-form').style.display = 'none';
                     document.getElementById('message').innerText = 'Login successful';
+                    window.location.href = '/';
                 } else {
                     document.getElementById('message').innerText = 'Login failed';
                 }

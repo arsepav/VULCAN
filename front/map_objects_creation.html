@@ -237,6 +237,55 @@
 
         // Event listener for form submission
         document.getElementById('point-form').addEventListener('submit', savePoint);
+
+        // Function to fetch and add OOPTs to the map
+        async function addOOPTsToMap() {
+            const response = await fetch(`${apiBaseUrl}/oopts`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ OOPT_name: '' })
+            });
+            const oopts = await response.json();
+
+            // Function to swap latitude and longitude in coordinates
+            function swapLatLng(coordinates) {
+                return coordinates.map(coord => {
+                    if (Array.isArray(coord[0])) {
+                        return swapLatLng(coord); // Recursively swap for nested arrays
+                    } else {
+                        return [coord[1], coord[0]]; // Swap [longitude, latitude] to [latitude, longitude]
+                    }
+                });
+            }
+
+            // Loop through each OOPT and add to the map
+            oopts.forEach(oopt => {
+                const swappedGeom = {...oopt.geom};  // Create a shallow copy of the geometry object
+                swappedGeom.coordinates = swapLatLng(oopt.geom.coordinates);  // Swap the coordinates
+
+                const geojsonFeature = {
+                    "type": "Feature",
+                    "geometry": swappedGeom,
+                    "properties": {
+                        "name": oopt.name
+                    }
+                };
+
+                L.geoJSON(geojsonFeature, {
+                    style: {
+                        color: 'red'
+                    },
+                    onEachFeature: function (feature, layer) {
+                        layer.bindTooltip(feature.properties.name, {permanent: false, direction: 'top'});
+                    }
+                }).addTo(map);
+            });
+        }
+
+        // Fetch and add OOPTs to the map on page load
+        addOOPTsToMap();
     </script>
 </body>
 </html>

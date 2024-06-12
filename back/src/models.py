@@ -13,6 +13,14 @@ class User(Base):
     hashed_password = Column(String)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
+    is_admin = Column(Boolean, default=False)
+
+    name = Column(String)
+    surname = Column(String)
+    lastname = Column(String)
+
+    phone_number = Column(String)
+
 
 class GeoPoints(Base):
     __tablename__ = 'geo_points'
@@ -147,6 +155,8 @@ class EcologyProblems(Base):
     category_id = Column(Integer, ForeignKey('ecology_problem_categories.id'))
     file_id = Column(Integer, ForeignKey('files_info.id'))
     state_id = Column(Integer, ForeignKey('ecology_problem_states.id'))
+
+    responsible_id = Column(Integer, ForeignKey('users.id'))
 
 
 class EcologyProblemCategories(Base):
