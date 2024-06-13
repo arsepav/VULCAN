@@ -3,6 +3,7 @@ package good.damn.kamchatka.fragments.ui.auth
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
+import android.text.InputType
 import android.text.method.DigitsKeyListener
 import android.util.Log
 import android.view.Gravity
@@ -26,6 +27,8 @@ import good.damn.kamchatka.views.button.ButtonRound
 import good.damn.kamchatka.views.text_fields.TextField
 import good.damn.kamchatka.views.text_fields.TextFieldRound
 import good.damn.kamchatka.views.text_fields.TextFieldRoundPassword
+import org.json.JSONException
+import org.json.JSONObject
 
 class SignInFragment
 : ScrollableFragment() {
@@ -121,7 +124,7 @@ class SignInFragment
 
         // Some props
 
-        mEditTextTelephone.inputType = mEditTextTelephone.inputType or Configuration.KEYBOARD_12KEY
+        mEditTextTelephone.inputType = mEditTextTelephone.inputType or InputType.TYPE_CLASS_PHONE
 
         layout.orientation = LinearLayout
             .VERTICAL
@@ -399,8 +402,8 @@ class SignInFragment
         mPassword = password
 
         mAuthService.registerUser(
-            email,
-            password,
+            email = email,
+            password = password,
             name = name,
             surname = surname,
             lastname = lastName,
@@ -447,18 +450,44 @@ class SignInFragment
     ) {
         Application.ui {
 
-            Log.d(TAG, "onResponseToken: $response")
-            Log.d(TAG, "onResponseToken: BODY ${response.body?.string()}")
-            
             val context = context
                 ?: return@ui
+            val body = response.body?.string()
 
-            if (response.code != 200) {
+
+            Log.d(TAG, "onResponseToken: $response")
+            Log.d(TAG, "onResponseToken: BODY $body")
+
+            if (!(response.code == 200 || body == null)) {
                 Application.toast(
-                    "Error: ${response.code} ${response.body}",
+                    "Error: ${response.code} $body",
                     context
                 )
                 return@ui
+            }
+            
+            val json = JSONObject(
+                body!!
+            )
+
+            val success = try {
+                json.get(
+                    "success"
+                )
+            } catch (e: JSONException) {
+                null
+            }
+
+            Log.d(TAG, "onResponseToken: SUCCESS: $success ${success as? Boolean}")
+            
+            (success as? Boolean)?.let {
+                if (!success) {
+                    Application.toast(
+                        R.string.account_exists,
+                        context
+                    )
+                    return@ui
+                }
             }
 
             Application.toast(
@@ -466,10 +495,10 @@ class SignInFragment
                 context
             )
 
-            popFragment()
             pushFragment(
                 MainContentFragment()
             )
+            removeFragment()
         }
     }
 

@@ -9,7 +9,7 @@ plugins {
 android {
     namespace = "good.damn.kamchatka"
     compileSdk = 34
-
+    
     defaultConfig {
         val properties = Properties()
 
@@ -56,6 +56,8 @@ android {
 }
 
 dependencies {
+    val mockkVersion = "1.13.0"
+
     implementation(libs.okhttp)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -63,6 +65,8 @@ dependencies {
     implementation(libs.play.services.maps)
     implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
+    testImplementation("io.mockk:mockk-android:${mockkVersion}")
+    testImplementation("io.mockk:mockk-agent:${mockkVersion}")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
