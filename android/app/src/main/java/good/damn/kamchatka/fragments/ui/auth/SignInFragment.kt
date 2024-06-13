@@ -15,7 +15,7 @@ import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.extensions.setTextPx
-import good.damn.kamchatka.fragments.ui.MainNavigationFragment
+import good.damn.kamchatka.fragments.ui.MainContentFragment
 import good.damn.kamchatka.fragments.ui.ScrollableFragment
 import good.damn.kamchatka.services.AuthService
 import good.damn.kamchatka.utils.StyleUtils
@@ -379,7 +379,7 @@ class SignInFragment
             )
 
             pushFragment(
-                MainNavigationFragment()
+                MainContentFragment()
             )
             removeFragment()
         }
