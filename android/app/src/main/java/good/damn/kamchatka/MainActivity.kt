@@ -23,7 +23,9 @@ ViewTreeObserver.OnGlobalLayoutListener{
     companion object {
         private const val TAG = "MainActivity"
     }
-    
+
+    private var mIsPoping = false
+
     override fun onCreate(
         savedInstanceState: Bundle?
     ) {
@@ -104,11 +106,16 @@ ViewTreeObserver.OnGlobalLayoutListener{
     }
 
     fun popFragment() {
+        if (mIsPoping) {
+            return
+        }
+
         val fragment = supportFragmentManager
             .fragments
             .last() ?: return
 
         (fragment as? StackFragment)?.let {
+            mIsPoping = true
             it.hideFragment {
                 removeFragment(
                     it

@@ -1,7 +1,9 @@
 package good.damn.kamchatka.fragments.ui.auth
 
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
+import android.text.method.DigitsKeyListener
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -21,6 +23,7 @@ import good.damn.kamchatka.services.AuthService
 import good.damn.kamchatka.utils.StyleUtils
 import good.damn.kamchatka.utils.ViewUtils
 import good.damn.kamchatka.views.button.ButtonRound
+import good.damn.kamchatka.views.text_fields.TextField
 import good.damn.kamchatka.views.text_fields.TextFieldRound
 import good.damn.kamchatka.views.text_fields.TextFieldRoundPassword
 
@@ -33,9 +36,12 @@ class SignInFragment
 
     private val mAuthService = AuthService()
 
-    private lateinit var mEditTextLastName: TextFieldRound
+    private var mEmail = ""
+    private var mPassword = ""
+
+    private lateinit var mEditTextSurname: TextFieldRound
     private lateinit var mEditTextFirstName: TextFieldRound
-    private lateinit var mEditTextSecondName: TextFieldRound
+    private lateinit var mEditTextLastName: TextFieldRound
     private lateinit var mEditTextTelephone: TextFieldRound
     private lateinit var mEditTextEmail: TextFieldRound
     private lateinit var mEditTextPassword: TextFieldRound
@@ -73,13 +79,13 @@ class SignInFragment
             R.string.let_sign_in,
             measureUnit
         )
-        mEditTextLastName = TextFieldRound(
+        mEditTextSurname = TextFieldRound(
             context
         )
         mEditTextFirstName = TextFieldRound(
             context
         )
-        mEditTextSecondName = TextFieldRound(
+        mEditTextLastName = TextFieldRound(
             context
         )
         mEditTextTelephone = TextFieldRound(
@@ -114,6 +120,9 @@ class SignInFragment
 
 
         // Some props
+
+        mEditTextTelephone.inputType = mEditTextTelephone.inputType or Configuration.KEYBOARD_12KEY
+
         layout.orientation = LinearLayout
             .VERTICAL
 
@@ -160,7 +169,7 @@ class SignInFragment
         val offsetBetween = 0.0289f * measureUnit
         val offsetPart = 0.055f * measureUnit
         styleTextFieldRound(
-            mEditTextLastName,
+            mEditTextSurname,
             R.string.lastName,
             fieldColor,
             heightField,
@@ -176,7 +185,7 @@ class SignInFragment
             topMargin = offsetBetween
         )
         styleTextFieldRound(
-            mEditTextSecondName,
+            mEditTextLastName,
             R.string.secondName,
             fieldColor,
             heightField,
@@ -266,13 +275,13 @@ class SignInFragment
             textViewLetSign
         )
         layout.addView(
-            mEditTextLastName
+            mEditTextSurname
         )
         layout.addView(
             mEditTextFirstName
         )
         layout.addView(
-            mEditTextSecondName
+            mEditTextLastName
         )
         layout.addView(
             mEditTextTelephone
@@ -313,13 +322,91 @@ class SignInFragment
     private fun onClickBtnLogIn(
         view: View
     ) {
-        getCredentials { email, password ->
-            mAuthService.registerUser(
-                email,
-                password,
-                this::onResponseRegister
+
+        val context = view.context
+
+        val name = mEditTextFirstName
+            .text?.toString() ?: return
+        val surname = mEditTextSurname
+            .text?.toString() ?: return
+        val lastName = mEditTextLastName
+            .text?.toString() ?: return
+        val telephone = mEditTextTelephone
+            .text?.toString() ?: return
+
+        val email = mEditTextEmail
+            .text?.toString() ?: return
+
+        val password = mEditTextPassword
+            .text?.toString() ?: return
+
+        val passwordRepeat = mEditTextPasswordRepeat
+            .text?.toString() ?: return
+
+        if (notifyBlankField(
+            surname,
+            mEditTextSurname
+        )) return
+
+        if (notifyBlankField(
+            name,
+            mEditTextFirstName
+        )) return
+
+        if (notifyBlankField(
+            lastName,
+            mEditTextLastName
+        )) return
+
+        if (notifyBlankField(
+            telephone,
+            mEditTextTelephone
+        )) return
+
+        if (notifyBlankField(
+            email,
+            mEditTextEmail
+        )) return
+
+        if (notifyBlankField(
+            password,
+            mEditTextPassword
+        )) return
+
+        if (notifyBlankField(
+            passwordRepeat,
+            mEditTextPasswordRepeat
+        )) return
+
+        if (!password.contains("_")) {
+            Application.toast(
+                R.string.need_downscape,
+                context
             )
+            return
         }
+
+        if (passwordRepeat != password) {
+            Application.toast(
+                R.string.passwords_not_equals,
+                context
+            )
+            return
+        }
+        view.isEnabled = false
+
+        mEmail = email
+        mPassword = password
+
+        mAuthService.registerUser(
+            email,
+            password,
+            name = name,
+            surname = surname,
+            lastname = lastName,
+            telephone = telephone,
+            this::onResponseRegister
+        )
     }
 
     @WorkerThread
@@ -328,12 +415,14 @@ class SignInFragment
     ) {
         Application.ui {
             Log.d(TAG, "onResponseRegister: $response")
+            Log.d(TAG, "onResponseRegister: ${response.body?.string()}")
+
             val context = context
                 ?: return@ui
 
             if (response.code != 200) {
                 Application.toast(
-                    "Error: ${response.code} ${response.body}",
+                    "Error: ${response.code} ${response.body?.string()}",
                     context
                 )
                 return@ui
@@ -343,14 +432,12 @@ class SignInFragment
                 R.string.almostReady,
                 context
             )
+            mAuthService.token(
+                mEmail,
+                mPassword,
+                this::onResponseToken
+            )
 
-            getCredentials { email, password ->
-                mAuthService.token(
-                    email,
-                    password,
-                    this::onResponseToken
-                )
-            }
         }
     }
 
@@ -361,6 +448,7 @@ class SignInFragment
         Application.ui {
 
             Log.d(TAG, "onResponseToken: $response")
+            Log.d(TAG, "onResponseToken: BODY ${response.body?.string()}")
             
             val context = context
                 ?: return@ui
@@ -378,33 +466,29 @@ class SignInFragment
                 context
             )
 
+            popFragment()
             pushFragment(
                 MainContentFragment()
             )
-            removeFragment()
         }
     }
 
 
-    private fun getCredentials(
-        completion: (String, String) -> Unit
-    ) {
-        val email = mEditTextEmail
-            .text?.toString()
+}
 
-        val password = mEditTextPassword
-            .text?.toString()
-
-        if (email == null || password == null) {
-            return
-        }
-
-        completion(
-            email,
-            password
+private fun SignInFragment.notifyBlankField(
+    inp: String,
+    field: TextField
+): Boolean {
+    val b = inp.isBlank()
+    if (b) {
+        Application.toast(
+            "'${field.hint}' ${getString(R.string.empty)}",
+            context!!
         )
     }
 
+    return b
 }
 
 private fun SignInFragment.styleTextFieldRound(

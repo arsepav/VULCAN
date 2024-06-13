@@ -39,12 +39,36 @@ class AuthService {
     fun registerUser(
         email: String,
         password: String,
+        name: String,
+        surname: String,
+        lastname: String,
+        telephone: String,
         completion: (Response) -> Unit
     ) {
 
         val json = createUsernameJson(
             email,
             password
+        )
+
+        json.put(
+            "name",
+            name
+        )
+
+        json.put(
+            "surname",
+            surname
+        )
+
+        json.put(
+            "lastname",
+            lastname
+        )
+
+        json.put(
+            "phone_number",
+            telephone
         )
 
         json.put(

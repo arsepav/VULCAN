@@ -31,4 +31,7 @@
     <string name="forgetPassword">Забыли пароль?</string>
     <string name="almostReady">Почти готово…</string>
     <string name="successRegister">Успешная регистрация!</string>
+    <string name="need_downscape">Нужен знак подчёркивания</string>
+    <string name="empty">пусто</string>
+    <string name="passwords_not_equals">Пароли не совпадают</string>
 </resources>
