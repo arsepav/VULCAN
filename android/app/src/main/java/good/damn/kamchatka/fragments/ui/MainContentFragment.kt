@@ -1,25 +1,17 @@
 package good.damn.kamchatka.fragments.ui
 
 import android.content.Context
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.Gravity
-import android.view.MenuItem
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
-import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.navigation.NavigationBarView
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
-import good.damn.kamchatka.adapters.fragment_adapters.FragmentAdapter
 import good.damn.kamchatka.extensions.boundsFrame
+import good.damn.kamchatka.extensions.height
 import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.extensions.top
-import good.damn.kamchatka.fragments.StackFragment
-import good.damn.kamchatka.fragments.ui.main_content.MapsFragment
-import good.damn.kamchatka.fragments.ui.main_content.PlacesFragment
 import good.damn.kamchatka.views.RoundedImageView
 
 class MainContentFragment
@@ -39,7 +31,7 @@ class MainContentFragment
         measureUnit: Int
     ): View {
 
-        val btnProfileWidth = measureUnit * 0.0748f
+        val btnProfileWidth = measureUnit * 0.1f
 
         // Allocating views
         val layout = FrameLayout(
@@ -48,13 +40,13 @@ class MainContentFragment
         val textViewAppName = TextView(
             context
         )
-        val btnRoundProfile = RoundedImageView(
+        val imageViewProfile = RoundedImageView(
             context
         )
 
 
         // Image drawable
-        btnRoundProfile.imageView.setImageDrawable(
+        imageViewProfile.setImageDrawable(
             Application.drawable(
                 R.mipmap.ic_launcher
             )
@@ -62,7 +54,7 @@ class MainContentFragment
 
 
         // CornerRadius
-        btnRoundProfile.radius = btnProfileWidth * 0.5f
+        imageViewProfile.radius = btnProfileWidth * 0.5f
 
         // Text size
         textViewAppName.setTextPx(
@@ -84,6 +76,18 @@ class MainContentFragment
         )
 
 
+        // Stroke colors
+        imageViewProfile.setStrokeColor(
+            Application.color(
+                R.color.mountainsColor
+            )
+        )
+        imageViewProfile.setStrokeOffsetColor(
+            Application.color(
+                R.color.background
+            )
+        )
+
 
         // Text color
         layout.setBackgroundColor(
@@ -103,7 +107,7 @@ class MainContentFragment
 
 
         // Layout params
-        btnRoundProfile.boundsFrame(
+        imageViewProfile.boundsFrame(
             Gravity.START,
             width = btnProfileWidth.toInt(),
             height = btnProfileWidth.toInt(),
@@ -112,14 +116,16 @@ class MainContentFragment
         )
         textViewAppName.boundsFrame(
             Gravity.CENTER_HORIZONTAL,
-            top = btnRoundProfile.top()
+            top = imageViewProfile.top() + (
+                imageViewProfile.height() - textViewAppName.textSize
+                ) * 0.5f
         )
 
 
 
         // Adding views
         layout.addView(
-            btnRoundProfile
+            imageViewProfile
         )
         layout.addView(
             textViewAppName

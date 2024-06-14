@@ -6,6 +6,9 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 
 
+fun View.height(): Int {
+    return layoutParams.height
+}
 
 fun View.top(): Float {
     margins().apply {

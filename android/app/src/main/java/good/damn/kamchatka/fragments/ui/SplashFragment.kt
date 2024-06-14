@@ -70,9 +70,6 @@ class SplashFragment
                 R.color.background
             )
         )
-        imageViewAppIcon.setCardBackgroundColor(
-            0xff000000.toInt()
-        )
         textViewAppName.setTextColor(
             Application.color(
                 R.color.titleColor
@@ -165,14 +162,14 @@ class SplashFragment
         textViewFactLabel.alpha = 0.5f
 
         // Image
-        imageViewAppIcon.imageView.setImageDrawable(
+        imageViewAppIcon.setImageDrawable(
             Application.drawable(
-                R.mipmap.ic_launcher
+                R.drawable.icon
             )
         )
 
         // Corner radius
-        imageViewAppIcon.radius = appIconSize * 0.25f
+        imageViewAppIcon.radius = appIconSize * 0.125f
 
         // Gravity
         textViewFact.gravity = Gravity
