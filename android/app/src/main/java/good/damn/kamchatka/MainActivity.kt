@@ -1,6 +1,7 @@
 package good.damn.kamchatka
 
 import android.animation.ValueAnimator
+import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -12,8 +13,11 @@ import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowInsetsControllerCompat
 import good.damn.kamchatka.fragments.StackFragment
+import good.damn.kamchatka.fragments.ui.MainContentFragment
 import good.damn.kamchatka.fragments.ui.auth.SignInFragment
 import good.damn.kamchatka.fragments.ui.SplashFragment
+import good.damn.kamchatka.services.TimeService
+import good.damn.kamchatka.services.TokenService
 
 class MainActivity
 : AppCompatActivity(),
@@ -66,11 +70,23 @@ ViewTreeObserver.OnGlobalLayoutListener{
             mContainer
         )
 
+        val tokenService = TokenService(
+            getSharedPreferences(
+                Application.KEY_SHARED,
+                Context.MODE_PRIVATE
+            )
+        )
+
         val splashFragment = SplashFragment()
         splashFragment.onEndAnimation = {
             splashFragment.popFragment()
             pushFragment(
-                SignInFragment()
+                if (tokenService.isTokenExpired) {
+                    SignInFragment()
+                } else {
+                    Application.TOKEN = tokenService.token
+                    MainContentFragment()
+                }
             )
         }
 

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
+import android.media.session.MediaSession.Token
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
@@ -14,6 +15,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.FontRes
 import androidx.annotation.StringRes
 import androidx.core.content.res.ResourcesCompat
+import good.damn.kamchatka.models.TokenAuth
 
 class Application
 : Application() {
@@ -22,6 +24,8 @@ class Application
 
         var WIDTH = 0
         var HEIGHT = 0
+
+        var TOKEN: TokenAuth? = null
 
         val KEY_SHARED = "DATA"
 

@@ -1,10 +1,8 @@
 package good.damn.kamchatka.fragments.ui.auth
 
 import android.content.Context
-import android.content.res.Configuration
 import android.os.Bundle
 import android.text.InputType
-import android.text.method.DigitsKeyListener
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -20,6 +18,7 @@ import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.fragments.ui.MainContentFragment
 import good.damn.kamchatka.fragments.ui.ScrollableFragment
+import good.damn.kamchatka.models.TokenAuth
 import good.damn.kamchatka.services.AuthService
 import good.damn.kamchatka.services.TokenService
 import good.damn.kamchatka.utils.StyleUtils
@@ -51,6 +50,7 @@ class SignInFragment
     private lateinit var mEditTextEmail: TextFieldRound
     private lateinit var mEditTextPassword: TextFieldRound
     private lateinit var mEditTextPasswordRepeat: TextFieldRound
+    private lateinit var mBtnSignIn: ButtonRound
 
     override fun onViewCreated(
         view: View,
@@ -121,7 +121,7 @@ class SignInFragment
             context,
             measureUnit
         )
-        val btnSignIn = ButtonRound.createDefault(
+        mBtnSignIn = ButtonRound.createDefault(
             context,
             heightBtnLogin,
             textId = R.string.sign_in,
@@ -247,7 +247,7 @@ class SignInFragment
             measureUnit * 0.03f
         )
         textViewHaveAccount.setTextPx(
-            btnSignIn.textSize
+            mBtnSignIn.textSize
         )
 
         // Text
@@ -272,7 +272,7 @@ class SignInFragment
             Gravity.CENTER_HORIZONTAL,
             top = 0.099f * measureUnit
         )
-        btnSignIn.boundsLinear(
+        mBtnSignIn.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             width = (measureUnit * 0.925f).toInt(),
             top = measureUnit * 0.10149f,
@@ -316,13 +316,13 @@ class SignInFragment
             textViewPolicy
         )
         layout.addView(
-            btnSignIn
+            mBtnSignIn
         )
         layout.addView(
             textViewHaveAccount
         )
 
-        btnSignIn.setOnClickListener(
+        mBtnSignIn.setOnClickListener(
             this::onClickBtnLogIn
         )
         textViewHaveAccount.setOnClickListener(
@@ -461,6 +461,7 @@ class SignInFragment
 
             (success as? Boolean)?.let {
                 if (!success) {
+                    mBtnSignIn.isEnabled = true
                     Application.toast(
                         R.string.account_exists,
                         context
@@ -502,21 +503,17 @@ class SignInFragment
                 )
                 return@ui
             }
-
-            val json = JSONObject(
-                body!!
+            val tokenAuth = TokenAuth.createFromJSON(
+                JSONObject(
+                    body!!
+                )
             )
 
-            val access_token = try {
-                json.get("access_token")
-            } catch (e: Exception) {
-                null
-            } ?: return@ui
+            Log.d(TAG, "onResponseToken: TOKEN: $tokenAuth")
 
-            Log.d(TAG, "onResponseToken: TOKEN: $access_token")
-
-            (access_token as? String)?.let {
+            tokenAuth.let {
                 mTokenService?.token = it
+                Application.TOKEN = it
                 mTokenService?.saveToken()
             }
 

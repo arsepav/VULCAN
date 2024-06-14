@@ -1,6 +1,7 @@
 package good.damn.kamchatka.services
 
 import android.content.SharedPreferences
+import good.damn.kamchatka.models.TokenAuth
 
 class TokenService(
     private val mShared: SharedPreferences
@@ -9,37 +10,33 @@ class TokenService(
         private const val TAG = "TokenService"
         private const val KEY_TOKEN = "token"
         private const val KEY_SAVE_TIME = "time"
-        private const val TOKEN_DELTA_SECONDS = 1 * 24 * 60 * 60L // 1 day
     }
+
+    var token = TokenAuth(
+        mShared.getString(
+            KEY_TOKEN,
+            null
+        ),
+        "bearer",
+        TokenAuth.TOKEN_TTL
+    )
 
     var tokenTime = mShared.getLong(
         KEY_SAVE_TIME,
         0
     )
-    private set
-
-    var token = mShared.getString(
-        KEY_TOKEN,
-        null
-    )
 
     var isTokenExpired = false
-        private set
         get() = TimeService.checkExpiration(
             tokenTime,
-            TOKEN_DELTA_SECONDS
+            token.tokenPeriod
         )
-
-    var isTokenAvailable = false
-        private set
-        get() = token == null
-
 
     fun saveToken() {
         mShared.edit().apply {
             putString(
                 KEY_TOKEN,
-                token
+                token.token
             )
 
             putLong(
