@@ -37,4 +37,6 @@
     <string name="account_exists">Аккаунт уже существует</string>
     <string name="kamchatka">Это Камчатка!</string>
     <string name="maps_objects">Карта, объекты, нагруженность</string>
+    <string name="nature_zakazniki">ПРИРОДНЫХ\n ЗАКАЗНИКОВ</string>
+    <string name="nature_monuments">ПАМЯТНИКА \nПРИРОДЫ</string>
 </resources>

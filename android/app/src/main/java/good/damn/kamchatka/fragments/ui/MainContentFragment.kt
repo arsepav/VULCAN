@@ -153,9 +153,12 @@ class MainContentFragment
         )
         cardImageZakaznik.title = "13"
         cardImageNatureMon.title = "63"
-
-
-
+        cardImageZakaznik.subtitle = getString(
+            R.string.nature_zakazniki
+        )
+        cardImageNatureMon.subtitle = getString(
+            R.string.nature_monuments
+        )
 
 
         // Stroke colors
