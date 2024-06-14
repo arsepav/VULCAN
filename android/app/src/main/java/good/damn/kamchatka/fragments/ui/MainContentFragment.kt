@@ -1,6 +1,7 @@
 package good.damn.kamchatka.fragments.ui
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -8,6 +9,7 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.appcompat.widget.LinearLayoutCompat
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.bottom
@@ -18,6 +20,7 @@ import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.extensions.textSizeBounds
 import good.damn.kamchatka.extensions.top
 import good.damn.kamchatka.views.RoundedImageView
+import good.damn.kamchatka.views.special.main_content.MainCardImage
 
 class MainContentFragment
 : ScrollableFragment() {
@@ -37,6 +40,8 @@ class MainContentFragment
     ): View {
 
         val btnProfileWidth = measureUnit * 0.1f
+        val cardImageWidth = (measureUnit * 0.8961f)
+            .toInt()
 
         // Allocating views
         val layout = FrameLayout(
@@ -60,6 +65,12 @@ class MainContentFragment
         val textViewKamchatka2 = AppCompatTextView(
             context
         )
+        val cardImageZakaznik = MainCardImage(
+            context
+        )
+        val cardImageNatureMon = MainCardImage(
+            context
+        )
 
 
         // Image drawable
@@ -77,6 +88,12 @@ class MainContentFragment
             Application.drawable(
                 R.drawable.kamchatka
             )
+        )
+        cardImageZakaznik.setBackgroundResource(
+            R.drawable.zakaznik
+        )
+        cardImageNatureMon.setBackgroundResource(
+            R.drawable.nature_monument
         )
 
 
@@ -114,6 +131,13 @@ class MainContentFragment
             R.font.nunito_regular,
             context
         )
+        cardImageZakaznik.typeface = Application.font(
+            R.font.open_sans_bold,
+            context
+        )
+        cardImageNatureMon.typeface = cardImageZakaznik
+            .typeface
+
 
 
 
@@ -127,6 +151,8 @@ class MainContentFragment
         textViewKamchatka2.setText(
             R.string.maps_objects
         )
+        cardImageZakaznik.title = "13"
+        cardImageNatureMon.title = "63"
 
 
 
@@ -143,13 +169,11 @@ class MainContentFragment
                 R.color.background
             )
         )
-
         imageViewLike.setStrokeColor(
             Application.color(
                 R.color.titleColor
             )
         )
-
 
 
         // Background colors
@@ -173,6 +197,12 @@ class MainContentFragment
         )
         textViewKamchatka2.setTextColor(
             blackColor
+        )
+        cardImageZakaznik.setTextColor(
+            Color.WHITE
+        )
+        cardImageNatureMon.setTextColor(
+            Color.WHITE
         )
 
 
@@ -225,6 +255,18 @@ class MainContentFragment
             top = textViewKamchatka.bottom() + measureUnit * 0.0099f,
             height = textViewKamchatka2.textSizeBounds()
         )
+        cardImageZakaznik.boundsFrame(
+            Gravity.CENTER_HORIZONTAL,
+            width = cardImageWidth,
+            height = cardImageWidth,
+            top = textViewKamchatka2.bottom() + measureUnit * 0.0664f
+        )
+        cardImageNatureMon.boundsFrame(
+            Gravity.CENTER_HORIZONTAL,
+            width = cardImageWidth,
+            height = cardImageWidth,
+            top = cardImageZakaznik.bottom() + measureUnit * 0.0797f
+        )
 
 
 
@@ -246,6 +288,12 @@ class MainContentFragment
         )
         layout.addView(
             textViewKamchatka2
+        )
+        layout.addView(
+            cardImageZakaznik
+        )
+        layout.addView(
+            cardImageNatureMon
         )
 
         return layout
