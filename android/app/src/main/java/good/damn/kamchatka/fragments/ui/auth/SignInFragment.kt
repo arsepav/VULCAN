@@ -21,6 +21,7 @@ import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.fragments.ui.MainContentFragment
 import good.damn.kamchatka.fragments.ui.ScrollableFragment
 import good.damn.kamchatka.services.AuthService
+import good.damn.kamchatka.services.TokenService
 import good.damn.kamchatka.utils.StyleUtils
 import good.damn.kamchatka.utils.ViewUtils
 import good.damn.kamchatka.views.button.ButtonRound
@@ -38,6 +39,7 @@ class SignInFragment
     }
 
     private val mAuthService = AuthService()
+    private var mTokenService: TokenService? = null
 
     private var mEmail = ""
     private var mPassword = ""
@@ -60,6 +62,15 @@ class SignInFragment
                 R.color.background
             )
         )
+
+        activity?.let {
+            mTokenService = TokenService(
+                it.getSharedPreferences(
+                    Application.KEY_SHARED,
+                    Context.MODE_PRIVATE
+                )
+            )
+        }
     }
 
     override fun onCreateContentView(
@@ -417,18 +428,45 @@ class SignInFragment
         response: Response
     ) {
         Application.ui {
+
             Log.d(TAG, "onResponseRegister: $response")
-            Log.d(TAG, "onResponseRegister: ${response.body?.string()}")
+            val body = response.body?.string() ?: return@ui
+
+            Log.d(TAG, "onResponseRegister: $body")
 
             val context = context
                 ?: return@ui
 
             if (response.code != 200) {
                 Application.toast(
-                    "Error: ${response.code} ${response.body?.string()}",
+                    "Error: ${response.code} $body",
                     context
                 )
                 return@ui
+            }
+
+            val json = JSONObject(
+                body
+            )
+
+            val success = try {
+                json.get(
+                    "success"
+                )
+            } catch (e: JSONException) {
+                null
+            }
+
+            Log.d(TAG, "onResponseToken: SUCCESS: $success ${success as? Boolean}")
+
+            (success as? Boolean)?.let {
+                if (!success) {
+                    Application.toast(
+                        R.string.account_exists,
+                        context
+                    )
+                    return@ui
+                }
             }
 
             Application.toast(
@@ -454,7 +492,6 @@ class SignInFragment
                 ?: return@ui
             val body = response.body?.string()
 
-
             Log.d(TAG, "onResponseToken: $response")
             Log.d(TAG, "onResponseToken: BODY $body")
 
@@ -465,29 +502,22 @@ class SignInFragment
                 )
                 return@ui
             }
-            
+
             val json = JSONObject(
                 body!!
             )
 
-            val success = try {
-                json.get(
-                    "success"
-                )
-            } catch (e: JSONException) {
+            val access_token = try {
+                json.get("access_token")
+            } catch (e: Exception) {
                 null
-            }
+            } ?: return@ui
 
-            Log.d(TAG, "onResponseToken: SUCCESS: $success ${success as? Boolean}")
-            
-            (success as? Boolean)?.let {
-                if (!success) {
-                    Application.toast(
-                        R.string.account_exists,
-                        context
-                    )
-                    return@ui
-                }
+            Log.d(TAG, "onResponseToken: TOKEN: $access_token")
+
+            (access_token as? String)?.let {
+                mTokenService?.token = it
+                mTokenService?.saveToken()
             }
 
             Application.toast(

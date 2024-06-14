@@ -23,6 +23,8 @@ class Application
         var WIDTH = 0
         var HEIGHT = 0
 
+        val KEY_SHARED = "DATA"
+
         lateinit var RESOURCES: Resources
 
         private val mHandler = Handler(
