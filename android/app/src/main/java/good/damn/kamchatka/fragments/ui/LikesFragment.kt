@@ -10,12 +10,17 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
+import good.damn.kamchatka.extensions.bottom
 import good.damn.kamchatka.extensions.boundsFrame
 import good.damn.kamchatka.extensions.setImageDrawableId
 import good.damn.kamchatka.extensions.setTextColorId
 import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.extensions.size
+import good.damn.kamchatka.extensions.textSizeBounds
+import good.damn.kamchatka.extensions.top
 import good.damn.kamchatka.fragments.StackFragment
+import good.damn.kamchatka.utils.StyleUtils
+import good.damn.kamchatka.utils.ViewUtils
 import good.damn.kamchatka.views.button.ButtonBack
 
 class LikesFragment
@@ -46,6 +51,11 @@ class LikesFragment
         val imageViewLike = AppCompatImageView(
             context
         )
+        val vulkanMsg = ViewUtils.vulcanTextView(
+            R.string.like_msg,
+            context,
+            measureUnit
+        )
 
         // Typeface
         textViewTitle.typeface = Application.font(
@@ -67,6 +77,15 @@ class LikesFragment
         )
 
 
+        // Background color
+        layout.setBackgroundColor(
+            Application.color(
+                R.color.background
+            )
+        )
+
+
+
         // Text size
         textViewTitle.setTextPx(
             measureUnit * 0.06949f
@@ -79,6 +98,16 @@ class LikesFragment
         // Set up drawable
         imageViewLike.setImageDrawableId(
             R.drawable.ic_like_pink
+        )
+
+
+
+        // Text
+        textViewTitle.setText(
+            R.string.title_like
+        )
+        textViewDesc.setText(
+            R.string.desc_like
         )
 
 
@@ -112,18 +141,24 @@ class LikesFragment
         )
         textViewTitle.boundsFrame(
             Gravity.START,
-            top = measureUnit * 0.1062f,
+            top = btnBack.bottom() + measureUnit * 0.1062f,
             left = marginStart
         )
         textViewDesc.boundsFrame(
             Gravity.START,
-            top = measureUnit * 0.0507f,
+            top = textViewTitle.top() + textViewTitle.textSizeBounds() + measureUnit * 0.0507f,
             left = marginStart
         )
         imageViewLike.boundsFrame(
             Gravity.CENTER,
             width = (measureUnit * 0.3074f).toInt(),
             height = (measureUnit * 0.2584f).toInt()
+        )
+        vulkanMsg.boundsFrame(
+            Gravity.LEFT,
+            top = Application.HEIGHT * 0.7442f,
+            width = -1,
+            left = marginStart
         )
 
 
@@ -139,6 +174,9 @@ class LikesFragment
         )
         layout.addView(
             imageViewLike
+        )
+        layout.addView(
+            vulkanMsg
         )
 
         btnBack.setOnClickListener(

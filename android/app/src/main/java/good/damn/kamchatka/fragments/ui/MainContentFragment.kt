@@ -350,6 +350,8 @@ class MainContentFragment
         )
 
 
+
+
         // Set up adapter
         recyclerViewParks.layoutManager = ZoomCenterLayoutManager(
             context,
@@ -406,6 +408,14 @@ class MainContentFragment
             recyclerViewParks.scrollBy(12,0)
         }
 
+
+
+
+
+        // Setup listeners
+        imageViewLike.setOnClickListener(
+            this::onClickBtnLike
+        )
         textViewKamchatka2.setOnClickListener(
             this::onClickTextViewInfo
         )
@@ -415,6 +425,14 @@ class MainContentFragment
 
 }
 
+
+private fun MainContentFragment.onClickBtnLike(
+    view: View
+) {
+    pushFragment(
+        LikesFragment()
+    )
+}
 
 private fun MainContentFragment.onClickTextViewInfo(
     view: View
