@@ -9,8 +9,6 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
@@ -22,6 +20,9 @@ import good.damn.kamchatka.extensions.height
 import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.extensions.textSizeBounds
 import good.damn.kamchatka.extensions.top
+import good.damn.kamchatka.fragments.ui.main_content.AnthropInfoFragment
+import good.damn.kamchatka.fragments.ui.main_content.LikesFragment
+import good.damn.kamchatka.fragments.ui.main_content.maps.MapsFragment
 import good.damn.kamchatka.item_decorations.MarginItemDecoration
 import good.damn.kamchatka.layout_managers.ZoomCenterLayoutManager
 import good.damn.kamchatka.models.view.Park
@@ -410,11 +411,12 @@ class MainContentFragment
 
 
 
-
-
         // Setup listeners
         imageViewLike.setOnClickListener(
             this::onClickBtnLike
+        )
+        imageViewKamchatka.setOnClickListener(
+            this::onClickImageViewKamchatka
         )
         textViewKamchatka2.setOnClickListener(
             this::onClickTextViewInfo
@@ -425,6 +427,13 @@ class MainContentFragment
 
 }
 
+private fun MainContentFragment.onClickImageViewKamchatka(
+    view: View
+) {
+    pushFragment(
+        MapsFragment()
+    )
+}
 
 private fun MainContentFragment.onClickBtnLike(
     view: View

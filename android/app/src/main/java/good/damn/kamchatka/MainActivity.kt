@@ -120,6 +120,17 @@ ViewTreeObserver.OnGlobalLayoutListener{
         super.onWindowFocusChanged(hasFocus)
     }
 
+    override fun onBackPressed() {
+        if (supportFragmentManager
+            .fragments.size <= 1
+        ) {
+            super.onBackPressed()
+            return
+        }
+
+        popFragment()
+    }
+
     fun popFragment() {
         val fragment = supportFragmentManager
             .fragments
