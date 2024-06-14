@@ -6,8 +6,10 @@ import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
+import good.damn.kamchatka.extensions.bottom
 import good.damn.kamchatka.extensions.boundsFrame
 import good.damn.kamchatka.extensions.boundsFrameRight
 import good.damn.kamchatka.extensions.height
@@ -47,6 +49,9 @@ class MainContentFragment
         val imageViewLike = RoundedImageView(
             context
         )
+        val imageViewKamchatka = AppCompatImageView(
+            context
+        )
 
 
         // Image drawable
@@ -58,6 +63,11 @@ class MainContentFragment
         imageViewLike.setImageDrawable(
             Application.drawable(
                 R.drawable.ic_like
+            )
+        )
+        imageViewKamchatka.setImageDrawable(
+            Application.drawable(
+                R.drawable.kamchatka
             )
         )
 
@@ -162,7 +172,12 @@ class MainContentFragment
             top = imageViewProfile.top(),
             right = measureUnit * 0.0700f
         )
-
+        imageViewKamchatka.boundsFrameRight(
+            Gravity.CENTER_HORIZONTAL,
+            width = (measureUnit * 0.4541f).toInt(),
+            height = (measureUnit * 0.5072f).toInt(),
+            top = measureUnit * 0.1425f + textViewAppName.bottom()
+        )
 
 
         // Adding views
@@ -174,6 +189,9 @@ class MainContentFragment
         )
         layout.addView(
             imageViewLike
+        )
+        layout.addView(
+            imageViewKamchatka
         )
 
         return layout
