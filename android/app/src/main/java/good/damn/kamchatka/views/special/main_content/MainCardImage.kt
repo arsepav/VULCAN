@@ -15,10 +15,6 @@ class MainCardImage(
     context
 ) {
 
-    companion object {
-        private const val TAG = "MainCardImage"
-    }
-
     var typeface = Typeface.DEFAULT
         set(v) {
             mPaintTitle.typeface = v
@@ -63,7 +59,6 @@ class MainCardImage(
         mTitleX = (width - mPaintTitle.measureText(title)) * 0.5f
         mTitleY = height * 0.69f
 
-        Log.d(TAG, "onLayout: ${mSubtitlePos!![0].text}")
         if (mSubtitlePos == null) {
             return
         }
@@ -93,7 +88,6 @@ class MainCardImage(
             mPaintTitle
         )
 
-        Log.d(TAG, "onDraw: ${mSubtitlePos?.size}")
         mSubtitlePos?.let { s ->
             s.forEach {
                 canvas.drawText(

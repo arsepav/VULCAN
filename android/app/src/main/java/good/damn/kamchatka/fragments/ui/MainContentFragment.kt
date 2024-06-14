@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.recyclerview.widget.RecyclerView
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.bottom
@@ -63,6 +64,9 @@ class MainContentFragment
             context
         )
         val textViewKamchatka2 = AppCompatTextView(
+            context
+        )
+        val recyclerViewParks = RecyclerView(
             context
         )
         val cardImageZakaznik = MainCardImage(
@@ -258,11 +262,16 @@ class MainContentFragment
             top = textViewKamchatka.bottom() + measureUnit * 0.0099f,
             height = textViewKamchatka2.textSizeBounds()
         )
+        recyclerViewParks.boundsFrame(
+            width = -1,
+            height = (measureUnit * 0.5845f).toInt(),
+            top = textViewKamchatka2.bottom() + measureUnit * 0.16625f
+        )
         cardImageZakaznik.boundsFrame(
             Gravity.CENTER_HORIZONTAL,
             width = cardImageWidth,
             height = cardImageWidth,
-            top = textViewKamchatka2.bottom() + measureUnit * 0.0664f
+            top = recyclerViewParks.bottom() + measureUnit * 0.0664f
         )
         cardImageNatureMon.boundsFrame(
             Gravity.CENTER_HORIZONTAL,
@@ -291,6 +300,9 @@ class MainContentFragment
         )
         layout.addView(
             textViewKamchatka2
+        )
+        layout.addView(
+            recyclerViewParks
         )
         layout.addView(
             cardImageZakaznik
