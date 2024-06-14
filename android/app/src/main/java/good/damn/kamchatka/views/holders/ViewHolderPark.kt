@@ -1,6 +1,7 @@
 package good.damn.kamchatka.views.holders
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.media.Image
 import android.view.Gravity
 import android.widget.ImageView
@@ -23,6 +24,27 @@ class ViewHolderPark(
 ): RecyclerView.ViewHolder(
     layout
 ) {
+
+    fun setPreview(
+        d: Drawable?
+    ) {
+        mImageView.setImageDrawable(
+            d
+        )
+    }
+
+    fun setType(
+        t: String
+    ) {
+        mTextViewType.text = t
+    }
+
+    fun setName(
+        t: String
+    ) {
+        mTextViewName.text = t
+    }
+
     companion object {
         fun create(
             recyclerViewHeight: Float,

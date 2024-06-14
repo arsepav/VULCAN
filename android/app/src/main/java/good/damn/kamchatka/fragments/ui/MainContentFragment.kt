@@ -10,9 +10,11 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
+import good.damn.kamchatka.adapters.recycler_view.ParksAdapter
 import good.damn.kamchatka.extensions.bottom
 import good.damn.kamchatka.extensions.boundsFrame
 import good.damn.kamchatka.extensions.boundsFrameRight
@@ -20,6 +22,9 @@ import good.damn.kamchatka.extensions.height
 import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.extensions.textSizeBounds
 import good.damn.kamchatka.extensions.top
+import good.damn.kamchatka.item_decorations.MarginItemDecoration
+import good.damn.kamchatka.layout_managers.ZoomCenterLayoutManager
+import good.damn.kamchatka.models.view.Park
 import good.damn.kamchatka.views.RoundedImageView
 import good.damn.kamchatka.views.special.main_content.MainCardImage
 
@@ -310,6 +315,59 @@ class MainContentFragment
         layout.addView(
             cardImageNatureMon
         )
+
+
+        // Set up adapter
+        recyclerViewParks.layoutManager = ZoomCenterLayoutManager(
+            context
+        )
+        recyclerViewParks.addItemDecoration(
+            MarginItemDecoration(
+                (measureUnit * 0.01521f).toInt()
+            )
+        )
+
+        recyclerViewParks.adapter = ParksAdapter(
+            recyclerViewParks.height().toFloat(),
+            arrayOf(
+                Park(
+                    Application.drawable(
+                        R.drawable.icon
+                    ),
+                    "Южно-\nКамчатский",
+                    "Природный парк"
+                ),
+                Park(
+                    Application.drawable(
+                        R.drawable.icon
+                    ),
+                    "Ключевской",
+                    "Природный парк"
+                ),
+                Park(
+                    Application.drawable(
+                        R.drawable.icon
+                    ),
+                    "Налычево",
+                    "Природный парк"
+                ),
+                Park(
+                    Application.drawable(
+                        R.drawable.icon
+                    ),
+                    "Вилючинский",
+                    "Природный парк"
+                ),
+                Park(
+                    Application.drawable(
+                        R.drawable.icon
+                    ),
+                    "Вилючинский",
+                    "Природный парк"
+                )
+            )
+        )
+
 
         return layout
     }
