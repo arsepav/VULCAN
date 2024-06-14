@@ -199,7 +199,7 @@ class AnthropInfoFragment
         )
         textViewDesc2.boundsLinear(
             Gravity.START,
-            top = measureUnit * 0.11473f,
+            top = measureUnit * 0.10273f,
             left = marginStart
         )
         imageViewMap.boundsLinear(
