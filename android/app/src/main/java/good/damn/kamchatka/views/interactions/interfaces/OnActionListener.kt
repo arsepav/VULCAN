@@ -7,12 +7,12 @@ interface OnActionListener {
 
     fun onDown(
         v: View,
-        action: MotionEvent
+        event: MotionEvent
     )
 
     fun onUp(
         v: View,
-        action: MotionEvent
+        event: MotionEvent
     )
 
 }

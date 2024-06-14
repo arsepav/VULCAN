@@ -108,7 +108,7 @@ class ButtonBack(
 
     override fun onUp(
         v: View,
-        action: MotionEvent
+        event: MotionEvent
     ) {
         mOnClickListener?.onClick(
             v
@@ -117,7 +117,7 @@ class ButtonBack(
 
     override fun onDown(
         v: View,
-        action: MotionEvent
+        event: MotionEvent
     ) = Unit
 
     fun setStrokeColor(

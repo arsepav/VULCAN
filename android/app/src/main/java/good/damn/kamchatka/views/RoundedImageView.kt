@@ -151,12 +151,12 @@ OnUpdateAnimationListener {
 
     override fun onDown(
         v: View,
-        action: MotionEvent
+        event: MotionEvent
     ) = Unit
 
     override fun onUp(
         v: View,
-        action: MotionEvent
+        event: MotionEvent
     ) {
         mOnClickListener?.onClick(
             v

@@ -28,6 +28,10 @@ open class BaseTouchInteraction
                 mOnActionListener!!.onDown(v,event)
             }
 
+            MotionEvent.ACTION_CANCEL -> {
+                mOnActionListener!!.onUp(v,event)
+            }
+
             MotionEvent.ACTION_UP -> {
                 mOnActionListener!!.onUp(v,event)
             }

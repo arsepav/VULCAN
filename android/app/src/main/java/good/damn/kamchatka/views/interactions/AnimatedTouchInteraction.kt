@@ -52,21 +52,25 @@ OnActionListener {
 
     override fun onDown(
         v: View,
-        action: MotionEvent
+        event: MotionEvent
     ) {
-        mOnActionListener?.onDown(
-            v,
-            action
-        )
         mAnimator.setFloatValues(
             maxValue, minValue
         )
         mAnimator.start()
+
+        if (event.action == MotionEvent.ACTION_CANCEL) {
+            return
+        }
+        mOnActionListener?.onDown(
+            v,
+            event
+        )
     }
 
     override fun onUp(
         v: View,
-        action: MotionEvent
+        event: MotionEvent
     ) {
         mAnimator.setFloatValues(
             mCurrentValue, maxValue
@@ -74,11 +78,11 @@ OnActionListener {
         mAnimator.start()
 
         if (v.checkBounds(
-            action.x,
-            action.y
+            event.x,
+            event.y
         )) {
             mOnActionListener?.onUp(
-                v,  action
+                v,  event
             )
         }
     }
