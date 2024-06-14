@@ -5,31 +5,47 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
+import android.view.MotionEvent
+import android.view.View
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatButton
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.setTextPx
+import good.damn.kamchatka.views.interactions.AnimatedTouchInteraction
+import good.damn.kamchatka.views.interactions.interfaces.OnActionListener
+import good.damn.kamchatka.views.interactions.interfaces.OnUpdateAnimationListener
 
 class ButtonRound(
     context: Context
 ): AppCompatButton(
     context
-) {
+), OnUpdateAnimationListener, OnActionListener {
 
     var cornerRadius = 1f
     private val mRectView = RectF()
     private val mPaint = Paint()
 
-    private val mButtonInteraction = ButtonInteraction()
+    private val mInteraction = AnimatedTouchInteraction()
 
     private var mOnClickListener: OnClickListener? = null
 
     init {
         isAllCaps = false
-        setOnTouchListener(
-            mButtonInteraction
+        super.setOnTouchListener(
+            mInteraction
+        )
+
+        mInteraction.minValue = 0.75f
+        mInteraction.maxValue = 1.0f
+
+        mInteraction.setOnUpdateAnimationListener(
+            this
+        )
+
+        mInteraction.setOnActionListener(
+            this
         )
     }
 
@@ -42,17 +58,15 @@ class ButtonRound(
 
     final override fun setOnTouchListener(
         l: OnTouchListener?
-    ) {
-        super.setOnTouchListener(
-            mButtonInteraction
-        )
-    }
+    ) = Unit
 
     final override fun setOnClickListener(
         l: OnClickListener?
     ) {
         mOnClickListener = l
-        super.setOnClickListener(null)
+        super.setOnClickListener(
+            null
+        )
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
@@ -116,5 +130,27 @@ class ButtonRound(
 
             return btnRound
         }
+    }
+
+    override fun onUpdateAnimation(
+        animatedValue: Float
+    ) {
+        alpha = animatedValue
+        scaleX = animatedValue
+        scaleY = animatedValue
+    }
+
+    override fun onDown(
+        v: View,
+        action: MotionEvent
+    ) = Unit
+
+    override fun onUp(
+        v: View,
+        action: MotionEvent
+    ) {
+        mOnClickListener?.onClick(
+            v
+        )
     }
 }

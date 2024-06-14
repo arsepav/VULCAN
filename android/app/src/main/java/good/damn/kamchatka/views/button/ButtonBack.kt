@@ -5,14 +5,18 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PointF
+import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.ColorInt
+import good.damn.kamchatka.views.interactions.AnimatedTouchInteraction
+import good.damn.kamchatka.views.interactions.interfaces.OnActionListener
+import good.damn.kamchatka.views.interactions.interfaces.OnUpdateAnimationListener
 
 class ButtonBack(
     context: Context
 ): View(
     context
-) {
+), OnUpdateAnimationListener, OnActionListener {
 
     private val mPaint = run {
         val p = Paint()
@@ -29,6 +33,37 @@ class ButtonBack(
     private var mPointCenterY = 1f
     private var mPointEndY = 1f
 
+    private var mOnClickListener: OnClickListener? = null
+    private val mTouchInteraction = AnimatedTouchInteraction()
+    
+    init {
+        super.setOnTouchListener(
+            mTouchInteraction
+        )
+
+        mTouchInteraction.setOnActionListener(
+            this
+        )
+        
+        mTouchInteraction.setOnUpdateAnimationListener(
+            this
+        )
+
+        mTouchInteraction.setDuration(
+            100
+        )
+    }
+
+    override fun setOnTouchListener(
+        l: OnTouchListener?
+    ) = Unit
+
+    override fun setOnClickListener(
+        l: OnClickListener?
+    ) {
+        mOnClickListener = l
+    }
+    
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
 
@@ -62,6 +97,28 @@ class ButtonBack(
             mPaint
         )
     }
+
+    override fun onUpdateAnimation(
+        animatedValue: Float
+    ) {
+        alpha = animatedValue
+        scaleX = animatedValue
+        scaleY = animatedValue
+    }
+
+    override fun onUp(
+        v: View,
+        action: MotionEvent
+    ) {
+        mOnClickListener?.onClick(
+            v
+        )
+    }
+
+    override fun onDown(
+        v: View,
+        action: MotionEvent
+    ) = Unit
 
     fun setStrokeColor(
         @ColorInt color: Int

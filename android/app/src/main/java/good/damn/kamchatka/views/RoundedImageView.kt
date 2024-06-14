@@ -7,15 +7,22 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
+import android.view.MotionEvent
 import android.view.View
+import android.view.animation.OvershootInterpolator
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.annotation.ColorInt
+import good.damn.kamchatka.views.interactions.AnimatedTouchInteraction
+import good.damn.kamchatka.views.interactions.interfaces.OnActionListener
+import good.damn.kamchatka.views.interactions.interfaces.OnUpdateAnimationListener
 
 class RoundedImageView(
     context: Context
 ): AppCompatImageView(
     context
-) {
+), OnActionListener,
+OnUpdateAnimationListener {
+
     var radius = 1f
 
     private val mPaintStroke = Paint()
@@ -31,12 +38,38 @@ class RoundedImageView(
     private var mImageScaleX = 0f
     private var mImageScaleY = 0f
 
+    private val mTouchInteraction = AnimatedTouchInteraction()
+    private var mOnClickListener: OnClickListener? = null
+
     init {
         mPaintStroke.color = 0
         mPaintStrokeOffset.color = 0
 
         mPaintStroke.style = Paint.Style.STROKE
         mPaintStrokeOffset.style = Paint.Style.STROKE
+
+        mTouchInteraction.minValue = 1.0f
+        mTouchInteraction.maxValue = 0.0f
+
+        mTouchInteraction.setInterpolator(
+            OvershootInterpolator()
+        )
+
+        mTouchInteraction.setDuration(
+            190
+        )
+
+        mTouchInteraction.setOnUpdateAnimationListener(
+            this
+        )
+
+        mTouchInteraction.setOnActionListener(
+            this
+        )
+
+        super.setOnTouchListener(
+            mTouchInteraction
+        )
     }
 
 
@@ -115,6 +148,37 @@ class RoundedImageView(
             )
         }
     }
+
+    override fun onDown(
+        v: View,
+        action: MotionEvent
+    ) = Unit
+
+    override fun onUp(
+        v: View,
+        action: MotionEvent
+    ) {
+        mOnClickListener?.onClick(
+            v
+        )
+    }
+
+    override fun onUpdateAnimation(
+        animatedValue: Float
+    ) {
+        scaleX = 1.0f + animatedValue * 0.25f
+        scaleY = scaleX
+    }
+
+    override fun setOnClickListener(
+        l: OnClickListener?
+    ) {
+        mOnClickListener = l
+    }
+
+    override fun setOnTouchListener(
+        l: OnTouchListener?
+    ) = Unit
 
     fun setImageScale(
         x: Float,

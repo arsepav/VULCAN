@@ -39,7 +39,7 @@ OnActionListener {
         animation: ValueAnimator
     ) {
         mCurrentValue = animation.animatedValue as Float
-        mOnUpdateListener?.onUpdate(
+        mOnUpdateListener?.onUpdateAnimation(
             mCurrentValue
         )
     }
@@ -54,7 +54,7 @@ OnActionListener {
         v: View,
         action: MotionEvent
     ) {
-        mOnActionListener?.onUp(
+        mOnActionListener?.onDown(
             v,
             action
         )
@@ -80,7 +80,6 @@ OnActionListener {
             mOnActionListener?.onUp(
                 v,  action
             )
-            return
         }
     }
 
