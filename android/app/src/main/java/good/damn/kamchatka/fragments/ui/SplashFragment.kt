@@ -63,13 +63,28 @@ class SplashFragment
 
 
 
-
-        // Colors
+        // Background color
         layout.setBackgroundColor(
             Application.color(
                 R.color.background
             )
         )
+        imageViewAppIcon.setBackgroundColor(
+            Color.BLACK
+        )
+
+
+
+        // Image Scale
+        imageViewAppIcon.setImageScale(
+            0.25f,
+            0.25f
+        )
+
+
+
+
+        // Colors
         textViewAppName.setTextColor(
             Application.color(
                 R.color.titleColor
@@ -161,15 +176,15 @@ class SplashFragment
         textViewPowered.alpha = 0.2f
         textViewFactLabel.alpha = 0.5f
 
+        // Corner radius
+        imageViewAppIcon.radius = appIconSize * 0.25f
+
         // Image
         imageViewAppIcon.setImageDrawable(
             Application.drawable(
                 R.drawable.icon
             )
         )
-
-        // Corner radius
-        imageViewAppIcon.radius = appIconSize * 0.125f
 
         // Gravity
         textViewFact.gravity = Gravity

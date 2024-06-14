@@ -27,6 +27,7 @@ OnUpdateAnimationListener {
 
     private val mPaintStroke = Paint()
     private val mPaintStrokeOffset = Paint()
+    private val mPaintBack = Paint()
 
     private val mRectView = RectF()
 
@@ -42,6 +43,7 @@ OnUpdateAnimationListener {
     private var mOnClickListener: OnClickListener? = null
 
     init {
+        mPaintBack.color = 0
         mPaintStroke.color = 0
         mPaintStrokeOffset.color = 0
 
@@ -72,9 +74,16 @@ OnUpdateAnimationListener {
         )
     }
 
+    override fun setBackgroundColor(color: Int) {
+        mPaintBack.color = color
+        super.setBackgroundColor(0)
+    }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
+
+        mRectView.top = 0f
+        mRectView.left = 0f
         mRectView.bottom = height.toFloat()
         mRectView.right = width.toFloat()
 
@@ -109,13 +118,12 @@ OnUpdateAnimationListener {
         )
     }
 
-
     override fun onDraw(
         canvas: Canvas
     ) {
         mPath.reset()
         mPath.addRoundRect(
-            mRectRound,
+            mRectView,
             radius,
             radius,
             Path.Direction.CW
@@ -125,6 +133,13 @@ OnUpdateAnimationListener {
         canvas.clipPath(
             mPath
         )
+
+        if (mPaintBack.color != 0) {
+            // Draw background
+            canvas.drawPaint(
+                mPaintBack
+            )
+        }
 
         drawable.draw(
             canvas
