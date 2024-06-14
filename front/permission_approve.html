@@ -205,31 +205,44 @@
                     let permission = await response.json();
                     let detailsDiv = document.getElementById('permission-details');
                     detailsDiv.innerHTML = `
-                        <h2>Детали запроса:</h2>
-                        <p><strong>Дата прибытия:</strong> ${permission.arrival_date}</p>
-                        <p><strong>Фамилия:</strong> ${permission.surname}</p>
-                        <p><strong>Имя:</strong> ${permission.name}</p>
-                        <p><strong>Отчество:</strong> ${permission.lastname}</p>
-                        <p><strong>Дата рождения:</strong> ${permission.birthday}</p>
-                        <p><strong>Гражданство:</strong> ${permission.citizenship_country}</p>
-                        <p><strong>Пол:</strong> ${permission.isMale ? 'Male' : 'Female'}</p>
-                        <p><strong>Паспорт:</strong> ${permission.passport}</p>
-                        <p><strong>Email:</strong> ${permission.email}</p>
-                        <p><strong>Номер телефона:</strong> ${permission.phone_number}</p>
-                        <p><strong>Путь:</strong> ${permission.path}</p>
-                        <br>
-                        <b>Цель посещения:</b><br>
-                        <p><strong>Однодневное посещение:</strong> ${permission.is_one_day_only}</p>
-                        <p><strong>Лыжный туризм:</strong> ${permission.purpose_skis}</p>
-                        <p><strong>Спортивные мероприятия:</strong> ${permission.purpose_sport}</p>
-                        <p><strong>Научные исследования:</strong> ${permission.purpose_science}</p>
-                        <p><strong>Видео/фотосъемка:</strong> ${permission.purpose_photo_video}</p>
-                        <p><strong>Альпинизм:</strong> ${permission.purpose_mountaineering}</p>
-                        <p><strong>Другое:</strong> ${permission.purpose_another}</p>
-                        <p><strong>Проведение профессиональной фото/видеоcъемки:</strong> ${permission.photo_video_professional}</p>
-                        <p><strong>Съемка с использование БПЛА:</strong> ${permission.photo_video_drones}</p>
-                        <p><strong>Рассмотрено:</strong> ${permission.reviewed}</p>
-                        <p><strong>Одобрено:</strong> ${permission.approved}</p>
+                        <div style="display: flex;">
+                            <div style="flex: 1; padding-right: 20px;">
+                                <h2>Детали запроса:</h2>
+                                <p><strong>Дата прибытия:</strong> ${permission.arrival_date}</p>
+                                <p><strong>Фамилия:</strong> ${permission.surname}</p>
+                                <p><strong>Имя:</strong> ${permission.name}</p>
+                                <p><strong>Отчество:</strong> ${permission.lastname}</p>
+                                <p><strong>Дата рождения:</strong> ${permission.birthday}</p>
+                                <p><strong>Гражданство:</strong> ${permission.citizenship_country}</p>
+                                <p><strong>Пол:</strong> ${permission.isMale ? 'Male' : 'Female'}</p>
+                                <p><strong>Паспорт:</strong> ${permission.passport}</p>
+                                <p><strong>Email:</strong> ${permission.email}</p>
+                                <p><strong>Номер телефона:</strong> ${permission.phone_number}</p>
+                                <p><strong>Путь:</strong> ${permission.path}</p>
+                                <br>
+                                <b>Цель посещения:</b><br>
+                                <p><strong>Однодневное посещение:</strong> ${permission.is_one_day_only}</p>
+                                <p><strong>Лыжный туризм:</strong> ${permission.purpose_skis}</p>
+                                <p><strong>Спортивные мероприятия:</strong> ${permission.purpose_sport}</p>
+                                <p><strong>Научные исследования:</strong> ${permission.purpose_science}</p>
+                                <p><strong>Видео/фотосъемка:</strong> ${permission.purpose_photo_video}</p>
+                                <p><strong>Альпинизм:</strong> ${permission.purpose_mountaineering}</p>
+                                <p><strong>Другое:</strong> ${permission.purpose_another}</p>
+                                <p><strong>Проведение профессиональной фото/видеоcъемки:</strong> ${permission.photo_video_professional}</p>
+                                <p><strong>Съемка с использование БПЛА:</strong> ${permission.photo_video_drones}</p>
+                                <p><strong>Рассмотрено:</strong> ${permission.reviewed}</p>
+                                <p><strong>Одобрено:</strong> ${permission.approved}</p>
+                            </div>
+                            <div style="flex: 1;">
+                                <div style="border: 2px solid ${permission.oopt_load > 0.5 ? 'red' : 'black'}; padding: 10px; margin-bottom: 20px;">
+                                    <p><strong>Нагрузка ООПТ:</strong> ${permission.oopt_load}</p>
+                                </div>
+                                <div style="border: 2px solid ${permission.path_load > 0.5 ? 'red' : 'black'}; padding: 10px;">
+                                    <p><strong>Нагрузка пути:</strong> ${permission.path_load}</p>
+                                </div>
+                            </div>
+                        </div>
+
                     `;
                     detailsDiv.style.display = 'block';
 

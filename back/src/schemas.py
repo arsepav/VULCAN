@@ -160,6 +160,12 @@ class VisitPermissionIndividualResponse(BaseModel):
     reviewer: Optional[int]
     date_of_creation: datetime
 
+    citizenship_country: str
+    path: str
+
+    oopt_load: float
+    path_load: float
+
     class Config:
         orm_mode = True
 
