@@ -1,9 +1,27 @@
 package good.damn.kamchatka.extensions
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 
+
+
+fun View.top(): Float {
+    margins().apply {
+        return topMargin.toFloat()
+    }
+}
+
+fun View.bottom(): Int {
+    margins().apply {
+        return topMargin + height
+    }
+}
+
+fun View.margins(): ViewGroup.MarginLayoutParams {
+    return layoutParams as ViewGroup.MarginLayoutParams
+}
 
 fun View.checkBounds(
     touchX: Float,

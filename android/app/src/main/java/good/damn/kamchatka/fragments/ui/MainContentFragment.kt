@@ -2,6 +2,7 @@ package good.damn.kamchatka.fragments.ui
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.os.Bundle
 import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
@@ -15,6 +16,7 @@ import good.damn.kamchatka.R
 import good.damn.kamchatka.adapters.fragment_adapters.FragmentAdapter
 import good.damn.kamchatka.extensions.boundsFrame
 import good.damn.kamchatka.extensions.setTextPx
+import good.damn.kamchatka.extensions.top
 import good.damn.kamchatka.fragments.StackFragment
 import good.damn.kamchatka.fragments.ui.main_content.MapsFragment
 import good.damn.kamchatka.fragments.ui.main_content.PlacesFragment
@@ -22,6 +24,15 @@ import good.damn.kamchatka.views.RoundedImageView
 
 class MainContentFragment
 : ScrollableFragment() {
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        navigationBarColor(
+            Application.color(
+                R.color.background
+            )
+        )
+    }
 
     override fun onCreateContentView(
         context: Context,
@@ -62,7 +73,7 @@ class MainContentFragment
 
         // Font
         textViewAppName.typeface = Application.font(
-            R.font.open_sans_extra_bold,
+            R.font.open_sans_bold,
             context
         )
 
@@ -100,9 +111,16 @@ class MainContentFragment
             top = measureUnit * 0.0966f
         )
         textViewAppName.boundsFrame(
-            Gravity.CENTER_HORIZONTAL
+            Gravity.CENTER_HORIZONTAL,
+            top = btnRoundProfile.top()
         )
 
+
+
+        // Adding views
+        layout.addView(
+            btnRoundProfile
+        )
         layout.addView(
             textViewAppName
         )
