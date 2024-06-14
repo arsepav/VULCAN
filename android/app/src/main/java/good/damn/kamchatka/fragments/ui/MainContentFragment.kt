@@ -14,9 +14,11 @@ import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.adapters.fragment_adapters.FragmentAdapter
 import good.damn.kamchatka.extensions.boundsFrame
+import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.fragments.StackFragment
 import good.damn.kamchatka.fragments.ui.main_content.MapsFragment
 import good.damn.kamchatka.fragments.ui.main_content.PlacesFragment
+import good.damn.kamchatka.views.RoundedImageView
 
 class MainContentFragment
 : ScrollableFragment() {
@@ -26,12 +28,34 @@ class MainContentFragment
         measureUnit: Int
     ): View {
 
+        val btnProfileWidth = measureUnit * 0.0748f
+
         // Allocating views
         val layout = FrameLayout(
             context
         )
         val textViewAppName = TextView(
             context
+        )
+        val btnRoundProfile = RoundedImageView(
+            context
+        )
+
+
+        // Image drawable
+        btnRoundProfile.imageView.setImageDrawable(
+            Application.drawable(
+                R.mipmap.ic_launcher
+            )
+        )
+
+
+        // CornerRadius
+        btnRoundProfile.radius = btnProfileWidth * 0.5f
+
+        // Text size
+        textViewAppName.setTextPx(
+            measureUnit * 0.0507f
         )
 
 
@@ -68,6 +92,13 @@ class MainContentFragment
 
 
         // Layout params
+        btnRoundProfile.boundsFrame(
+            Gravity.START,
+            width = btnProfileWidth.toInt(),
+            height = btnProfileWidth.toInt(),
+            left = measureUnit * 0.0700f,
+            top = measureUnit * 0.0966f
+        )
         textViewAppName.boundsFrame(
             Gravity.CENTER_HORIZONTAL
         )

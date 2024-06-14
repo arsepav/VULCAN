@@ -24,6 +24,7 @@ ValueAnimator.AnimatorUpdateListener {
     }
 
     private val mAnimator = ValueAnimator()
+    private var mIsPoping = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -98,7 +99,11 @@ ValueAnimator.AnimatorUpdateListener {
     }
 
     fun popFragment() {
+        if (mIsPoping) {
+            return
+        }
         mainActivity().popFragment()
+        mIsPoping = true
     }
 
     fun pushFragment(
