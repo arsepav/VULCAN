@@ -7,7 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.abs
 
 class ZoomCenterLayoutManager(
-    context: Context
+    context: Context,
+    private val minScale: Float = 0.5f
 ): LinearLayoutManager(
     context,
     HORIZONTAL,
@@ -17,7 +18,7 @@ class ZoomCenterLayoutManager(
         private const val TAG = "ZoomCenterLayoutManager"
     }
 
-    private val minScale = 0.55f
+    private val minScaleN = 1f - minScale
     private var mHalfWidth = 0
 
     override fun onLayoutCompleted(
@@ -44,8 +45,8 @@ class ZoomCenterLayoutManager(
                 ) * 0.5f
 
             val distance = abs(childMidpoint-mHalfWidth)
-            val normDistance = 1.0f - distance / mHalfWidth
-            val scale = minScale + normDistance * (1f-minScale)
+            val normDistance = distance / mHalfWidth
+            val scale = minScale + (1.0f-normDistance) * minScaleN
             child.scaleX = scale
             child.scaleY = scale
         }

@@ -319,11 +319,12 @@ class MainContentFragment
 
         // Set up adapter
         recyclerViewParks.layoutManager = ZoomCenterLayoutManager(
-            context
+            context,
+            0.78f
         )
         recyclerViewParks.addItemDecoration(
             MarginItemDecoration(
-                (measureUnit * 0.01521f).toInt()
+                (measureUnit * 0.01f).toInt()
             )
         )
 
@@ -332,42 +333,45 @@ class MainContentFragment
             arrayOf(
                 Park(
                     Application.drawable(
-                        R.drawable.icon
-                    ),
-                    "Южно-\nКамчатский",
-                    "Природный парк"
-                ),
-                Park(
-                    Application.drawable(
-                        R.drawable.icon
+                        R.drawable.klychevoskoy
                     ),
                     "Ключевской",
                     "Природный парк"
                 ),
                 Park(
                     Application.drawable(
-                        R.drawable.icon
+                        R.drawable.naluchevo
                     ),
                     "Налычево",
                     "Природный парк"
                 ),
                 Park(
                     Application.drawable(
-                        R.drawable.icon
+                        R.drawable.south_kamch
+                    ),
+                    "Южно-\nКамчатский",
+                    "Природный парк"
+                ),
+                Park(
+                    Application.drawable(
+                        R.drawable.viluchinksiy
                     ),
                     "Вилючинский",
                     "Природный парк"
                 ),
                 Park(
                     Application.drawable(
-                        R.drawable.icon
+                        R.drawable.bistrinskiy
                     ),
-                    "Вилючинский",
+                    "Быстринский",
                     "Природный парк"
                 )
             )
         )
 
+        recyclerViewParks.post {
+            recyclerViewParks.scrollBy(12,0)
+        }
 
         return layout
     }

@@ -37,6 +37,16 @@ fun View.checkBounds(
         )
 }
 
+fun View.size(
+    width: Int = -2,
+    height: Int = -2
+) {
+    layoutParams = ViewGroup.LayoutParams(
+        width,
+        height
+    )
+}
+
 fun View.boundsLinear(
     gravity: Int = Gravity.NO_GRAVITY,
     width: Int = -2,

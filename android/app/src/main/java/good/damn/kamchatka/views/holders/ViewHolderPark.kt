@@ -15,6 +15,7 @@ import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.extensions.setTextColorId
 import good.damn.kamchatka.extensions.setTextPx
+import good.damn.kamchatka.extensions.size
 
 class ViewHolderPark(
     layout: LinearLayout,
@@ -51,7 +52,7 @@ class ViewHolderPark(
             context: Context
         ): ViewHolderPark {
 
-            val imageViewWidth = (recyclerViewHeight * 0.5661f)
+            val imageViewWidth = (recyclerViewHeight * 0.673553f)
                 .toInt()
 
             val layout = LinearLayout(
@@ -69,6 +70,13 @@ class ViewHolderPark(
 
             layout.orientation = LinearLayout
                 .VERTICAL
+
+            // Gravity
+            textViewName.gravity = Gravity
+                .CENTER_HORIZONTAL
+            textViewType.gravity = Gravity
+                .CENTER_HORIZONTAL
+
 
 
 
@@ -92,12 +100,9 @@ class ViewHolderPark(
             )
 
 
-            // Background color
-            layout.setBackgroundColor(
-                Application.color(
-                    R.color.background
-                )
-            )
+            // Background color 0
+            layout.setBackgroundColor(0)
+            imageView.setBackgroundColor(0)
 
 
             // Text Color
@@ -115,8 +120,10 @@ class ViewHolderPark(
 
 
 
-
             // Layout params
+            layout.size(
+                height = recyclerViewHeight.toInt()
+            )
             imageView.boundsLinear(
                 width = imageViewWidth,
                 height = imageViewWidth
@@ -127,7 +134,7 @@ class ViewHolderPark(
             )
             textViewType.boundsLinear(
                 Gravity.CENTER_HORIZONTAL,
-                top = (recyclerViewHeight * 0.04545f)
+                top = (recyclerViewHeight * 0.01f)
             )
 
 
