@@ -14,6 +14,7 @@ import good.damn.kamchatka.extensions.setImageDrawableId
 import good.damn.kamchatka.extensions.setTextColorId
 import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.extensions.size
+import good.damn.kamchatka.views.ColorBar
 import good.damn.kamchatka.views.button.ButtonBack
 
 class AnthropInfoFragment
@@ -35,6 +36,9 @@ class AnthropInfoFragment
             context
         )
         val textViewDesc = TextView(
+            context
+        )
+        val colorBar = ColorBar(
             context
         )
         val textViewDesc2 = TextView(
@@ -122,6 +126,22 @@ class AnthropInfoFragment
 
 
 
+        // Colors palette
+        colorBar.colors = intArrayOf(
+            0xff65EC6A.toInt(),
+            0xff90EC65.toInt(),
+            0xffB9EC65.toInt(),
+            0xffFFD600.toInt(),
+            0xffFFC700.toInt(),
+            0xffFFB800.toInt(),
+            0xffFF8A00.toInt(),
+            0xffFF5C00.toInt(),
+            0xffFF3D00.toInt(),
+            0xffFF0000.toInt(),
+        )
+
+
+
 
         // Stroke color
         btnBack.setStrokeColor(
@@ -161,6 +181,12 @@ class AnthropInfoFragment
             top = measureUnit * 0.0797f,
             left = marginStart
         )
+        colorBar.boundsLinear(
+            Gravity.CENTER_HORIZONTAL,
+            width = (measureUnit * 0.8405f).toInt(),
+            height = (measureUnit * 0.1425f).toInt(),
+            top = measureUnit * 0.0821f
+        )
         textViewDesc2.boundsLinear(
             Gravity.START,
             top = measureUnit * 0.11473f,
@@ -183,6 +209,9 @@ class AnthropInfoFragment
         )
         layout.addView(
             textViewDesc
+        )
+        layout.addView(
+            colorBar
         )
         layout.addView(
             textViewDesc2
