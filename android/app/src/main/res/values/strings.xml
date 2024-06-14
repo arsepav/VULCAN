@@ -35,4 +35,6 @@
     <string name="empty">пусто</string>
     <string name="passwords_not_equals">Пароли не совпадают</string>
     <string name="account_exists">Аккаунт уже существует</string>
+    <string name="kamchatka">Это Камчатка!</string>
+    <string name="maps_objects">Карта, объекты, нагруженность</string>
 </resources>
