@@ -14,6 +14,7 @@ import good.damn.kamchatka.extensions.setImageDrawableId
 import good.damn.kamchatka.extensions.setTextColorId
 import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.extensions.size
+import good.damn.kamchatka.models.Color
 import good.damn.kamchatka.views.ColorBar
 import good.damn.kamchatka.views.button.ButtonBack
 
@@ -94,6 +95,10 @@ class AnthropInfoFragment
             R.font.nunito_regular,
             context
         )
+        colorBar.typeface = Application.font(
+            R.font.open_sans_bold,
+            context
+        )
         textViewDesc2.typeface = textViewDesc
             .typeface
 
@@ -106,6 +111,7 @@ class AnthropInfoFragment
         textViewDesc.setTextPx(
             measureUnit * 0.03743f
         )
+        colorBar.textSize = 0.2627f // by views height
         textViewDesc2.setTextPx(
             textViewDesc.textSize
         )
@@ -119,6 +125,10 @@ class AnthropInfoFragment
         )
         textViewDesc.setTextColorId(
             R.color.titleColor
+        )
+        colorBar.textColor = Color.parseFromHexId(
+            R.color.titleColor,
+            0.5f
         )
         textViewDesc2.setTextColorId(
             R.color.titleColor
