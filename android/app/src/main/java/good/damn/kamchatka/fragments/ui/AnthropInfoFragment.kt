@@ -21,6 +21,10 @@ import good.damn.kamchatka.views.button.ButtonBack
 class AnthropInfoFragment
 : ScrollableFragment() {
 
+    override fun hasPreciseMeasurement(): Boolean {
+        return false
+    }
+
     override fun onCreateContentView(
         context: Context,
         measureUnit: Int

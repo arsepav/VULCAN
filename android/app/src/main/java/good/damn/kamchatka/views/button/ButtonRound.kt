@@ -1,50 +1,35 @@
 package good.damn.kamchatka.views.button
 
-import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Path
 import android.graphics.RectF
-import android.util.Log
-import android.view.MotionEvent
-import android.view.View
-import android.view.animation.AccelerateInterpolator
-import android.view.animation.DecelerateInterpolator
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatButton
-import androidx.constraintlayout.widget.ConstraintSet.Motion
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
-import good.damn.kamchatka.extensions.checkBounds
 import good.damn.kamchatka.extensions.setTextPx
 
 class ButtonRound(
     context: Context
 ): AppCompatButton(
     context
-), View.OnTouchListener, ValueAnimator.AnimatorUpdateListener {
+) {
 
     var cornerRadius = 1f
     private val mRectView = RectF()
     private val mPaint = Paint()
 
-    private val mAnimator = ValueAnimator()
+    private val mButtonInteraction = ButtonInteraction()
 
     private var mOnClickListener: OnClickListener? = null
 
     init {
         isAllCaps = false
         setOnTouchListener(
-            this
-        )
-
-        mAnimator.duration = 350
-        mAnimator.interpolator = DecelerateInterpolator()
-        mAnimator.addUpdateListener(
-            this
+            mButtonInteraction
         )
     }
 
@@ -59,7 +44,7 @@ class ButtonRound(
         l: OnTouchListener?
     ) {
         super.setOnTouchListener(
-            this
+            mButtonInteraction
         )
     }
 
@@ -88,49 +73,6 @@ class ButtonRound(
         super.onDraw(canvas)
     }
 
-    override fun onAnimationUpdate(
-        animation: ValueAnimator
-    ) {
-        val f = animation.animatedValue as Float
-        alpha = f
-        scaleX = f
-        scaleY = f
-    }
-
-    override fun onTouch(
-        v: View?,
-        event: MotionEvent?
-    ): Boolean {
-        if (event == null) {
-            return false
-        }
-        when (event.action) {
-            MotionEvent.ACTION_DOWN -> {
-                mAnimator.setFloatValues(
-                    1.0f, 0.75f
-                )
-                mAnimator.start()
-            }
-
-            MotionEvent.ACTION_UP -> {
-                mAnimator.setFloatValues(
-                    alpha, 1.0f
-                )
-                mAnimator.start()
-
-                if (checkBounds(
-                    event.x,
-                    event.y
-                )) {
-                    mOnClickListener?.onClick(
-                        this
-                    )
-                }
-            }
-        }
-
-        return true
-    }
 
     companion object {
         private const val TAG = "ButtonRound"
