@@ -8,12 +8,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AccelerateInterpolator
 import androidx.annotation.ColorInt
 import androidx.fragment.app.Fragment
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.MainActivity
-import kotlin.math.log
 
 abstract class StackFragment
 : Fragment(),
@@ -46,7 +44,9 @@ ValueAnimator.AnimatorUpdateListener {
             this
         )
 
-        val measureUnit = Application.WIDTH
+        val measureUnit = if (hasPreciseMeasurement())
+            Application.WIDTH // Affect changes and calculate more precision unit
+        else Application.WIDTH
 
         val view = onCreateView(
             context,
@@ -64,7 +64,11 @@ ValueAnimator.AnimatorUpdateListener {
     ) {
         view?.alpha = animation.animatedValue as Float
     }
-    
+
+    protected open fun hasPreciseMeasurement(): Boolean {
+        return true
+    }
+
     fun removeFragment() {
         mainActivity().removeFragment(
             this

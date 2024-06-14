@@ -41,6 +41,10 @@ class MainContentFragment
         )
     }
 
+    override fun hasPreciseMeasurement(): Boolean {
+        return false
+    }
+
     override fun onCreateContentView(
         context: Context,
         measureUnit: Int
