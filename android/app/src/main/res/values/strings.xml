@@ -39,4 +39,5 @@
     <string name="maps_objects">Карта, объекты, нагруженность</string>
     <string name="nature_zakazniki">ПРИРОДНЫХ\n ЗАКАЗНИКОВ</string>
     <string name="nature_monuments">ПАМЯТНИКА \nПРИРОДЫ</string>
+    <string name="incorrect_password">Неправильный Email или пароль</string>
 </resources>

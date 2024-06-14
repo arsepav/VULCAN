@@ -24,11 +24,11 @@ import good.damn.kamchatka.services.TokenService
 import good.damn.kamchatka.utils.StyleUtils
 import good.damn.kamchatka.utils.ViewUtils
 import good.damn.kamchatka.views.button.ButtonRound
-import good.damn.kamchatka.views.text_fields.TextField
 import good.damn.kamchatka.views.text_fields.TextFieldRound
 import good.damn.kamchatka.views.text_fields.TextFieldRoundPassword
 import org.json.JSONException
 import org.json.JSONObject
+import good.damn.kamchatka.utils.NotifyUtils.Companion.notifyBlankField
 
 class SignInFragment
 : ScrollableFragment() {
@@ -51,6 +51,7 @@ class SignInFragment
     private lateinit var mEditTextPassword: TextFieldRound
     private lateinit var mEditTextPasswordRepeat: TextFieldRound
     private lateinit var mBtnSignIn: ButtonRound
+    private lateinit var mTextViewHaveAccount: TextView
 
     override fun onViewCreated(
         view: View,
@@ -128,7 +129,7 @@ class SignInFragment
             textColorId = R.color.textColorBtn,
             backgroundColorId = R.color.titleColor
         )
-        val textViewHaveAccount = TextView(
+        mTextViewHaveAccount = TextView(
             context
         )
 
@@ -147,7 +148,7 @@ class SignInFragment
             R.font.nunito_regular,
             context
         )
-        textViewHaveAccount.typeface = Application.font(
+        mTextViewHaveAccount.typeface = Application.font(
             R.font.open_sans_bold,
             context
         )
@@ -170,7 +171,7 @@ class SignInFragment
                 R.color.largeTextColor
             )
         )
-        textViewHaveAccount.setTextColor(
+        mTextViewHaveAccount.setTextColor(
             Application.color(
                 R.color.accentColor
             )
@@ -246,7 +247,7 @@ class SignInFragment
         textViewPasswordInfo.setTextPx(
             measureUnit * 0.03f
         )
-        textViewHaveAccount.setTextPx(
+        mTextViewHaveAccount.setTextPx(
             mBtnSignIn.textSize
         )
 
@@ -254,7 +255,7 @@ class SignInFragment
         textViewPasswordInfo.setText(
             R.string.latin_spells_numbers
         )
-        textViewHaveAccount.setText(
+        mTextViewHaveAccount.setText(
             R.string.have_an_account
         )
 
@@ -278,7 +279,7 @@ class SignInFragment
             top = measureUnit * 0.10149f,
             height = heightBtnLogin
         )
-        textViewHaveAccount.boundsLinear(
+        mTextViewHaveAccount.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             top = measureUnit * 0.04589f
         )
@@ -319,13 +320,13 @@ class SignInFragment
             mBtnSignIn
         )
         layout.addView(
-            textViewHaveAccount
+            mTextViewHaveAccount
         )
 
         mBtnSignIn.setOnClickListener(
             this::onClickBtnLogIn
         )
-        textViewHaveAccount.setOnClickListener(
+        mTextViewHaveAccount.setOnClickListener(
             this::onClickTextViewHaveAccount
         )
 
@@ -407,7 +408,7 @@ class SignInFragment
             )
             return
         }
-        view.isEnabled = false
+        enableInteraction(false)
 
         mEmail = email
         mPassword = password
@@ -442,6 +443,7 @@ class SignInFragment
                     "Error: ${response.code} $body",
                     context
                 )
+                enableInteraction(true)
                 return@ui
             }
 
@@ -461,7 +463,7 @@ class SignInFragment
 
             (success as? Boolean)?.let {
                 if (!success) {
-                    mBtnSignIn.isEnabled = true
+                    enableInteraction(true)
                     Application.toast(
                         R.string.account_exists,
                         context
@@ -501,6 +503,7 @@ class SignInFragment
                     "Error: ${response.code} $body",
                     context
                 )
+                enableInteraction(true)
                 return@ui
             }
             val tokenAuth = TokenAuth.createFromJSON(
@@ -529,22 +532,13 @@ class SignInFragment
         }
     }
 
-
-}
-
-private fun SignInFragment.notifyBlankField(
-    inp: String,
-    field: TextField
-): Boolean {
-    val b = inp.isBlank()
-    if (b) {
-        Application.toast(
-            "'${field.hint}' ${getString(R.string.empty)}",
-            context!!
-        )
+    private fun enableInteraction(
+        b: Boolean
+    ) {
+        mBtnSignIn.isEnabled = b
+        mTextViewHaveAccount.isEnabled = b
     }
 
-    return b
 }
 
 private fun SignInFragment.styleTextFieldRound(

@@ -5,21 +5,34 @@ import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.WorkerThread
+import androidx.core.view.isVisible
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsFrame
 import good.damn.kamchatka.extensions.boundsLinear
+import good.damn.kamchatka.fragments.ui.MainContentFragment
+import good.damn.kamchatka.models.TokenAuth
+import good.damn.kamchatka.services.AuthService
+import good.damn.kamchatka.services.TokenService
+import good.damn.kamchatka.utils.NotifyUtils
 import good.damn.kamchatka.utils.StyleUtils
 import good.damn.kamchatka.utils.ViewUtils
 import good.damn.kamchatka.views.button.ButtonRound
 import good.damn.kamchatka.views.text_fields.TextFieldRound
 import good.damn.kamchatka.views.text_fields.TextFieldRoundPassword
+import okhttp3.Response
+import org.json.JSONObject
 
 class LoginFragment
 : LoginBaseFragment() {
 
+    private val mAuthService = AuthService()
+
     private lateinit var mTextFieldEmail: TextFieldRound
     private lateinit var mTextFieldPassword: TextFieldRoundPassword
+    private lateinit var mBtnLogin: ButtonRound
+    private lateinit var mTextViewForgotPassword: TextView
 
     override fun onCreateContentFrameView(
         context: Context,
@@ -50,14 +63,14 @@ class LoginFragment
         mTextFieldPassword = TextFieldRoundPassword(
             context
         )
-        val btnLogin = ButtonRound.createDefault(
+        mBtnLogin = ButtonRound.createDefault(
             context,
             heightField,
             textId = R.string.log_in,
             textColorId = R.color.textColorBtn,
             backgroundColorId = R.color.accentColor
         )
-        val textViewForgetPas = TextView(
+        mTextViewForgotPassword = TextView(
             context
         )
 
@@ -71,17 +84,17 @@ class LoginFragment
 
 
         // Text
-        btnLogin.setText(
+        mBtnLogin.setText(
             R.string.log_in
         )
-        textViewForgetPas.setText(
+        mTextViewForgotPassword.setText(
             R.string.forgetPassword
         )
 
 
 
         // Text color
-        textViewForgetPas.setTextColor(
+        mTextViewForgotPassword.setTextColor(
             Application.color(
                 R.color.accentColor
             )
@@ -90,7 +103,7 @@ class LoginFragment
 
 
         // Font
-        textViewForgetPas.typeface = Application.font(
+        mTextViewForgotPassword.typeface = Application.font(
             R.font.open_sans_bold,
             context
         )
@@ -139,13 +152,13 @@ class LoginFragment
             height = heightField,
             top = offsetBetween
         )
-        btnLogin.boundsLinear(
+        mBtnLogin.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             width = (measureUnit * 0.925f).toInt(),
             height = (measureUnit * 0.128f).toInt(),
             top = measureUnit * 0.111f
         )
-        textViewForgetPas.boundsLinear(
+        mTextViewForgotPassword.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             top = measureUnit * 0.04589f
         )
@@ -164,10 +177,10 @@ class LoginFragment
             mTextFieldPassword
         )
         layout.addView(
-            btnLogin
+            mBtnLogin
         )
         layout.addView(
-            textViewForgetPas
+            mTextViewForgotPassword
         )
 
         layout.post {
@@ -177,7 +190,11 @@ class LoginFragment
             )
         }
 
-        textViewForgetPas.setOnClickListener(
+        mBtnLogin.setOnClickListener(
+            this::onClickBtnLogin
+        )
+
+        mTextViewForgotPassword.setOnClickListener(
             this::onClickTextViewForgotPassword
         )
 
@@ -189,6 +206,100 @@ class LoginFragment
     ) {
         popFragment()
     }
+
+
+
+    private fun onClickBtnLogin(
+        view: View
+    ) {
+        val email = mTextFieldEmail
+            .text?.toString() ?: return
+
+        val password = mTextFieldPassword
+            .text?.toString() ?: return
+
+        if (NotifyUtils.notifyBlankField(
+            email,
+            mTextFieldEmail
+        )) return
+
+
+        if (NotifyUtils.notifyBlankField(
+            password,
+            mTextFieldPassword
+        )) return
+
+        enableInteraction(false)
+        mAuthService.token(
+            email,
+            password,
+            this::onResponseToken
+        )
+
+    }
+
+
+    @WorkerThread
+    private fun onResponseToken(
+        response: Response
+    ) {
+        Application.ui {
+
+            val context = context
+                ?: return@ui
+
+            if (response.code == 401) {
+                Application.toast(
+                    R.string.incorrect_password,
+                    context
+                )
+                enableInteraction(true)
+                return@ui
+            }
+
+            val body = response.body?.string()
+
+            if (response.code != 200 || body == null) {
+                Application.toast(
+                    "Error: ${response.code} $body",
+                    context
+                )
+                enableInteraction(true)
+                return@ui
+            }
+
+            val tokenAuth = TokenAuth.createFromJSON(
+                JSONObject(
+                    body
+                )
+            )
+
+            val tokenService = TokenService(
+                context.getSharedPreferences(
+                    Application.KEY_SHARED,
+                    Context.MODE_PRIVATE
+                )
+            )
+
+            tokenService.token = tokenAuth
+            tokenService.saveToken()
+
+            Application.TOKEN = tokenAuth
+
+            pushFragment(
+                MainContentFragment()
+            )
+            removeFragment()
+        }
+    }
+
+    private fun enableInteraction(
+        b: Boolean
+    ) {
+        mBtnLogin.isEnabled = b
+        mTextViewForgotPassword.isEnabled = b
+    }
+
 }
 
 private fun LoginFragment.onClickTextViewForgotPassword(
