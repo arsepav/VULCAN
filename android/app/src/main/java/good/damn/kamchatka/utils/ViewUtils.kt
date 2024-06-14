@@ -9,11 +9,13 @@ import androidx.annotation.StringRes
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.setTextPx
+import good.damn.kamchatka.views.button.ButtonBack
 import good.damn.kamchatka.views.button.ButtonRound
 import good.damn.kamchatka.views.text_fields.TextFieldRound
 
 class ViewUtils {
    companion object {
+
        fun policyTerms(
            context: Context,
            measureUnit: Int

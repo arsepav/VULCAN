@@ -16,6 +16,9 @@ abstract class ScrollableFragment
             context
         )
 
+        scrollView.isVerticalScrollBarEnabled = false
+        scrollView.isHorizontalScrollBarEnabled = false
+
         scrollView.addView(
             onCreateContentView(
                 context,

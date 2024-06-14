@@ -49,6 +49,21 @@ fun View.size(
 
 fun View.boundsLinear(
     gravity: Int = Gravity.NO_GRAVITY,
+    size: Int = -2,
+    top: Float = 0f,
+    left: Float = 0f
+) {
+    boundsLinear(
+        gravity = gravity,
+        width = size,
+        height = size,
+        top = top,
+        left = left
+    )
+}
+
+fun View.boundsLinear(
+    gravity: Int = Gravity.NO_GRAVITY,
     width: Int = -2,
     height: Int = -2,
     top: Float = 0f,
@@ -86,6 +101,23 @@ fun View.boundsFrameRight(
     params.leftMargin = left.toInt()
     params.rightMargin = right.toInt()
     layoutParams = params
+}
+
+fun View.boundsFrame(
+    gravity: Int = Gravity.NO_GRAVITY,
+    size: Int = -2,
+    top: Float = 0f,
+    bottom: Float = 0f,
+    left: Float = 0f,
+) {
+    boundsFrame(
+        gravity = gravity,
+        size,
+        size,
+        top,
+        bottom,
+        left
+    )
 }
 
 fun View.boundsFrame(

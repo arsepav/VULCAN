@@ -22,9 +22,6 @@ abstract class LoginBaseFragment
         val width = Application.WIDTH
         val height = Application.HEIGHT
 
-        val btnSize = (0.0845f * width)
-            .toInt()
-
         val layout = FrameLayout(
             context
         )
@@ -52,10 +49,15 @@ abstract class LoginBaseFragment
         // Bounds
         btnBack.boundsFrame(
             Gravity.START,
-            width = btnSize,
-            height = btnSize,
-            top = height * 0.0321f,
-            left = width * 0.0483f
+            size = ButtonBack.btnBackSize(
+                width
+            ).toInt(),
+            top = ButtonBack.btnBackTop(
+                measureUnit
+            ),
+            left = ButtonBack.btnBackStart(
+                measureUnit
+            )
         )
         policy.boundsFrame(
             Gravity.BOTTOM,

@@ -205,8 +205,10 @@ class LoginFragment
         view: View
     ) {
         popFragment()
+        pushFragment(
+            SignInFragment()
+        )
     }
-
 
 
     private fun onClickBtnLogin(

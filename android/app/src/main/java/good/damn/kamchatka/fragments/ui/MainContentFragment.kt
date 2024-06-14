@@ -27,6 +27,7 @@ import good.damn.kamchatka.layout_managers.ZoomCenterLayoutManager
 import good.damn.kamchatka.models.view.Park
 import good.damn.kamchatka.views.RoundedImageView
 import good.damn.kamchatka.views.special.main_content.MainCardImage
+import good.damn.kamchatka.views.textviews.ImageSpanTextView
 
 class MainContentFragment
 : ScrollableFragment() {
@@ -68,7 +69,7 @@ class MainContentFragment
         val textViewKamchatka = AppCompatTextView(
             context
         )
-        val textViewKamchatka2 = AppCompatTextView(
+        val textViewKamchatka2 = ImageSpanTextView(
             context
         )
         val recyclerViewParks = RecyclerView(
@@ -80,6 +81,8 @@ class MainContentFragment
         val cardImageNatureMon = MainCardImage(
             context
         )
+
+
 
 
         // Image drawable
@@ -127,6 +130,8 @@ class MainContentFragment
 
 
 
+
+
         // Font
         textViewAppName.typeface = Application.font(
             R.font.open_sans_bold,
@@ -170,6 +175,26 @@ class MainContentFragment
         )
 
 
+        // Image Span
+        Application.drawable(
+            R.drawable.ic_info
+        )?.let {
+            val b = (textViewKamchatka2.textSize)
+                .toInt()
+            it.setBounds(
+                0,
+                0,
+                b,
+                b
+            )
+            textViewKamchatka2.text = "${textViewKamchatka2.text}   "
+            textViewKamchatka2.setImageSpan(
+                it,
+                textViewKamchatka2.text.length-1
+            )
+        }
+
+
         // Stroke colors
         imageViewProfile.setStrokeColor(
             Application.color(
@@ -188,12 +213,16 @@ class MainContentFragment
         )
 
 
+
+
         // Background colors
         layout.setBackgroundColor(
             Application.color(
                 R.color.background
             )
         )
+
+
 
 
 
@@ -373,7 +402,20 @@ class MainContentFragment
             recyclerViewParks.scrollBy(12,0)
         }
 
+        textViewKamchatka2.setOnClickListener(
+            this::onClickTextViewInfo
+        )
+
         return layout
     }
 
+}
+
+
+private fun MainContentFragment.onClickTextViewInfo(
+    view: View
+) {
+    pushFragment(
+        AnthropInfoFragment()
+    )
 }

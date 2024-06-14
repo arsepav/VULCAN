@@ -69,4 +69,24 @@ class ButtonBack(
         mPaint.color = color
     }
 
+    companion object {
+        fun btnBackSize(
+            measureUnit: Int
+        ): Float {
+            return 0.0845f * measureUnit
+        }
+
+        fun btnBackTop(
+            measureUnit: Int
+        ): Float {
+            return 0.0321f * measureUnit
+        }
+
+        fun btnBackStart(
+            measureUnit: Int
+        ): Float {
+            return 0.0483f * measureUnit
+        }
+    }
+
 }
