@@ -9,6 +9,7 @@ import android.widget.TextView
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsFrame
+import good.damn.kamchatka.extensions.boundsFrameRight
 import good.damn.kamchatka.extensions.height
 import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.extensions.top
@@ -43,6 +44,9 @@ class MainContentFragment
         val imageViewProfile = RoundedImageView(
             context
         )
+        val imageViewLike = RoundedImageView(
+            context
+        )
 
 
         // Image drawable
@@ -51,10 +55,20 @@ class MainContentFragment
                 R.mipmap.ic_launcher
             )
         )
+        imageViewLike.setImageDrawable(
+            Application.drawable(
+                R.drawable.ic_like
+            )
+        )
+
 
 
         // CornerRadius
         imageViewProfile.radius = btnProfileWidth * 0.5f
+        imageViewLike.radius = btnProfileWidth * 0.5f
+
+
+
 
         // Text size
         textViewAppName.setTextPx(
@@ -70,10 +84,14 @@ class MainContentFragment
         )
 
 
+
         // Text
         textViewAppName.setText(
             R.string.app_name
         )
+
+
+
 
 
         // Stroke colors
@@ -87,6 +105,15 @@ class MainContentFragment
                 R.color.background
             )
         )
+
+        imageViewLike.setStrokeColor(
+            Application.color(
+                R.color.titleColor
+            )
+        )
+
+
+
 
 
         // Text color
@@ -102,7 +129,17 @@ class MainContentFragment
         )
 
 
+        // Alpha
+        imageViewLike.setStrokeAlpha(
+            0.1f
+        )
 
+
+        // Scale
+        imageViewLike.setImageScale(
+            x = 0.55f,
+            y = 0.55f
+        )
 
 
 
@@ -116,9 +153,14 @@ class MainContentFragment
         )
         textViewAppName.boundsFrame(
             Gravity.CENTER_HORIZONTAL,
-            top = imageViewProfile.top() + (
-                imageViewProfile.height() - textViewAppName.textSize
-                ) * 0.5f
+            top = imageViewProfile.top() + textViewAppName.textSize * 0.3f
+        )
+        imageViewLike.boundsFrameRight(
+            Gravity.END,
+            width = btnProfileWidth.toInt(),
+            height = btnProfileWidth.toInt(),
+            top = imageViewProfile.top(),
+            right = measureUnit * 0.0700f
         )
 
 
@@ -129,6 +171,9 @@ class MainContentFragment
         )
         layout.addView(
             textViewAppName
+        )
+        layout.addView(
+            imageViewLike
         )
 
         return layout

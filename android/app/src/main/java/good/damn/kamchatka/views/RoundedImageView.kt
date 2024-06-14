@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
+import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.annotation.ColorInt
@@ -27,6 +28,9 @@ class RoundedImageView(
 
     private val mPath = Path()
 
+    private var mImageScaleX = 0f
+    private var mImageScaleY = 0f
+
     init {
         mPaintStroke.color = 0
         mPaintStrokeOffset.color = 0
@@ -42,7 +46,7 @@ class RoundedImageView(
         mRectView.right = width.toFloat()
 
 
-        mPaintStroke.strokeWidth = width * 0.04878f
+        mPaintStroke.strokeWidth = width * 0.08878f
         mPaintStrokeOffset.strokeWidth = width * 0.1151f
 
         val hsw = mPaintStroke.strokeWidth * 0.5f
@@ -57,7 +61,21 @@ class RoundedImageView(
         mRectRoundOffset.bottom = mRectRound.bottom - hswo
         mRectRoundOffset.left = hswo + hsw
         mRectRoundOffset.right = mRectRound.right - hswo
+
+        val xOffset = (width * mImageScaleX * 0.5f)
+            .toInt()
+
+        val yOffset = (height * mImageScaleY * 0.5f)
+            .toInt()
+
+        drawable?.setBounds(
+            xOffset,
+            yOffset,
+            width-xOffset,
+            height-yOffset
+        )
     }
+
 
     override fun onDraw(
         canvas: Canvas
@@ -74,7 +92,10 @@ class RoundedImageView(
         canvas.clipPath(
             mPath
         )
-        super.onDraw(canvas)
+
+        drawable.draw(
+            canvas
+        )
 
         if (mPaintStrokeOffset.color != 0) {
             canvas.drawRoundRect(
@@ -95,10 +116,25 @@ class RoundedImageView(
         }
     }
 
+    fun setImageScale(
+        x: Float,
+        y: Float
+    ) {
+        mImageScaleX = x
+        mImageScaleY = y
+        requestLayout()
+    }
+
     fun setStrokeOffsetColor(
         @ColorInt color: Int
     ) {
         mPaintStrokeOffset.color = color
+    }
+
+    fun setStrokeAlpha(
+        alpha: Float
+    ) {
+        mPaintStroke.alpha = (alpha * 255).toInt()
     }
 
     fun setStrokeColor(
