@@ -9,12 +9,14 @@ from datetime import datetime, timedelta
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.templating import Jinja2Templates
 import json
+from os import makedirs
 from os.path import join, exists
 import shutil
 from typing import List
 from .processing import null_to_empty, wkb_element_to_wkt
 from typing import List, Optional
 from fastapi.staticfiles import StaticFiles
+from .segmentation_prod import segment_with_coordinates
 
 models.Base.metadata.create_all(bind=database.engine)
 
@@ -722,3 +724,26 @@ def get_admins(db: Session = Depends(database.get_db)):
                        'phone_number': user.phone_number
                        })
     return result
+
+
+@app.post("/segment_file/")
+async def create_file(file1: UploadFile = File(...), file2: UploadFile = File(...)):
+    # Путь для временного сохранения файлов
+    temp_dir = "segmentation/temp_files"
+    makedirs(temp_dir, exist_ok=True)
+
+    file1_path = join(temp_dir, 'image.jp2')
+    file2_path = join(temp_dir, 'image.jp2.aux.xml')
+    output_path = join(temp_dir, "output_file.txt")
+
+    with open(file1_path, "wb") as f:
+        shutil.copyfileobj(file1.file, f)
+
+    with open(file2_path, "wb") as f:
+        shutil.copyfileobj(file2.file, f)
+
+    segment_with_coordinates(file1_path, output_path)
+
+    return FileResponse(output_path, filename="contur.geojson")
+
+
