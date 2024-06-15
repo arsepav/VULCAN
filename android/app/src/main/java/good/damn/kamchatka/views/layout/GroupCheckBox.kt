@@ -170,6 +170,10 @@ class GroupCheckBox(
                 checkBoxColor
             )
 
+            checkBox.setTypeface(
+                typeface
+            )
+
             checkBox.setTextSizePx(
                 textSize
             )

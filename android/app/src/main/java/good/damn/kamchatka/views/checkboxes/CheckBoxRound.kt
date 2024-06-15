@@ -5,16 +5,25 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.Typeface
+import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.ColorInt
+import good.damn.kamchatka.views.interactions.AnimatedTouchInteraction
+import good.damn.kamchatka.views.interactions.interfaces.OnActionListener
+import good.damn.kamchatka.views.interactions.interfaces.OnUpdateAnimationListener
 import org.intellij.lang.annotations.JdkConstants.FontStyle
 
 class CheckBoxRound(
     context: Context
 ): View(
     context
-) {
+), OnActionListener {
 
+    companion object {
+        private const val TAG = "CheckBoxRound"
+    }
+    
     var radius = 1f
 
     var checkBoxWidth = 1f
@@ -28,14 +37,34 @@ class CheckBoxRound(
 
     private val mPaintCheck = Paint()
     private val mPaintCheckStroke = Paint()
+    private val mPaintText = Paint()
 
     private val mRectCheck = RectF()
 
     private var mTextY = 0f
     private var mTextX = 0f
 
+    private val mTouchInteraction = AnimatedTouchInteraction()
+
     init {
         mPaintCheckStroke.style = Paint.Style.STROKE
+
+        mPaintText.isAntiAlias = true
+
+        super.setOnTouchListener(
+            mTouchInteraction
+        )
+
+        mTouchInteraction.minValue = 1.0f
+        mTouchInteraction.maxValue = 0.0f
+
+        mTouchInteraction.setDuration(
+            150
+        )
+
+        mTouchInteraction.setOnActionListener(
+            this
+        )
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
@@ -58,7 +87,14 @@ class CheckBoxRound(
             text,
             mTextX,
             mTextY,
-            mPaintCheck
+            mPaintText
+        )
+
+        canvas.drawRoundRect(
+            mRectCheck,
+            radius,
+            radius,
+            mPaintCheckStroke
         )
 
         if (isChecked) {
@@ -68,16 +104,23 @@ class CheckBoxRound(
                 radius,
                 mPaintCheck
             )
-            return
         }
+    }
 
-        canvas.drawRoundRect(
-            mRectCheck,
-            radius,
-            radius,
-            mPaintCheckStroke
-        )
+    override fun setOnTouchListener(l: OnTouchListener?) = Unit
 
+
+    override fun onDown(
+        v: View,
+        event: MotionEvent
+    ) = Unit
+
+    override fun onUp(
+        v: View,
+        event: MotionEvent
+    ) {
+        isChecked = !isChecked
+        invalidate()
     }
 
     fun setStrokeWidth(
@@ -89,13 +132,13 @@ class CheckBoxRound(
     fun setTextSizePx(
         t: Float
     ) {
-        mPaintCheck.textSize = t
+        mPaintText.textSize = t
     }
 
     fun setTypeface(
         @FontStyle f: Typeface
     ) {
-        mPaintCheck.typeface = f
+        mPaintText.typeface = f
     }
 
     fun setStrokeColor(
@@ -108,6 +151,7 @@ class CheckBoxRound(
         @ColorInt color: Int
     ) {
         mPaintCheck.color = color
+        mPaintText.color = color
     }
 
 }

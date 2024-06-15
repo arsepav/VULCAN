@@ -8,12 +8,14 @@ import androidx.constraintlayout.widget.Group
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsLinear
+import good.damn.kamchatka.extensions.height
 import good.damn.kamchatka.extensions.setTextColorId
 import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.fragments.ui.ScrollableFragment
 import good.damn.kamchatka.models.Color
 import good.damn.kamchatka.utils.ViewUtils
 import good.damn.kamchatka.views.button.ButtonBack
+import good.damn.kamchatka.views.button.ButtonRound
 import good.damn.kamchatka.views.layout.GroupCheckBox
 import good.damn.kamchatka.views.layout.GroupTextField
 import good.damn.kamchatka.views.layout.models.GroupField
@@ -71,6 +73,9 @@ class RequestFragment
         val groupCheckCamera = GroupCheckBox(
             context
         )
+        val btnNext = ButtonRound(
+            context
+        )
 
 
 
@@ -96,6 +101,20 @@ class RequestFragment
         )
         textViewObjectType.typeface =
             textViewObjectName.typeface
+        btnNext.typeface = Application.font(
+            R.font.open_sans_semi_bold,
+            context
+        )
+
+
+        // Background color
+        btnNext.setBackgroundColor(
+            Application.color(
+                R.color.titleColor
+            )
+        )
+
+
 
 
 
@@ -117,7 +136,9 @@ class RequestFragment
         groupCheckVisiting.textColor = groupCheckRoute.textColor
         groupCheckVisitingTargets.textColor = groupCheckRoute.textColor
         groupCheckCamera.textColor = groupCheckRoute.textColor
-
+        btnNext.setTextColorId(
+            R.color.textColorBtn
+        )
 
 
         // Stroke colors
@@ -330,18 +351,9 @@ class RequestFragment
         textViewObjectType.setText(
             "Природный парк"
         )
-
-
-
-
-        // Text size
-        textViewObjectName.setTextPx(
-            measureUnit * 0.05314f
+        btnNext.setText(
+            R.string.next
         )
-        textViewObjectType.setTextPx(
-            measureUnit * 0.03743f
-        )
-
 
 
 
@@ -436,6 +448,35 @@ class RequestFragment
             width = widthGroup,
             top = topMargin
         )
+        btnNext.boundsLinear(
+            Gravity.CENTER_HORIZONTAL,
+            width = (measureUnit * 0.93236f).toInt(),
+            height = (measureUnit * 0.128f).toInt(),
+            top = measureUnit * 0.09661f
+        )
+
+        layout.setPadding(
+            0,
+            0,
+            0,
+            (measureUnit * 0.1f).toInt()
+        )
+
+        // Text size
+        textViewObjectName.setTextPx(
+            measureUnit * 0.05314f
+        )
+        textViewObjectType.setTextPx(
+            measureUnit * 0.03743f
+        )
+        btnNext.setTextPx(
+            btnNext.height() * 0.2678f
+        )
+
+
+
+        // Corner radius
+        btnNext.cornerRadius = btnNext.height() * 0.303f
 
 
         // Check box text padding
@@ -499,6 +540,9 @@ class RequestFragment
         )
         layout.addView(
             groupCheckCamera
+        )
+        layout.addView(
+            btnNext
         )
 
 

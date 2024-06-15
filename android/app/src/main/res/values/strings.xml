@@ -73,7 +73,8 @@
     <string name="target_visit6">Видео/фотосъемка</string>
     <string name="target_visit7">Альпинизм</string>
     <string name="target_visit8">Другое</string>
-    <string name="req_film_1">Профессиональная съемка\nне будет проводиться</string>
-    <string name="req_film_2">Проведение профессиональной кино-,\nфото-, видеосъёмки со стационарным\nоборудованием</string>
+    <string name="req_film_1">Без профессиональной съемки</string>
+    <string name="req_film_2">Проведение профессиональной видеосъёмки</string>
     <string name="req_film_3">Съемка с использование БПЛА</string>
+    <string name="next">Далее</string>
 </resources>
