@@ -64,6 +64,8 @@ class GroupCheckBox(
 
     var checkBoxStrokeWidth: Float = 2f
 
+    var checkBoxTextPadding = 1f
+
     @ColorInt
     var textColor: Int = 0xffff0000.toInt()
 
@@ -110,6 +112,8 @@ class GroupCheckBox(
         }
 
         val width = layoutParams.width
+        val height = (width * 0.06038f).toInt()
+        val textSize = height * 0.6f
 
         for (i in fields!!.indices) {
             val checkBox = mCheckBoxes!![i]
@@ -127,10 +131,20 @@ class GroupCheckBox(
                 checkBoxColor
             )
 
+            checkBox.setTextSizePx(
+                textSize
+            )
+
+            checkBox.text = context.getString(
+                info.hintId
+            )
+
             checkBox.radius = checkBoxRadius
 
             checkBox.checkBoxHeight = checkBoxSize
             checkBox.checkBoxWidth = checkBoxSize
+
+            checkBox.textPadding = checkBoxTextPadding
 
             checkBox.boundsLinear(
                 Gravity.CENTER_HORIZONTAL,

@@ -122,8 +122,6 @@ class RequestFragment
         groupCheckRoute.checkBoxStrokeWidth = groupCheckRoute
             .checkBoxSize * 0.06f
 
-
-
         // Check colors
         groupCheckRoute.checkBoxColor = Application.color(
             R.color.titleColor
@@ -289,6 +287,11 @@ class RequestFragment
             width = widthGroup,
             top = topMargin
         )
+
+
+        // Check box text padding
+        groupCheckRoute
+            .checkBoxTextPadding = measureUnit * 0.03623f
 
 
 
