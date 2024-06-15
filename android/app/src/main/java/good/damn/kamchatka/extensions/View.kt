@@ -24,7 +24,7 @@ fun View.bottom(): Int {
 
 fun View.left(): Float {
     margins().apply {
-        return leftMargin as Float
+        return leftMargin.toFloat()
     }
 }
 

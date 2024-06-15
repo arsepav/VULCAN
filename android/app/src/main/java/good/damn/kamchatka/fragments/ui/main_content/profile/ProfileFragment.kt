@@ -15,6 +15,7 @@ import good.damn.kamchatka.extensions.left
 import good.damn.kamchatka.extensions.setImageDrawableId
 import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.extensions.textSizeBounds
+import good.damn.kamchatka.extensions.top
 import good.damn.kamchatka.fragments.StackFragment
 import good.damn.kamchatka.utils.ViewUtils
 import good.damn.kamchatka.views.RoundedImageView
@@ -139,7 +140,7 @@ class ProfileFragment
         imageViewAvatar.boundsFrame(
             Gravity.CENTER_HORIZONTAL,
             size = (measureUnit * 0.2028f).toInt(),
-            top = textViewAppName.textSizeBounds() + (measureUnit * 0.0483f)
+            top = textViewAppName.top() + textViewAppName.textSizeBounds() + (measureUnit * 0.0483f)
         )
         textViewHello.boundsFrame(
             Gravity.CENTER_HORIZONTAL,
@@ -149,7 +150,7 @@ class ProfileFragment
             Gravity.CENTER_HORIZONTAL,
             width = (measureUnit * 0.88164f).toInt(),
             height = (measureUnit * 0.3913f).toInt(),
-            top = measureUnit * 0.0724f
+            top = textViewHello.textSizeBounds() + textViewHello.top() + measureUnit * 0.0724f
         )
         vulcanMsg.boundsFrame(
             Gravity.START,
@@ -161,10 +162,11 @@ class ProfileFragment
 
         // Corner radius
         imageViewAvatar.radius = imageViewAvatar.height() * 0.5f
+        cardViewRequest.radius = cardViewRequest.height() * 0.1386f
 
 
         // Shadow
-        cardViewRequest.cardElevation = cardViewRequest.height() * 0.02f
+        cardViewRequest.cardElevation = cardViewRequest.height() * 0.05f
 
 
 

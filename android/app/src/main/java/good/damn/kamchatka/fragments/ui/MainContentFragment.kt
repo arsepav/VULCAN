@@ -23,6 +23,7 @@ import good.damn.kamchatka.extensions.top
 import good.damn.kamchatka.fragments.ui.main_content.AnthropInfoFragment
 import good.damn.kamchatka.fragments.ui.main_content.LikesFragment
 import good.damn.kamchatka.fragments.ui.main_content.maps.MapsFragment
+import good.damn.kamchatka.fragments.ui.main_content.profile.ProfileFragment
 import good.damn.kamchatka.item_decorations.MarginItemDecoration
 import good.damn.kamchatka.layout_managers.ZoomCenterLayoutManager
 import good.damn.kamchatka.models.view.Park
@@ -412,6 +413,9 @@ class MainContentFragment
 
 
         // Setup listeners
+        imageViewProfile.setOnClickListener(
+            this::onClickImageViewProfile
+        )
         imageViewLike.setOnClickListener(
             this::onClickBtnLike
         )
@@ -425,6 +429,14 @@ class MainContentFragment
         return layout
     }
 
+}
+
+private fun MainContentFragment.onClickImageViewProfile(
+    view: View
+) {
+    pushFragment(
+        ProfileFragment()
+    )
 }
 
 private fun MainContentFragment.onClickImageViewKamchatka(
