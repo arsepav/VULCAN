@@ -50,6 +50,9 @@ class ButtonBack(
     private val mTouchInteraction = AnimatedTouchInteraction()
     
     init {
+        setBackgroundColor(
+            Color.TRANSPARENT
+        )
         super.setOnTouchListener(
             mTouchInteraction
         )
@@ -71,7 +74,9 @@ class ButtonBack(
         color: Int
     ) {
         mPaintBack.color = color
-        super.setBackgroundColor(0)
+        super.setBackgroundColor(
+            Color.TRANSPARENT
+        )
     }
 
     override fun setOnTouchListener(

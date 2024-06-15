@@ -1,6 +1,8 @@
 package good.damn.kamchatka.views.holders
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.media.Image
 import android.view.Gravity
@@ -27,9 +29,9 @@ class ViewHolderPark(
 ) {
 
     fun setPreview(
-        d: Drawable?
+        d: Bitmap
     ) {
-        mImageView.setImageDrawable(
+        mImageView.setImageBitmap(
             d
         )
     }
@@ -76,7 +78,6 @@ class ViewHolderPark(
                 .CENTER_HORIZONTAL
             textViewType.gravity = Gravity
                 .CENTER_HORIZONTAL
-
 
 
 

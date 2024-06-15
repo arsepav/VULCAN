@@ -3,6 +3,7 @@ package good.damn.kamchatka.adapters.recycler_view
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import good.damn.kamchatka.models.SecurityZone
+import good.damn.kamchatka.utils.HTTPUtils
 import good.damn.kamchatka.views.holders.ViewHolderPark
 import good.damn.kamchatka.views.special.details.listeners.OnSelectOOPTListener
 
@@ -41,9 +42,13 @@ class OOPTAdapter(
             oopt.desc
         )
 
-        /*holder.setPreview(
-            park.imagePreview
-        )*/
+        oopt.image_url?.let {
+            HTTPUtils.loadImage(
+                it
+            ) { bitmap ->
+                holder.setPreview(bitmap)
+            }
+        }
 
         holder.itemView.setOnClickListener {
             onSelectOOPTListener?.onSelectOOPT(
