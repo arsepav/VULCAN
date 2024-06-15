@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ScrollView
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
+import good.damn.kamchatka.extensions.size
 import good.damn.kamchatka.fragments.StackFragment
 
 abstract class ScrollableFragment
@@ -27,6 +28,17 @@ abstract class ScrollableFragment
                 context,
                 measureUnit
             )
+        )
+
+        scrollView.setBackgroundColor(
+            Application.color(
+                R.color.background
+            )
+        )
+
+        scrollView.size(
+            -1,
+            -1
         )
 
         return scrollView

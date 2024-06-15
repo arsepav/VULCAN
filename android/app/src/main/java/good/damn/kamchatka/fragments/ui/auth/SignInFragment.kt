@@ -185,7 +185,7 @@ class SignInFragment
         val offsetPart = 0.055f * measureUnit
         styleTextFieldRound(
             mEditTextSurname,
-            R.string.lastName,
+            R.string.surname,
             fieldColor,
             heightField,
             widthField,
@@ -201,7 +201,7 @@ class SignInFragment
         )
         styleTextFieldRound(
             mEditTextLastName,
-            R.string.secondName,
+            R.string.lastName,
             fieldColor,
             heightField,
             widthField,

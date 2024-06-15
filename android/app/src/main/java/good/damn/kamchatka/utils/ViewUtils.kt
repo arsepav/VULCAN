@@ -7,6 +7,7 @@ import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.view.Gravity
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
@@ -20,6 +21,26 @@ import good.damn.kamchatka.views.text_fields.TextFieldRound
 
 class ViewUtils {
    companion object {
+
+       fun verticalLinearLayout(
+           context: Context
+       ): LinearLayout {
+           val layout = LinearLayout(
+               context
+           )
+
+           layout.orientation = LinearLayout
+               .VERTICAL
+
+           layout.setBackgroundColor(
+               Application.color(
+                   R.color.background
+               )
+           )
+
+           return layout
+       }
+
        fun vulcanTextView(
            @StringRes id: Int,
            context: Context,

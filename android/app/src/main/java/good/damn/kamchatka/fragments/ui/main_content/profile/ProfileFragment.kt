@@ -199,6 +199,9 @@ class ProfileFragment
         btnBack.setOnClickListener(
             this::onClickBtnBack
         )
+        cardViewRequest.setOnClickListener(
+            this::onClickCardViewRequest
+        )
 
 
 
@@ -206,6 +209,14 @@ class ProfileFragment
         return layout
     }
 
+
+    private fun onClickCardViewRequest(
+        view: View
+    ) {
+        pushFragment(
+            RequestFragment()
+        )
+    }
 
 }
 
