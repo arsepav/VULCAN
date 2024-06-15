@@ -1,5 +1,6 @@
 package good.damn.kamchatka.fragments.ui.main_content.maps
 
+import good.damn.kamchatka.models.Color
 import android.os.Bundle
 import android.util.Log
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -28,10 +29,9 @@ OnGetRoutesListener {
         private const val TAG = "MapsFragment"
     }
 
-    private val mOOPTColors = OOPTColors
-        .entries
-        .toTypedArray()
+    private val mOOPTColors = HashMap<Int, Int>()
 
+    private var mGeoService: GeoService? = null
     private lateinit var map: GoogleMap
 
     override fun onCreate(
@@ -39,18 +39,19 @@ OnGetRoutesListener {
     ) {
         super.onCreate(savedInstanceState)
 
-        Log.d(TAG, "onCreate: ")
-
-        getMapAsync(
-            this
-        )
+        context?.let {
+            mGeoService = GeoService(
+                it
+            )
+            getMapAsync(
+                this
+            )
+        }
     }
 
     override fun onMapReady(
         googleMap: GoogleMap
     ) {
-        val context = context ?: return
-
         map = googleMap
 
         val kamchatka = LatLng(
@@ -58,26 +59,22 @@ OnGetRoutesListener {
             158.394596
         )
 
-        val geo = GeoService(
-            context
-        )
 
-        geo.setOnGetZonesListener(
+        mGeoService?.setOnGetZonesListener(
             this
         )
 
-        geo.setOnGetRoutesListener(
+        mGeoService?.setOnGetRoutesListener(
             this
         )
 
-        geo.requestSecurityZones()
-        geo.requestRoutes()
+        mGeoService?.requestSecurityZones()
 
         map.moveCamera(
             CameraUpdateFactory
                 .newLatLngZoom(
                     kamchatka,
-                    0.2f
+                    5.0f
                 )
         )
 
@@ -92,7 +89,7 @@ OnGetRoutesListener {
     ) {
         context?.let {
             Application.toast(
-                poly.tag as String,
+                poly.tag?.toString() ?: return,
                 it
             )
         }
@@ -106,6 +103,11 @@ OnGetRoutesListener {
                 return@forEach
             }
 
+            zone.id?.let {
+                mOOPTColors[it] = zone.fillColor
+            }
+
+
             map.addMarker(
                 zone.marker
             )
@@ -117,15 +119,19 @@ OnGetRoutesListener {
                 fillColor = zone.fillColor
                 strokeColor = zone.strokeColor
                 strokeWidth = zone.strokeWidth
-                tag = zone.title
             }
         }
+        mGeoService?.requestRoutes()
     }
 
     override fun onGetRoutes(
         routes: Array<RouteMap?>
     ) {
         val cap = RoundCap()
+        val errorColor = Color.parseFromHex(
+            0xffff0000.toInt(),
+            0.3f
+        )
         routes.forEach { route ->
             if (route == null) {
                 return@forEach
@@ -134,7 +140,12 @@ OnGetRoutesListener {
             map.addPolyline(
                 route.route
             ).apply {
-                color = route.color
+
+                color = if (
+                    route.ooptId == null
+                ) errorColor else mOOPTColors[route.ooptId]
+                    ?: errorColor
+
                 width = route.strokeWidth
                 startCap = cap
                 endCap = cap

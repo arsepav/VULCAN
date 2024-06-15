@@ -7,7 +7,7 @@ enum class OOPTColors(
 ) {
     A(Color.parseFromHex(
         0xffB6E0ED.toInt(),
-        0.3f
+        0.6f
     )),
     B(Color.parseFromHex(
         0xff2D4D6D.toInt(),
@@ -15,7 +15,7 @@ enum class OOPTColors(
     )),
     C(Color.parseFromHex(
         0xff808AFF.toInt(),
-        0.3f
+        0.6f
     )),
     D(Color.parseFromHex(
         0xff656B7B.toInt(),

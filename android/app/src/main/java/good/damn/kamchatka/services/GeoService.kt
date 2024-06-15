@@ -113,7 +113,8 @@ class GeoService(
             RouteMap(
                 polyline,
                 0xffFFC700.toInt(),
-                10.0f
+                10.0f,
+                route.id
             )
         }
 
@@ -155,6 +156,7 @@ class GeoService(
 
             SecurityZone(
                 polyOptions,
+                oopt.id,
                 markerOptions,
                 oopt.name ?: "",
                 mZoneColors[

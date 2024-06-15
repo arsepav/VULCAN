@@ -7,10 +7,12 @@ import androidx.annotation.WorkerThread
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.isAvailable
-import good.damn.kamchatka.services.GeoService
+import okhttp3.Authenticator
+import okhttp3.Credentials
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
+import okhttp3.Route
 import org.json.JSONArray
 
 open class NetworkService(
@@ -25,6 +27,22 @@ open class NetworkService(
         Context.CONNECTIVITY_SERVICE
     ) as ConnectivityManager
 
+    private val mClient = OkHttpClient.Builder()
+        .authenticator { _, response ->
+            val token = Application.TOKEN
+            val auth = if (
+                token == null
+            ) "" else "${token.tokenType} ${token.token}"
+
+            response.request.newBuilder()
+                .header(
+                    "Authorization",
+                    auth
+                ).build()
+        }.build()
+
+
+
     protected fun makeRequest(
         request: Request.Builder,
         c: ((OkHttpClient, Request)->Unit)
@@ -37,8 +55,7 @@ open class NetworkService(
             return
         }
 
-        val client = OkHttpClient()
-        c(client,request.build())
+        c(mClient,request.build())
     }
 
     @WorkerThread

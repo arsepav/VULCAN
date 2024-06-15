@@ -5,6 +5,7 @@ import com.google.android.gms.maps.model.PolygonOptions
 
 data class SecurityZone(
     val polygon: PolygonOptions,
+    val id: Int?,
     val marker: MarkerOptions,
     val title: String,
     val fillColor: Int,
