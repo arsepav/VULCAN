@@ -94,6 +94,9 @@ class GroupTextField(
         val corner = heightField * 0.15f
         val strokeWidth = heightField * 0.02127f
         val textSize = heightField * 0.1125f
+        val paddingLeft = (width * 0.04851f).toInt()
+        val paddingDrawable = paddingLeft
+        val iconSize = (textSize*3.5f).toInt()
 
         val hintColor = Color.parseFromHexId(
             R.color.accentColor,
@@ -111,6 +114,33 @@ class GroupTextField(
             textField.setStrokeWidth(
                 strokeWidth
             )
+
+            textField.setPadding(
+                paddingLeft,
+                0,
+                0,
+                0
+            )
+
+            if (info.drawableId != 0) {
+                val d = Application.drawable(
+                    info.drawableId
+                )
+
+                d?.setBounds(
+                    0,
+                    0,
+                    iconSize,
+                    iconSize
+                )
+                textField.compoundDrawablePadding = paddingDrawable
+                textField.setCompoundDrawables(
+                    d,
+                    null,
+                    null,
+                    null
+                )
+            }
 
             textField.textSize = textSize
 

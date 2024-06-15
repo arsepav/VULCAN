@@ -20,5 +20,7 @@
     <color name="signInStrokeColor3">#365F46</color>
     <color name="textColorBtn">#ffffffff</color>
 
+    <color name="requestColor">#ff323232</color>
+
     <color name="policyTerms">#9FA4A7</color>
 </resources>

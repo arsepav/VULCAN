@@ -77,13 +77,16 @@ class RequestFragment
         // Fields
         groupFieldName.fields = arrayOf(
             GroupField(
-                R.string.surname
+                R.string.surname,
+                R.drawable.ic_profile
             ),
             GroupField(
-                R.string.firstName
+                R.string.firstName,
+                R.drawable.ic_profile_out
             ),
             GroupField(
-                R.string.lastName
+                R.string.lastName,
+                R.drawable.ic_profile_out
             )
         )
         groupFieldPassport.fields = arrayOf(
