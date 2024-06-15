@@ -2,13 +2,11 @@ package good.damn.kamchatka.models
 
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolygonOptions
+import good.damn.kamchatka.models.remote.json.OOPT
 
 data class SecurityZone(
     val polygon: PolygonOptions,
-    val id: Int?,
+    val oopt: OOPT,
     val marker: MarkerOptions,
-    val title: String,
-    val fillColor: Int,
-    val strokeColor: Int,
-    val strokeWidth: Float
+    val dangerRate: Float
 )

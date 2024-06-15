@@ -35,13 +35,13 @@ class ViewHolderPark(
     }
 
     fun setType(
-        t: String
+        t: String?
     ) {
         mTextViewType.text = t
     }
 
     fun setName(
-        t: String
+        t: String?
     ) {
         mTextViewName.text = t
     }

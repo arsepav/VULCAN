@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PointF
+import android.graphics.RectF
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
@@ -24,6 +25,8 @@ class ButtonBack(
     context
 ), OnUpdateAnimationListener, OnActionListener {
 
+    var cornerRadius = 0f
+
     private val mPaint = run {
         val p = Paint()
         p.color = Color.RED
@@ -32,6 +35,10 @@ class ButtonBack(
         p.strokeJoin = Paint.Join.ROUND
         p
     }
+
+    private val mRectView = RectF()
+
+    private val mPaintBack = Paint()
 
     private var mPointStartX = 1f
     private var mPointStartY = 1f
@@ -60,6 +67,13 @@ class ButtonBack(
         )
     }
 
+    override fun setBackgroundColor(
+        color: Int
+    ) {
+        mPaintBack.color = color
+        super.setBackgroundColor(0)
+    }
+
     override fun setOnTouchListener(
         l: OnTouchListener?
     ) = Unit
@@ -80,12 +94,26 @@ class ButtonBack(
         mPointCenterX = width * 0.34285f
         mPointCenterY = height * 0.48571f
         mPointEndY = height * 0.828571f
+
+        mRectView.top = 0f
+        mRectView.left = 0f
+        mRectView.bottom = height.toFloat()
+        mRectView.right = width.toFloat()
     }
 
     override fun onDraw(
         canvas: Canvas
     ) {
         super.onDraw(canvas)
+
+        if (mPaintBack.color != 0) {
+            canvas.drawRoundRect(
+                mRectView,
+                cornerRadius,
+                cornerRadius,
+                mPaintBack
+            )
+        }
 
         canvas.drawLine(
             mPointStartX,

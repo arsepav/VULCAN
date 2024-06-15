@@ -12,7 +12,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
-import good.damn.kamchatka.adapters.recycler_view.ParksAdapter
+import good.damn.kamchatka.adapters.recycler_view.OOPTAdapter
 import good.damn.kamchatka.extensions.bottom
 import good.damn.kamchatka.extensions.boundsFrame
 import good.damn.kamchatka.extensions.boundsFrameRight
@@ -22,16 +22,23 @@ import good.damn.kamchatka.extensions.textSizeBounds
 import good.damn.kamchatka.extensions.top
 import good.damn.kamchatka.fragments.ui.main_content.AnthropInfoFragment
 import good.damn.kamchatka.fragments.ui.main_content.LikesFragment
+import good.damn.kamchatka.fragments.ui.main_content.details.BaseDetailsFragment
 import good.damn.kamchatka.fragments.ui.main_content.maps.MapsFragment
 import good.damn.kamchatka.fragments.ui.main_content.profile.ProfileFragment
 import good.damn.kamchatka.item_decorations.MarginItemDecoration
 import good.damn.kamchatka.layout_managers.ZoomCenterLayoutManager
+import good.damn.kamchatka.models.SecurityZone
 import good.damn.kamchatka.models.view.Park
+import good.damn.kamchatka.services.GeoService
+import good.damn.kamchatka.services.interfaces.OnGetSecurityZonesListener
 import good.damn.kamchatka.views.RoundedImageView
+import good.damn.kamchatka.views.special.details.listeners.OnSelectOOPTListener
 import good.damn.kamchatka.views.special.main_content.MainCardImage
 
 class MainContentFragment
-: ScrollableFragment() {
+: ScrollableFragment(),
+OnSelectOOPTListener,
+OnGetSecurityZonesListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -46,10 +53,21 @@ class MainContentFragment
         return false
     }
 
+    private lateinit var mRecyclerViewOOPT: RecyclerView
+
     override fun onCreateContentView(
         context: Context,
         measureUnit: Int
     ): View {
+
+        GeoService(
+            context
+        ).let {
+            it.setOnGetZonesListener(
+                this
+            )
+            it.requestSecurityZones()
+        }
 
         val btnProfileWidth = measureUnit * 0.1f
         val cardImageWidth = (measureUnit * 0.8961f)
@@ -77,7 +95,7 @@ class MainContentFragment
         val textViewKamchatka2 = AppCompatTextView(
             context
         )
-        val recyclerViewParks = RecyclerView(
+        mRecyclerViewOOPT = RecyclerView(
             context
         )
         val cardImageZakaznik = MainCardImage(
@@ -306,7 +324,7 @@ class MainContentFragment
             top = textViewKamchatka.bottom() + measureUnit * 0.0099f,
             height = textViewKamchatka2.textSizeBounds()
         )
-        recyclerViewParks.boundsFrame(
+        mRecyclerViewOOPT.boundsFrame(
             width = -1,
             height = (measureUnit * 0.5845f).toInt(),
             top = textViewKamchatka2.bottom() + measureUnit * 0.16625f
@@ -315,7 +333,7 @@ class MainContentFragment
             Gravity.CENTER_HORIZONTAL,
             width = cardImageWidth,
             height = cardImageWidth,
-            top = recyclerViewParks.bottom() + measureUnit * 0.0664f
+            top = mRecyclerViewOOPT.bottom() + measureUnit * 0.0664f
         )
         cardImageNatureMon.boundsFrame(
             Gravity.CENTER_HORIZONTAL,
@@ -346,7 +364,7 @@ class MainContentFragment
             textViewKamchatka2
         )
         layout.addView(
-            recyclerViewParks
+            mRecyclerViewOOPT
         )
         layout.addView(
             cardImageZakaznik
@@ -359,59 +377,19 @@ class MainContentFragment
 
 
         // Set up adapter
-        recyclerViewParks.layoutManager = ZoomCenterLayoutManager(
+        mRecyclerViewOOPT.layoutManager = ZoomCenterLayoutManager(
             context,
             0.78f
         )
-        recyclerViewParks.addItemDecoration(
+        mRecyclerViewOOPT.addItemDecoration(
             MarginItemDecoration(
                 (measureUnit * 0.01f).toInt()
             )
         )
 
-        recyclerViewParks.adapter = ParksAdapter(
-            recyclerViewParks.height().toFloat(),
-            arrayOf(
-                Park(
-                    Application.drawable(
-                        R.drawable.klychevoskoy
-                    ),
-                    "Ключевской",
-                    "Природный парк"
-                ),
-                Park(
-                    Application.drawable(
-                        R.drawable.naluchevo
-                    ),
-                    "Налычево",
-                    "Природный парк"
-                ),
-                Park(
-                    Application.drawable(
-                        R.drawable.south_kamch
-                    ),
-                    "Южно-\nКамчатский",
-                    "Природный парк"
-                ),
-                Park(
-                    Application.drawable(
-                        R.drawable.viluchinksiy
-                    ),
-                    "Вилючинский",
-                    "Природный парк"
-                ),
-                Park(
-                    Application.drawable(
-                        R.drawable.bistrinskiy
-                    ),
-                    "Быстринский",
-                    "Природный парк"
-                )
-            )
-        )
 
-        recyclerViewParks.post {
-            recyclerViewParks.scrollBy(12,0)
+        mRecyclerViewOOPT.post {
+            mRecyclerViewOOPT.scrollBy(12,0)
         }
 
 
@@ -431,6 +409,23 @@ class MainContentFragment
         )
 
         return layout
+    }
+
+    override fun onSelectOOPT(
+        zone: SecurityZone
+    ) {
+        pushFragment(
+            BaseDetailsFragment()
+        )
+    }
+
+    override fun onGetSecurityZones(
+        zones: Array<SecurityZone?>
+    ) {
+        mRecyclerViewOOPT.adapter = OOPTAdapter(
+            mRecyclerViewOOPT.height().toFloat(),
+            zones
+        )
     }
 
 }

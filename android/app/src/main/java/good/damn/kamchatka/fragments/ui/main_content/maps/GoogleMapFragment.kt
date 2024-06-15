@@ -7,16 +7,19 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Polygon
 import com.google.android.gms.maps.model.RoundCap
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.models.RouteMap
 import good.damn.kamchatka.models.SecurityZone
+import good.damn.kamchatka.models.map.AntroColors
 import good.damn.kamchatka.models.map.OOPTColors
 import good.damn.kamchatka.services.GeoService
 import good.damn.kamchatka.services.interfaces.OnGetRoutesListener
 import good.damn.kamchatka.services.interfaces.OnGetSecurityZonesListener
+import kotlin.random.Random
 
 class GoogleMapFragment
 : SupportMapFragment(),
@@ -28,6 +31,10 @@ OnGetRoutesListener {
     companion object {
         private const val TAG = "MapsFragment"
     }
+
+    private val mZoneColors = OOPTColors
+        .entries
+        .toTypedArray()
 
     private val mOOPTColors = HashMap<Int, Int>()
 
@@ -103,22 +110,39 @@ OnGetRoutesListener {
                 return@forEach
             }
 
-            zone.id?.let {
-                mOOPTColors[it] = zone.fillColor
+            val fillColor = mZoneColors[
+                Random.nextInt(
+                    mZoneColors.size
+                )
+            ].color
+
+            val dangerRate = zone.dangerRate.toInt()
+
+            zone.oopt.id?.let {
+                mOOPTColors[it] = fillColor
             }
 
 
             map.addMarker(
                 zone.marker
-            )
+            )?.apply {
+                setIcon(
+                    BitmapDescriptorFactory.fromResource(
+                        AntroColors.markers[dangerRate]
+                    )
+                )
+            }
+
 
             map.addPolygon(
                 zone.polygon
             ).apply {
                 isClickable = true
-                fillColor = zone.fillColor
-                strokeColor = zone.strokeColor
-                strokeWidth = zone.strokeWidth
+                this.fillColor = fillColor
+                strokeColor = AntroColors.colors[
+                    dangerRate
+                ]
+                strokeWidth = 11.0f
             }
         }
         mGeoService?.requestRoutes()

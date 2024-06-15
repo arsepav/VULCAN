@@ -37,10 +37,6 @@ class GeoService(
     private var mOnGetZonesListener: OnGetSecurityZonesListener? = null
     private var mOnGetRoutesListener: OnGetRoutesListener? = null
 
-    private val mZoneColors = OOPTColors
-        .entries
-        .toTypedArray()
-
     fun requestRoutes() {
         if (mOnGetRoutesListener == null) {
             return
@@ -143,29 +139,16 @@ class GeoService(
                     c.asIterable()
                 )
 
-            val dangerRate = 0.2f.toInt()
-
             val markerOptions = MarkerOptions()
                 .position(
                     c[0]
-                ).icon(
-                    BitmapDescriptorFactory.fromResource(
-                        AntroColors.markers[dangerRate]
-                    )
                 )
 
             SecurityZone(
                 polyOptions,
-                oopt.id,
+                oopt,
                 markerOptions,
-                oopt.name ?: "",
-                mZoneColors[
-                    Random.nextInt(
-                        mZoneColors.size
-                    )
-                ].color,
-                AntroColors.colors[dangerRate],
-                11.0f
+                0.2f
             )
         }
 
