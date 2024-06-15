@@ -109,6 +109,8 @@ class VisitPermissionIndividual(Base):
 
     arrival_date = Column(Date)
 
+    user_id = Column(Integer, ForeignKey('users.id'))
+
     surname = Column(String)
     name = Column(String)
     lastname = Column(String)

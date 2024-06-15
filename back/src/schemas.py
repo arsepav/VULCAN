@@ -114,6 +114,8 @@ class GeoPathResponse(BaseModel):
     oopt_id: int
     category_id: int
 
+    path_load: float
+
     class Config:
         orm_mode = True
 

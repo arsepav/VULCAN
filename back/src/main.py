@@ -334,7 +334,10 @@ def read_oopts(oopt_info: schemas.GetOOPTs, db: Session = Depends(database.get_d
 
 @app.post("/create_visit_permission/", response_model=schemas.VisitPermissionIndividualCreate)
 async def create_visit_permission_individual(visit_permission_data: schemas.VisitPermissionIndividualCreate,
-                                             db: Session = Depends(database.get_db)):
+                                             db: Session = Depends(database.get_db),
+                                             current_user: schemas.UserResponse = Depends(auth.get_current_user)):
+    print("hello!!!")
+
     # Create a new VisitPermissionIndividual instance
     db_visit_permission = models.VisitPermissionIndividual(
         arrival_date=visit_permission_data.arrival_date,
@@ -356,7 +359,8 @@ async def create_visit_permission_individual(visit_permission_data: schemas.Visi
         purpose_mountaineering=visit_permission_data.purpose_mountaineering,
         purpose_another=visit_permission_data.purpose_another,
         photo_video_professional=visit_permission_data.photo_video_professional,
-        photo_video_drones=visit_permission_data.photo_video_drones
+        photo_video_drones=visit_permission_data.photo_video_drones,
+        user_id=current_user.id
     )
 
     # Add the new instance to the session and commit
@@ -375,7 +379,13 @@ async def get_geopaths(oopt_id: Optional[int] = Query(None), db: Session = Depen
         geopaths = db.query(models.GeoPaths).all()
 
     for i in range(len(geopaths)):
-        geopaths[i].geom = wkb_element_to_wkt(geopaths[i].geom)
+        geopaths[i] = geopaths[i].__dict__
+        geopaths[i]['geom'] = wkb_element_to_wkt(geopaths[i]['geom'])
+        geopaths[i]['path_load'] = get_path_load_func(geopaths[i]['id'], datetime.now().strftime("%Y-%m-%d"), db)['load_coef']
+
+    print(geopaths)
+
+    geopaths = sorted(geopaths, key=lambda x: x['path_load'])
 
     return geopaths
 
@@ -395,8 +405,10 @@ def get_visit_permissions(
 ):
     permissions_query = db.query(models.VisitPermissionIndividual, models.GeoPaths.name, models.Countries.name,
                                  models.GeoPaths.oopt_id)
-    permissions_query = permissions_query.join(models.GeoPaths, models.GeoPaths.id == models.VisitPermissionIndividual.path_id)
-    permissions_query = permissions_query.join(models.Countries, models.Countries.id == models.VisitPermissionIndividual.citizenship)
+    permissions_query = permissions_query.join(models.GeoPaths,
+                                               models.GeoPaths.id == models.VisitPermissionIndividual.path_id)
+    permissions_query = permissions_query.join(models.Countries,
+                                               models.Countries.id == models.VisitPermissionIndividual.citizenship)
 
     if not_reviewed_only:
         permissions_query = permissions_query.filter(
@@ -412,8 +424,44 @@ def get_visit_permissions(
         permissions[i]['citizenship_country'] = s[2]
         permissions[i]['path'] = s[1]
 
-        permissions[i]['oopt_load'] = get_oopt_load_func(s[3], permissions[i]['arrival_date'].strftime("%Y-%m-%d"), db)['load_coef']
-        permissions[i]['path_load'] = get_path_load_func(permissions[i]['path_id'], permissions[i]['arrival_date'].strftime("%Y-%m-%d"), db)['load_coef']
+        permissions[i]['oopt_load'] = get_oopt_load_func(s[3], permissions[i]['arrival_date'].strftime("%Y-%m-%d"), db)[
+            'load_coef']
+        permissions[i]['path_load'] = \
+        get_path_load_func(permissions[i]['path_id'], permissions[i]['arrival_date'].strftime("%Y-%m-%d"), db)[
+            'load_coef']
+
+    return permissions
+
+
+@app.get("/visit_permissions_user/", response_model=List[schemas.VisitPermissionIndividualResponse])
+def get_visit_permissions_user(
+        db: Session = Depends(database.get_db),
+        current_user: schemas.UserResponse = Depends(auth.get_current_user)
+):
+    permissions_query = db.query(models.VisitPermissionIndividual, models.GeoPaths.name, models.Countries.name,
+                                 models.GeoPaths.oopt_id)
+    permissions_query = permissions_query.join(models.GeoPaths,
+                                               models.GeoPaths.id == models.VisitPermissionIndividual.path_id)
+    permissions_query = permissions_query.join(models.Countries,
+                                               models.Countries.id == models.VisitPermissionIndividual.citizenship)
+
+    permissions_query = permissions_query.where(models.VisitPermissionIndividual.user_id == current_user.id)
+
+    permissions = permissions_query.order_by(
+        models.VisitPermissionIndividual.date_of_creation).limit(50).all()
+
+    for i in range(len(permissions)):
+        s = permissions[i]
+        permissions[i] = permissions[i][0].__dict__
+
+        permissions[i]['citizenship_country'] = s[2]
+        permissions[i]['path'] = s[1]
+
+        permissions[i]['oopt_load'] = get_oopt_load_func(s[3], permissions[i]['arrival_date'].strftime("%Y-%m-%d"), db)[
+            'load_coef']
+        permissions[i]['path_load'] = \
+        get_path_load_func(permissions[i]['path_id'], permissions[i]['arrival_date'].strftime("%Y-%m-%d"), db)[
+            'load_coef']
 
     return permissions
 
@@ -421,14 +469,13 @@ def get_visit_permissions(
 @app.get("/visit-permissions/{permission_id}", response_model=schemas.VisitPermissionIndividualResponse)
 def get_permission(permission_id: int, db: Session = Depends(database.get_db)):
     permission = (db.query(models.VisitPermissionIndividual, models.GeoPaths.name, models.Countries.name,
-                                 models.GeoPaths.oopt_id)
+                           models.GeoPaths.oopt_id)
                   .join(models.GeoPaths,
                         models.GeoPaths.id == models.VisitPermissionIndividual.path_id)
                   .join(models.Countries,
                         models.Countries.id == models.VisitPermissionIndividual.citizenship)
                   .filter(
         models.VisitPermissionIndividual.id == permission_id).first())
-
 
     s = permission
     permission = permission[0].__dict__
@@ -439,7 +486,7 @@ def get_permission(permission_id: int, db: Session = Depends(database.get_db)):
     permission['oopt_load'] = get_oopt_load_func(s[3], permission['arrival_date'].strftime("%Y-%m-%d"), db)[
         'load_coef']
     permission['path_load'] = \
-    get_path_load_func(permission['path_id'], permission['arrival_date'].strftime("%Y-%m-%d"), db)['load_coef']
+        get_path_load_func(permission['path_id'], permission['arrival_date'].strftime("%Y-%m-%d"), db)['load_coef']
 
     if not permission:
         raise HTTPException(status_code=404, detail="Permission not found")
@@ -658,6 +705,7 @@ def get_oopt_load_func(oopt_id, date, db):
         'load_coef': len(visits) * k / s
     }
 
+
 @app.get("/oopt_load/", response_model=schemas.OOPTLoad)
 def get_oopt_load(oopt_id: int, date: str, db: Session = Depends(database.get_db)):
     return get_oopt_load_func(oopt_id, date, db)
@@ -669,8 +717,6 @@ def get_path_load_func(path_id, date, db):
                .where(models.GeoPathPoints.path_id == path_id)
                .all())
 
-    print(objects)
-
     target_date = datetime.strptime(date, '%Y-%m-%d')
 
     s = 0
@@ -679,7 +725,7 @@ def get_path_load_func(path_id, date, db):
         s += obj.area / obj.person_area * obj.Rf_coefficient * obj.t_coefficient
 
     if s == 0:
-        s = 20
+        s = 10
 
     max_date = target_date + timedelta(days=3)
     min_date = target_date - timedelta(days=4)
@@ -737,7 +783,6 @@ async def create_file(file1: UploadFile = File(...), file2: UploadFile = File(..
     output_path = join(temp_dir, "output_file.txt")
 
     if d['segmentation']:
-
         with open(file1_path, "wb") as f:
             shutil.copyfileobj(file1.file, f)
 
@@ -747,5 +792,3 @@ async def create_file(file1: UploadFile = File(...), file2: UploadFile = File(..
         segment_with_coordinates(file1_path, output_path)
 
     return FileResponse(output_path, filename="contur.geojson")
-
-
