@@ -1,14 +1,16 @@
 package good.damn.kamchatka.models.remote.json
 
 import android.graphics.Point
+import android.graphics.PointF
 import android.util.Log
+import com.google.android.gms.maps.model.LatLng
 import org.json.JSONObject
 
 data class OOPT(
     val id: Int?,
     val name: String?,
     val desc: String?,
-    val coords: Array<Point>?,
+    val coords: Array<LatLng>?,
     val image_url: String?
 ) {
     companion object {
@@ -43,11 +45,19 @@ data class OOPT(
 
             Log.d(TAG, "createFromJSON: ${geom.length()}")
 
+            val coords = Array(geom.length()) {
+                val point = geom.getJSONArray(it)
+                LatLng(
+                    point.getDouble(0),
+                    point.getDouble(1)
+                )
+            }
+
             return OOPT(
                 id,
                 name,
                 desc,
-                null,
+                coords,
                 image_url
             )
         }

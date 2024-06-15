@@ -10,8 +10,10 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Polygon
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.models.SecurityZone
+import good.damn.kamchatka.models.map.OOPTColors
 import good.damn.kamchatka.services.GeoService
 import good.damn.kamchatka.services.interfaces.GeoServiceListener
+import kotlin.random.Random
 
 class GoogleMapFragment
 : SupportMapFragment(),
@@ -22,6 +24,10 @@ GeoServiceListener {
     companion object {
         private const val TAG = "MapsFragment"
     }
+
+    private val mOOPTColors = OOPTColors
+        .entries
+        .toTypedArray()
 
     private lateinit var map: GoogleMap
 
@@ -53,15 +59,6 @@ GeoServiceListener {
 
         geo.requestSecurityZones()
 
-        /*
-        * val polygon = map.addPolygon(
-                it.polygon
-            )
-            polygon.fillColor = it.fillColor
-            polygon.strokeColor = it.strokeColor
-            polygon.strokeWidth = it.strokeWidth
-            polygon.tag = it.title*/
-
         map.moveCamera(
             CameraUpdateFactory
                 .newLatLngZoom(
@@ -88,9 +85,22 @@ GeoServiceListener {
     }
 
     override fun onGetSecurityZones(
-        zones: Array<SecurityZone>
+        zones: Array<SecurityZone?>
     ) {
+        zones.forEach { zone ->
+            if (zone == null) {
+                return@forEach
+            }
 
+            map.addPolygon(
+                zone.polygon
+            ).apply {
+                fillColor = zone.fillColor
+                strokeColor = zone.strokeColor
+                strokeWidth = zone.strokeWidth
+                tag = zone.title
+            }
+        }
     }
 
 }

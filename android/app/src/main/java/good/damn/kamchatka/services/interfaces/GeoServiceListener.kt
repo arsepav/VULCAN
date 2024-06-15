@@ -5,7 +5,7 @@ import good.damn.kamchatka.models.SecurityZone
 interface GeoServiceListener {
 
     fun onGetSecurityZones(
-        zones: Array<SecurityZone>
+        zones: Array<SecurityZone?>
     )
 
 }

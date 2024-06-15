@@ -3,14 +3,21 @@ package good.damn.kamchatka.services
 import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolygonOptions
+import good.damn.kamchatka.Application
+import good.damn.kamchatka.models.Color
 import good.damn.kamchatka.models.SecurityZone
+import good.damn.kamchatka.models.map.AntroColors
+import good.damn.kamchatka.models.map.OOPTColors
+import good.damn.kamchatka.models.remote.json.OOPT
 import good.damn.kamchatka.services.interfaces.GeoServiceListener
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttp
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONArray
 import org.json.JSONObject
+import kotlin.random.Random
 
 class GeoService(
     private val mListener: GeoServiceListener
@@ -22,6 +29,10 @@ class GeoService(
         private val JSON = "application/json; charset=utf-8"
             .toMediaTypeOrNull()
     }
+
+    private val mZoneColors = OOPTColors
+        .entries
+        .toTypedArray()
 
     fun requestSecurityZones() {
         val client = OkHttpClient()
@@ -39,45 +50,47 @@ class GeoService(
                 .body?.string()
                 ?: return@Thread
 
-            Log.d(TAG, "requestSecurityZones: $body")
 
-        }.start()
-    }
-
-    fun getSecurityZones() {
-
-
-
-        val zones = arrayOf(
-            SecurityZone(
-                PolygonOptions()
-                    .clickable(true)
-                    .add(
-                        LatLng(55.527197, 158.462162),
-                        LatLng(55.477418, 159.654178),
-                        LatLng(54.773885, 159.434452)
-                    ),
-                "Red zone",
-                0x55ff0000.toInt(),
-                0xffff0000.toInt(),
-                3.0f
-            ),
-            SecurityZone(
-                PolygonOptions()
-                    .clickable(true)
-                    .add(
-                        LatLng(54.527197, 158.462162),
-                        LatLng(54.477418, 159.654178),
-                        LatLng(55.773885, 159.434452),
-                        LatLng(56.773885, 159.424452)
-                    ),
-                "Green zone",
-                0x5500ff00.toInt(),
-                0xff00ff00.toInt(),
-                3.0f
+            val json = JSONArray(
+                body
             )
-        )
+            Log.d(TAG, "requestSecurityZones: ${json.length()}")
 
+            val zones: Array<SecurityZone?> = Array(json.length()) {
+                val oopt = OOPT.createFromJSON(
+                    json.getJSONObject(it)
+                )
+
+                val c = oopt?.coords ?: return@Array null
+
+                Log.d(TAG, "requestSecurityZones: ${oopt.id}")
+
+                val polyOptions = PolygonOptions()
+                    .clickable(true)
+                    .addAll(
+                        c.asIterable()
+                    )
+
+                SecurityZone(
+                    polyOptions,
+                    oopt.name ?: "",
+                    mZoneColors[
+                        Random.nextInt(
+                            mZoneColors.size
+                        )
+                    ].color,
+                    AntroColors.colors[0],
+                    11.0f
+                )
+            }
+
+            Application.ui {
+                mListener.onGetSecurityZones(
+                    zones
+                )
+            }
+            
+        }.start()
     }
 
 }
