@@ -3,11 +3,16 @@ package good.damn.kamchatka.fragments.ui.main_content.profile
 import android.content.Context
 import android.view.Gravity
 import android.view.View
+import androidx.appcompat.widget.AppCompatTextView
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsLinear
+import good.damn.kamchatka.extensions.setTextColorId
+import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.fragments.ui.ScrollableFragment
+import good.damn.kamchatka.models.Color
 import good.damn.kamchatka.utils.ViewUtils
+import good.damn.kamchatka.views.button.ButtonBack
 import good.damn.kamchatka.views.layout.GroupTextField
 import good.damn.kamchatka.views.layout.models.GroupField
 
@@ -25,6 +30,19 @@ class RequestFragment
 
         // Allocating views
         val layout = ViewUtils.verticalLinearLayout(
+            context
+        )
+        val btnBack = ButtonBack.createDefaultLinear(
+            measureUnit,
+            Application.color(
+                R.color.titleColor
+            ),
+            context
+        )
+        val textViewObjectName = AppCompatTextView(
+            context
+        )
+        val textViewObjectType = AppCompatTextView(
             context
         )
         val groupFieldName = GroupTextField(
@@ -46,6 +64,28 @@ class RequestFragment
         groupFieldName.typeface = font
         groupFieldPassport.typeface = font
         groupFieldContact.typeface = font
+
+
+        // Typeface
+        textViewObjectName.typeface = Application.font(
+            R.font.open_sans_bold,
+            context
+        )
+        textViewObjectType.typeface =
+            textViewObjectName.typeface
+
+
+
+        // Text colors
+        textViewObjectName.setTextColorId(
+            R.color.titleColor
+        )
+        textViewObjectType.setTextColor(
+            Color.parseFromHexId(
+                R.color.titleColor,
+                0.3f
+            )
+        )
 
 
         // Stroke colors
@@ -70,7 +110,6 @@ class RequestFragment
         groupFieldContact.setTitle(
             R.string.contact_data
         )
-
 
 
 
@@ -116,6 +155,41 @@ class RequestFragment
         )
 
 
+        // Text
+        textViewObjectName.setText(
+            "Южно-Камчатский"
+        )
+        textViewObjectType.setText(
+            "Природный парк"
+        )
+
+
+
+
+        // Text size
+        textViewObjectName.setTextPx(
+            measureUnit * 0.05314f
+        )
+        textViewObjectType.setTextPx(
+            measureUnit * 0.03743f
+        )
+
+
+
+
+        // Title Size
+        groupFieldName.titleTextSize = measureUnit * 0.04835f
+        groupFieldPassport.titleTextSize = groupFieldName.titleTextSize
+        groupFieldContact.titleTextSize = groupFieldName.titleTextSize
+
+
+        // Title bottom margin
+        groupFieldName.titleBottomMargin = measureUnit * 0.04589f
+        groupFieldPassport.titleBottomMargin = groupFieldName.titleBottomMargin
+        groupFieldContact.titleBottomMargin = groupFieldName.titleBottomMargin
+
+
+
         // Intervals
         val interval = measureUnit * 0.0193f
         groupFieldName.interval = interval
@@ -127,18 +201,34 @@ class RequestFragment
 
         // Layout params
         val widthGroup = (measureUnit * 0.8961f).toInt()
+        val topMargin = measureUnit * 0.09782f
+        val marginStart = (measureUnit - widthGroup) * 0.5f
+        textViewObjectName.boundsLinear(
+            Gravity.START,
+            top = measureUnit * 0.07729f,
+            left = marginStart
+        )
+        textViewObjectType.boundsLinear(
+            Gravity.START,
+            top = measureUnit * 0.00657f,
+            left = marginStart
+        )
         groupFieldName.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
-            width = widthGroup
+            width = widthGroup,
+            top = topMargin
         )
         groupFieldPassport.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
-            width = widthGroup
+            width = widthGroup,
+            top = topMargin
         )
         groupFieldContact.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
-            width = widthGroup
+            width = widthGroup,
+            top = topMargin
         )
+
 
 
         // Layout fields
@@ -150,6 +240,15 @@ class RequestFragment
 
         // Adding views
         layout.addView(
+            btnBack
+        )
+        layout.addView(
+            textViewObjectName
+        )
+        layout.addView(
+            textViewObjectType
+        )
+        layout.addView(
             groupFieldName
         )
         layout.addView(
@@ -159,6 +258,21 @@ class RequestFragment
             groupFieldContact
         )
 
+
+
+        // Listeners
+        btnBack.setOnClickListener(
+            this::onClickBtnBack
+        )
+
+
+
         return layout
     }
+}
+
+private fun RequestFragment.onClickBtnBack(
+    view: View
+) {
+    popFragment()
 }

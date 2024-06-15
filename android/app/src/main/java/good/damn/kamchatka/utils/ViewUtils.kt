@@ -13,6 +13,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
+import good.damn.kamchatka.extensions.setTextColorId
 import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.models.Color
 import good.damn.kamchatka.views.button.ButtonBack

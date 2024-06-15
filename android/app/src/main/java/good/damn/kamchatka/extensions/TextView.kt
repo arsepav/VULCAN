@@ -5,6 +5,7 @@ import android.util.TypedValue
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
+import androidx.appcompat.widget.AppCompatTextView
 import good.damn.kamchatka.Application
 
 fun TextView.setTextColorId(

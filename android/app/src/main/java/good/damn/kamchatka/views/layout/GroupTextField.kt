@@ -13,6 +13,7 @@ import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.extensions.setTextColorId
+import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.views.layout.models.GroupField
 import good.damn.kamchatka.views.text_fields.TextFieldRound
 import org.intellij.lang.annotations.JdkConstants.FontStyle
@@ -45,6 +46,16 @@ class GroupTextField(
         }
 
     var interval: Float = 8f
+
+    var titleBottomMargin: Float = 2f
+
+    var titleTextSize: Float = 8f
+        set(v) {
+            mTextViewTitle.setTextPx(
+                v
+            )
+            field = v
+        }
 
     @ColorInt
     var fieldColor: Int = 0xffff0000.toInt()
@@ -91,8 +102,8 @@ class GroupTextField(
         val width = layoutParams.width
 
         val heightField = (width * 0.1135f).toInt()
-        val corner = heightField * 0.15f
-        val strokeWidth = heightField * 0.02127f
+        val corner = heightField * 0.255f
+        val strokeWidth = heightField * 0.02427f
         val textSize = heightField * 0.1125f
         val paddingLeft = (width * 0.04851f).toInt()
         val paddingDrawable = paddingLeft
@@ -158,7 +169,9 @@ class GroupTextField(
                 Gravity.CENTER_HORIZONTAL,
                 width = width,
                 height = heightField,
-                top = interval
+                top = if (i == 0)
+                    titleBottomMargin
+                else interval
             )
 
             textField.cornerRadius = corner
