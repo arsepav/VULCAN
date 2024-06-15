@@ -1,14 +1,53 @@
 package good.damn.kamchatka.services
 
+import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolygonOptions
 import good.damn.kamchatka.models.SecurityZone
+import good.damn.kamchatka.services.interfaces.GeoServiceListener
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.OkHttp
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 
-class GeoService {
+class GeoService(
+    private val mListener: GeoServiceListener
+) {
 
-    fun getSecurityZones(
-        onEachZone: ((SecurityZone)->Unit)
-    ) {
+    companion object {
+        private const val TAG = "GeoService"
+        private const val URL_OOPT = "http://91.224.86.144:8000/oopts"
+        private val JSON = "application/json; charset=utf-8"
+            .toMediaTypeOrNull()
+    }
+
+    fun requestSecurityZones() {
+        val client = OkHttpClient()
+        val request = Request.Builder()
+            .url(URL_OOPT)
+            .post("{\"OOPT_name\": \"\"}".toRequestBody(JSON))
+            .build()
+
+        Thread {
+            val response = client.newCall(
+                request
+            ).execute()
+
+            val body = response
+                .body?.string()
+                ?: return@Thread
+
+            Log.d(TAG, "requestSecurityZones: $body")
+
+        }.start()
+    }
+
+    fun getSecurityZones() {
+
+
+
         val zones = arrayOf(
             SecurityZone(
                 PolygonOptions()
@@ -39,9 +78,6 @@ class GeoService {
             )
         )
 
-        for (zone in zones) {
-            onEachZone(zone)
-        }
     }
 
 }

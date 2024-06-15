@@ -77,4 +77,6 @@
     <string name="req_film_2">Проведение профессиональной видеосъёмки</string>
     <string name="req_film_3">Съемка с использование БПЛА</string>
     <string name="next">Далее</string>
+    <string name="enter_your_email">Введите свой Email</string>
+    <string name="msg_email">"Это тестовый экран.\nВ рамках кейса функция\nвосстановления пароля не реализована.</string>
 </resources>

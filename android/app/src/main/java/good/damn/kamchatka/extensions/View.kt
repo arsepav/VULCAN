@@ -6,6 +6,10 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 
 
+fun View.width(): Int {
+    return layoutParams.width
+}
+
 fun View.height(): Int {
     return layoutParams.height
 }

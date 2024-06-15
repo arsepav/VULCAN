@@ -474,7 +474,6 @@ class RequestFragment
         )
 
 
-
         // Corner radius
         btnNext.cornerRadius = btnNext.height() * 0.303f
 
@@ -550,7 +549,9 @@ class RequestFragment
         btnBack.setOnClickListener(
             this::onClickBtnBack
         )
-
+        btnNext.setOnClickListener(
+            this::onClickBtnNext
+        )
 
 
         return layout
@@ -561,4 +562,10 @@ private fun RequestFragment.onClickBtnBack(
     view: View
 ) {
     popFragment()
+}
+
+private fun RequestFragment.onClickBtnNext(
+    view: View
+) {
+
 }

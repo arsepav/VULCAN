@@ -9,12 +9,15 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Polygon
 import good.damn.kamchatka.Application
+import good.damn.kamchatka.models.SecurityZone
 import good.damn.kamchatka.services.GeoService
+import good.damn.kamchatka.services.interfaces.GeoServiceListener
 
 class GoogleMapFragment
 : SupportMapFragment(),
 OnMapReadyCallback,
-GoogleMap.OnPolygonClickListener {
+GoogleMap.OnPolygonClickListener,
+GeoServiceListener {
 
     companion object {
         private const val TAG = "MapsFragment"
@@ -44,15 +47,20 @@ GoogleMap.OnPolygonClickListener {
             158.394596
         )
 
-        GeoService().getSecurityZones {
-            val polygon = map.addPolygon(
+        val geo = GeoService(
+            this
+        )
+
+        geo.requestSecurityZones()
+
+        /*
+        * val polygon = map.addPolygon(
                 it.polygon
             )
             polygon.fillColor = it.fillColor
             polygon.strokeColor = it.strokeColor
             polygon.strokeWidth = it.strokeWidth
-            polygon.tag = it.title
-        }
+            polygon.tag = it.title*/
 
         map.moveCamera(
             CameraUpdateFactory
@@ -77,6 +85,12 @@ GoogleMap.OnPolygonClickListener {
                 it
             )
         }
+    }
+
+    override fun onGetSecurityZones(
+        zones: Array<SecurityZone>
+    ) {
+
     }
 
 }
