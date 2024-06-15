@@ -130,27 +130,34 @@ class RequestFragment
         )
         groupFieldPassport.fields = arrayOf(
             GroupField(
-                R.string.birthDate
+                R.string.birthDate,
+                R.drawable.ic_calendar
             ),
             GroupField(
-                R.string.country_passport
+                R.string.country_passport,
+                R.drawable.ic_identity_card
             ),
             GroupField(
-                R.string.region_register
+                R.string.region_register,
+                R.drawable.ic_globe
             ),
             GroupField(
-                R.string.gender
+                R.string.gender,
+                R.drawable.ic_profile_out
             ),
             GroupField(
-                R.string.passport_id
+                R.string.passport_id,
+                R.drawable.ic_passport
             )
         )
         groupFieldContact.fields = arrayOf(
             GroupField(
-                R.string.email
+                R.string.email,
+                R.drawable.ic_email
             ),
             GroupField(
-                R.string.telephone
+                R.string.telephone,
+                R.drawable.ic_call
             )
         )
 
