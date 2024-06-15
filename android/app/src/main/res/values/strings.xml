@@ -58,4 +58,22 @@
     <string name="passport_data">Паспортные данные</string>
     <string name="contact_data">Контактные данные</string>
     <string name="select_route">Выберите маршрут</string>
+    <string name="use_transport">Используемый транспорт</string>
+    <string name="format_visiting">Формат посещения</string>
+    <string name="target_visiting">Цель посещения</string>
+    <string name="filming">Съемка</string>
+    <string name="passenger">Я пассажир</string>
+    <string name="adventure">Многодненвый тур</string>
+    <string name="one_day_adventure">Дневная экскурсия</string>
+    <string name="target_visit1">Однодневная поездка/экскурсия</string>
+    <string name="target_visit2">Многодневный пешеходный туризм</string>
+    <string name="target_visit3">Лыжный туризм</string>
+    <string name="target_visit4">Спортивные мероприятия</string>
+    <string name="target_visit5">Научные исследования</string>
+    <string name="target_visit6">Видео/фотосъемка</string>
+    <string name="target_visit7">Альпинизм</string>
+    <string name="target_visit8">Другое</string>
+    <string name="req_film_1">Профессиональная съемка\nне будет проводиться</string>
+    <string name="req_film_2">Проведение профессиональной кино-,\nфото-, видеосъёмки со стационарным\nоборудованием</string>
+    <string name="req_film_3">Съемка с использование БПЛА</string>
 </resources>

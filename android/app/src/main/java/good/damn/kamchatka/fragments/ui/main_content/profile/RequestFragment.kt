@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.Gravity
 import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.constraintlayout.widget.Group
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsLinear
@@ -58,6 +59,19 @@ class RequestFragment
         val groupCheckRoute = GroupCheckBox(
             context
         )
+        val groupCheckTransport = GroupCheckBox(
+            context
+        )
+        val groupCheckVisiting = GroupCheckBox(
+            context
+        )
+        val groupCheckVisitingTargets = GroupCheckBox(
+            context
+        )
+        val groupCheckCamera = GroupCheckBox(
+            context
+        )
+
 
 
         // Group typeface
@@ -69,6 +83,10 @@ class RequestFragment
         groupFieldPassport.typeface = font
         groupFieldContact.typeface = font
         groupCheckRoute.typeface = font
+        groupCheckTransport.typeface = font
+        groupCheckVisiting.typeface = font
+        groupCheckVisitingTargets.typeface = font
+        groupCheckCamera.typeface = font
 
 
         // Typeface
@@ -94,6 +112,11 @@ class RequestFragment
         groupCheckRoute.textColor = Application.color(
             R.color.titleColor
         )
+        groupCheckRoute.textColor = groupCheckRoute.textColor
+        groupCheckTransport.textColor = groupCheckRoute.textColor
+        groupCheckVisiting.textColor = groupCheckRoute.textColor
+        groupCheckVisitingTargets.textColor = groupCheckRoute.textColor
+        groupCheckCamera.textColor = groupCheckRoute.textColor
 
 
 
@@ -111,21 +134,44 @@ class RequestFragment
 
 
         // Check box size
-        groupCheckRoute.checkBoxSize = measureUnit * 0.0603f
+        val checkBoxSize = measureUnit * 0.0603f
+        groupCheckRoute.checkBoxSize = checkBoxSize
+        groupCheckTransport.checkBoxSize = checkBoxSize
+        groupCheckVisiting.checkBoxSize = checkBoxSize
+        groupCheckVisitingTargets.checkBoxSize = checkBoxSize
+        groupCheckCamera.checkBoxSize = checkBoxSize
+
 
         // Check box radius
-        groupCheckRoute.checkBoxRadius = groupCheckRoute
+        val checkBoxRadius = groupCheckRoute
             .checkBoxSize * 0.25f
+        groupCheckRoute.checkBoxRadius = checkBoxRadius
+        groupCheckTransport.checkBoxRadius = checkBoxRadius
+        groupCheckVisiting.checkBoxRadius = checkBoxRadius * 2f
+        groupCheckVisitingTargets.checkBoxRadius = checkBoxRadius
+        groupCheckCamera.checkBoxRadius = checkBoxRadius
 
 
         // Check box stroke width
-        groupCheckRoute.checkBoxStrokeWidth = groupCheckRoute
+        val checkBoxStrokeWidth = groupCheckRoute
             .checkBoxSize * 0.06f
+        groupCheckRoute.checkBoxStrokeWidth = checkBoxStrokeWidth
+        groupCheckTransport.checkBoxStrokeWidth = checkBoxStrokeWidth
+        groupCheckVisiting.checkBoxStrokeWidth = checkBoxStrokeWidth
+        groupCheckVisitingTargets.checkBoxStrokeWidth = checkBoxStrokeWidth
+        groupCheckCamera.checkBoxStrokeWidth = checkBoxStrokeWidth
+
+
 
         // Check colors
-        groupCheckRoute.checkBoxColor = Application.color(
+        val checkBoxColor = Application.color(
             R.color.titleColor
         )
+        groupCheckRoute.checkBoxColor = checkBoxColor
+        groupCheckTransport.checkBoxColor = checkBoxColor
+        groupCheckVisiting.checkBoxColor = checkBoxColor
+        groupCheckVisitingTargets.checkBoxColor = checkBoxColor
+        groupCheckCamera.checkBoxColor = checkBoxColor
 
 
 
@@ -143,6 +189,19 @@ class RequestFragment
         groupCheckRoute.setTitle(
             R.string.select_route
         )
+        groupCheckTransport.setTitle(
+            R.string.use_transport
+        )
+        groupCheckVisiting.setTitle(
+            R.string.format_visiting
+        )
+        groupCheckVisitingTargets.setTitle(
+            R.string.target_visiting
+        )
+        groupCheckCamera.setTitle(
+            R.string.filming
+        )
+
 
 
 
@@ -204,6 +263,56 @@ class RequestFragment
                 R.string.snl
             )
         )
+        groupCheckTransport.fields = arrayOf(
+            GroupField(
+                R.string.passenger
+            )
+        )
+        groupCheckVisiting.fields = arrayOf(
+            GroupField(
+                R.string.adventure
+            ),
+            GroupField(
+                R.string.one_day_adventure
+            )
+        )
+        groupCheckVisitingTargets.fields = arrayOf(
+            GroupField(
+                R.string.target_visit1
+            ),
+            GroupField(
+                R.string.target_visit2
+            ),
+            GroupField(
+                R.string.target_visit3
+            ),
+            GroupField(
+                R.string.target_visit4
+            ),
+            GroupField(
+                R.string.target_visit5
+            ),
+            GroupField(
+                R.string.target_visit6
+            ),
+            GroupField(
+                R.string.target_visit7
+            ),
+            GroupField(
+                R.string.target_visit8
+            )
+        )
+        groupCheckCamera.fields = arrayOf(
+            GroupField(
+                R.string.req_film_1
+            ),
+            GroupField(
+                R.string.req_film_2
+            ),
+            GroupField(
+                R.string.req_film_3
+            )
+        )
 
 
         // Text
@@ -233,6 +342,10 @@ class RequestFragment
         groupFieldPassport.titleTextSize = groupFieldName.titleTextSize
         groupFieldContact.titleTextSize = groupFieldName.titleTextSize
         groupCheckRoute.titleTextSize = groupFieldName.titleTextSize
+        groupCheckTransport.titleTextSize = groupFieldName.titleTextSize
+        groupCheckVisiting.titleTextSize = groupFieldName.titleTextSize
+        groupCheckVisitingTargets.titleTextSize = groupFieldName.titleTextSize
+        groupCheckCamera.titleTextSize = groupFieldName.titleTextSize
 
 
         // Title bottom margin
@@ -240,6 +353,10 @@ class RequestFragment
         groupFieldPassport.titleBottomMargin = groupFieldName.titleBottomMargin
         groupFieldContact.titleBottomMargin = groupFieldName.titleBottomMargin
         groupCheckRoute.titleBottomMargin = groupFieldName.titleBottomMargin
+        groupCheckTransport.titleBottomMargin = groupFieldName.titleBottomMargin
+        groupCheckVisiting.titleBottomMargin = groupFieldName.titleBottomMargin
+        groupCheckVisitingTargets.titleBottomMargin = groupFieldName.titleBottomMargin
+        groupCheckCamera.titleBottomMargin = groupFieldName.titleBottomMargin
 
 
 
@@ -249,6 +366,10 @@ class RequestFragment
         groupFieldPassport.interval = interval
         groupFieldContact.interval = interval
         groupCheckRoute.interval = interval
+        groupCheckTransport.interval = interval
+        groupCheckVisiting.interval = interval
+        groupCheckVisitingTargets.interval = interval
+        groupCheckCamera.interval = interval
 
 
 
@@ -287,11 +408,41 @@ class RequestFragment
             width = widthGroup,
             top = topMargin
         )
+        groupCheckTransport.boundsLinear(
+            Gravity.CENTER_HORIZONTAL,
+            width = widthGroup,
+            top = topMargin
+        )
+        groupCheckVisiting.boundsLinear(
+            Gravity.CENTER_HORIZONTAL,
+            width = widthGroup,
+            top = topMargin
+        )
+        groupCheckVisitingTargets.boundsLinear(
+            Gravity.CENTER_HORIZONTAL,
+            width = widthGroup,
+            top = topMargin
+        )
+        groupCheckCamera.boundsLinear(
+            Gravity.CENTER_HORIZONTAL,
+            width = widthGroup,
+            top = topMargin
+        )
 
 
         // Check box text padding
+        val checkBoxTextPadding = measureUnit * 0.03623f
         groupCheckRoute
-            .checkBoxTextPadding = measureUnit * 0.03623f
+            .checkBoxTextPadding = checkBoxTextPadding
+        groupCheckTransport
+            .checkBoxTextPadding = checkBoxTextPadding
+        groupCheckVisiting
+            .checkBoxTextPadding = checkBoxTextPadding
+        groupCheckVisitingTargets
+            .checkBoxTextPadding = checkBoxTextPadding
+        groupCheckCamera
+            .checkBoxTextPadding = checkBoxTextPadding
+
 
 
 
@@ -300,6 +451,10 @@ class RequestFragment
         groupFieldPassport.layoutFields()
         groupFieldContact.layoutFields()
         groupCheckRoute.layoutFields()
+        groupCheckTransport.layoutFields()
+        groupCheckVisiting.layoutFields()
+        groupCheckVisitingTargets.layoutFields()
+        groupCheckCamera.layoutFields()
 
 
 
@@ -325,7 +480,18 @@ class RequestFragment
         layout.addView(
             groupCheckRoute
         )
-
+        layout.addView(
+            groupCheckTransport
+        )
+        layout.addView(
+            groupCheckVisiting
+        )
+        layout.addView(
+            groupCheckVisitingTargets
+        )
+        layout.addView(
+            groupCheckCamera
+        )
 
 
         // Listeners
