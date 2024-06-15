@@ -92,6 +92,10 @@ GeoServiceListener {
                 return@forEach
             }
 
+            map.addMarker(
+                zone.marker
+            )
+
             map.addPolygon(
                 zone.polygon
             ).apply {

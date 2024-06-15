@@ -1,9 +1,13 @@
 package good.damn.kamchatka.services
 
 import android.util.Log
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolygonOptions
 import good.damn.kamchatka.Application
+import good.damn.kamchatka.R
 import good.damn.kamchatka.models.Color
 import good.damn.kamchatka.models.SecurityZone
 import good.damn.kamchatka.models.map.AntroColors
@@ -71,15 +75,27 @@ class GeoService(
                         c.asIterable()
                     )
 
+                val dangerRate = 0.2f.toInt()
+
+                val markerOptions = MarkerOptions()
+                    .position(
+                        c[0]
+                    ).icon(
+                        BitmapDescriptorFactory.fromResource(
+                            AntroColors.markers[dangerRate]
+                        )
+                    )
+
                 SecurityZone(
                     polyOptions,
+                    markerOptions,
                     oopt.name ?: "",
                     mZoneColors[
                         Random.nextInt(
                             mZoneColors.size
                         )
                     ].color,
-                    AntroColors.colors[0],
+                    AntroColors.colors[dangerRate],
                     11.0f
                 )
             }
