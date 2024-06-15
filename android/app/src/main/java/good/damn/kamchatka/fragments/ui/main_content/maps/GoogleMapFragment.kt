@@ -12,14 +12,13 @@ import good.damn.kamchatka.Application
 import good.damn.kamchatka.models.SecurityZone
 import good.damn.kamchatka.models.map.OOPTColors
 import good.damn.kamchatka.services.GeoService
-import good.damn.kamchatka.services.interfaces.GeoServiceListener
-import kotlin.random.Random
+import good.damn.kamchatka.services.interfaces.OnGetSecurityZonesListener
 
 class GoogleMapFragment
 : SupportMapFragment(),
 OnMapReadyCallback,
 GoogleMap.OnPolygonClickListener,
-GeoServiceListener {
+OnGetSecurityZonesListener {
 
     companion object {
         private const val TAG = "MapsFragment"
@@ -53,11 +52,12 @@ GeoServiceListener {
             158.394596
         )
 
-        val geo = GeoService(
-            this
-        )
+        val geo = GeoService()
+
+        geo
 
         geo.requestSecurityZones()
+        geo.requestRoutes()
 
         map.moveCamera(
             CameraUpdateFactory
