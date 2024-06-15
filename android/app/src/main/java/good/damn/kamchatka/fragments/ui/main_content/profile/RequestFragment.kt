@@ -13,6 +13,7 @@ import good.damn.kamchatka.fragments.ui.ScrollableFragment
 import good.damn.kamchatka.models.Color
 import good.damn.kamchatka.utils.ViewUtils
 import good.damn.kamchatka.views.button.ButtonBack
+import good.damn.kamchatka.views.layout.GroupCheckBox
 import good.damn.kamchatka.views.layout.GroupTextField
 import good.damn.kamchatka.views.layout.models.GroupField
 
@@ -54,6 +55,9 @@ class RequestFragment
         val groupFieldContact = GroupTextField(
             context
         )
+        val groupCheckRoute = GroupCheckBox(
+            context
+        )
 
 
         // Group typeface
@@ -64,6 +68,7 @@ class RequestFragment
         groupFieldName.typeface = font
         groupFieldPassport.typeface = font
         groupFieldContact.typeface = font
+        groupCheckRoute.typeface = font
 
 
         // Typeface
@@ -86,6 +91,11 @@ class RequestFragment
                 0.3f
             )
         )
+        groupCheckRoute.textColor = Application.color(
+            R.color.titleColor
+        )
+
+
 
 
         // Stroke colors
@@ -100,6 +110,28 @@ class RequestFragment
         )
 
 
+        // Check box size
+        groupCheckRoute.checkBoxSize = measureUnit * 0.0603f
+
+        // Check box radius
+        groupCheckRoute.checkBoxRadius = groupCheckRoute
+            .checkBoxSize * 0.25f
+
+
+        // Check box stroke width
+        groupCheckRoute.checkBoxStrokeWidth = groupCheckRoute
+            .checkBoxSize * 0.06f
+
+
+
+        // Check colors
+        groupCheckRoute.checkBoxColor = Application.color(
+            R.color.titleColor
+        )
+
+
+
+
         // Group titles
         groupFieldName.setTitle(
             R.string.snl
@@ -109,6 +141,9 @@ class RequestFragment
         )
         groupFieldContact.setTitle(
             R.string.contact_data
+        )
+        groupCheckRoute.setTitle(
+            R.string.select_route
         )
 
 
@@ -160,6 +195,17 @@ class RequestFragment
                 R.drawable.ic_call
             )
         )
+        groupCheckRoute.fields = arrayOf(
+            GroupField(
+                R.string.email
+            ),
+            GroupField(
+                R.string.kamchatka
+            ),
+            GroupField(
+                R.string.snl
+            )
+        )
 
 
         // Text
@@ -188,12 +234,14 @@ class RequestFragment
         groupFieldName.titleTextSize = measureUnit * 0.04835f
         groupFieldPassport.titleTextSize = groupFieldName.titleTextSize
         groupFieldContact.titleTextSize = groupFieldName.titleTextSize
+        groupCheckRoute.titleTextSize = groupFieldName.titleTextSize
 
 
         // Title bottom margin
         groupFieldName.titleBottomMargin = measureUnit * 0.04589f
         groupFieldPassport.titleBottomMargin = groupFieldName.titleBottomMargin
         groupFieldContact.titleBottomMargin = groupFieldName.titleBottomMargin
+        groupCheckRoute.titleBottomMargin = groupFieldName.titleBottomMargin
 
 
 
@@ -202,6 +250,7 @@ class RequestFragment
         groupFieldName.interval = interval
         groupFieldPassport.interval = interval
         groupFieldContact.interval = interval
+        groupCheckRoute.interval = interval
 
 
 
@@ -235,6 +284,11 @@ class RequestFragment
             width = widthGroup,
             top = topMargin
         )
+        groupCheckRoute.boundsLinear(
+            Gravity.CENTER_HORIZONTAL,
+            width = widthGroup,
+            top = topMargin
+        )
 
 
 
@@ -242,6 +296,7 @@ class RequestFragment
         groupFieldName.layoutFields()
         groupFieldPassport.layoutFields()
         groupFieldContact.layoutFields()
+        groupCheckRoute.layoutFields()
 
 
 
@@ -263,6 +318,9 @@ class RequestFragment
         )
         layout.addView(
             groupFieldContact
+        )
+        layout.addView(
+            groupCheckRoute
         )
 
 

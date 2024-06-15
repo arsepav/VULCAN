@@ -1,0 +1,164 @@
+package good.damn.kamchatka.views.layout
+
+import android.content.Context
+import good.damn.kamchatka.models.Color
+import android.graphics.Typeface
+import android.util.Log
+import android.view.Gravity
+import android.widget.CheckBox
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.annotation.ColorInt
+import androidx.annotation.StringRes
+import good.damn.kamchatka.Application
+import good.damn.kamchatka.R
+import good.damn.kamchatka.extensions.boundsLinear
+import good.damn.kamchatka.extensions.setTextColorId
+import good.damn.kamchatka.extensions.setTextPx
+import good.damn.kamchatka.views.checkboxes.CheckBoxRound
+import good.damn.kamchatka.views.layout.models.GroupField
+import org.intellij.lang.annotations.JdkConstants.FontStyle
+
+class GroupCheckBox(
+    context: Context
+): LinearLayout(
+    context
+) {
+
+    companion object {
+        private const val TAG = "GroupTextField"
+    }
+
+    var fields: Array<GroupField>? = null
+        set(v) {
+            removeAllViews()
+            field = v
+            Log.d(TAG, "FIELDS_SET: $field")
+            if (fields == null) {
+                mCheckBoxes = null
+                return
+            }
+            mCheckBoxes = Array(fields!!.size) {
+                CheckBoxRound(
+                    context
+                )
+            }
+
+        }
+
+    var interval: Float = 8f
+
+    var titleBottomMargin: Float = 2f
+
+    var titleTextSize: Float = 8f
+        set(v) {
+            mTextViewTitle.setTextPx(
+                v
+            )
+            field = v
+        }
+
+    var checkBoxSize: Float = 1f
+
+    var checkBoxRadius: Float = 1f
+
+    var checkBoxStrokeWidth: Float = 2f
+
+    @ColorInt
+    var textColor: Int = 0xffff0000.toInt()
+
+    @ColorInt
+    var checkBoxColor: Int = 0xffff0000.toInt()
+
+    @FontStyle
+    var typeface = Typeface.DEFAULT
+
+    private val mTextViewTitle = TextView(
+        context
+    )
+
+    private var mCheckBoxes: Array<CheckBoxRound>? = null
+
+    init {
+        orientation = VERTICAL
+        setBackgroundColor(0)
+
+        mTextViewTitle.setTextColorId(
+            R.color.titleColor
+        )
+
+        mTextViewTitle.typeface = Application.font(
+            R.font.open_sans_bold,
+            context
+        )
+
+        mTextViewTitle.boundsLinear(
+            Gravity.START,
+            left = 0f,
+            top = 0f
+        )
+    }
+
+    fun layoutFields() {
+        addView(
+            mTextViewTitle
+        )
+
+        Log.d(TAG, "layoutFields: ${fields?.size} ${mCheckBoxes?.size}")
+        if (fields == null || mCheckBoxes == null) {
+            return
+        }
+
+        val width = layoutParams.width
+
+        for (i in fields!!.indices) {
+            val checkBox = mCheckBoxes!![i]
+            val info = fields!![i]
+
+            checkBox.setStrokeColor(
+                checkBoxColor
+            )
+
+            checkBox.setStrokeWidth(
+                checkBoxStrokeWidth
+            )
+
+            checkBox.setFillColor(
+                checkBoxColor
+            )
+
+            checkBox.radius = checkBoxRadius
+
+            checkBox.checkBoxHeight = checkBoxSize
+            checkBox.checkBoxWidth = checkBoxSize
+
+            checkBox.boundsLinear(
+                Gravity.CENTER_HORIZONTAL,
+                width = width,
+                height = checkBoxSize.toInt(),
+                top = if (i == 0)
+                    titleBottomMargin
+                else interval
+            )
+
+            addView(
+                checkBox
+            )
+        }
+    }
+
+    fun setTitle(
+        @StringRes id: Int
+    ) {
+        mTextViewTitle.setText(
+            id
+        )
+    }
+
+    fun setTitle(
+        title: String
+    ) {
+        mTextViewTitle.text = title
+    }
+
+}
