@@ -120,7 +120,6 @@ class RequestFragment
 
 
 
-
         // Stroke colors
         groupFieldName.fieldColor = Application.color(
             R.color.mountainsColor
@@ -175,6 +174,24 @@ class RequestFragment
 
 
 
+        // Check box drawable
+        groupCheckRoute.textDrawable = Application.drawable(
+            R.drawable.ic_route
+        )
+        groupCheckTransport.textDrawable = Application.drawable(
+            R.drawable.ic_car
+        )
+        groupCheckVisiting.textDrawable = Application.drawable(
+            R.drawable.ic_map
+        )
+        groupCheckVisitingTargets.textDrawable = Application.drawable(
+            R.drawable.ic_extension
+        )
+        groupCheckCamera.textDrawable = Application.drawable(
+            R.drawable.ic_camera
+        )
+
+
 
         // Group titles
         groupFieldName.setTitle(
@@ -186,21 +203,12 @@ class RequestFragment
         groupFieldContact.setTitle(
             R.string.contact_data
         )
-        groupCheckRoute.setTitle(
-            R.string.select_route
-        )
-        groupCheckTransport.setTitle(
-            R.string.use_transport
-        )
-        groupCheckVisiting.setTitle(
-            R.string.format_visiting
-        )
-        groupCheckVisitingTargets.setTitle(
-            R.string.target_visiting
-        )
-        groupCheckCamera.setTitle(
-            R.string.filming
-        )
+        groupCheckRoute.title = R.string.select_route
+        groupCheckTransport.title = R.string.use_transport
+        groupCheckVisiting.title = R.string.format_visiting
+        groupCheckVisitingTargets.title = R.string.target_visiting
+        groupCheckCamera.title = R.string.filming
+
 
 
 

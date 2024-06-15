@@ -3,13 +3,16 @@ package good.damn.kamchatka.views.layout
 import android.content.Context
 import good.damn.kamchatka.models.Color
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.Gravity
 import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.ColorInt
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.appcompat.widget.AppCompatTextView
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsLinear
@@ -66,6 +69,21 @@ class GroupCheckBox(
 
     var checkBoxTextPadding = 1f
 
+    var textDrawable: Drawable? = null
+
+    @StringRes
+    var title: Int = 0
+        set(v) {
+            field = v
+            if (v == 0) {
+                return
+            }
+
+            mTextViewTitle.setText(
+                v
+            )
+        }
+
     @ColorInt
     var textColor: Int = 0xffff0000.toInt()
 
@@ -75,7 +93,7 @@ class GroupCheckBox(
     @FontStyle
     var typeface = Typeface.DEFAULT
 
-    private val mTextViewTitle = TextView(
+    private val mTextViewTitle = AppCompatTextView(
         context
     )
 
@@ -93,6 +111,9 @@ class GroupCheckBox(
             R.font.open_sans_bold,
             context
         )
+
+        mTextViewTitle.gravity = Gravity
+            .CENTER_VERTICAL
 
         mTextViewTitle.boundsLinear(
             Gravity.START,
@@ -114,6 +135,24 @@ class GroupCheckBox(
         val width = layoutParams.width
         val height = (width * 0.06038f).toInt()
         val textSize = height * 0.6f
+
+        if (textDrawable != null) {
+            mTextViewTitle.text = "${mTextViewTitle.text}  "
+            val imageSize = height
+            textDrawable!!.setBounds(
+                0,
+                0,
+                imageSize,
+                imageSize
+            )
+            mTextViewTitle.setCompoundDrawables(
+                null,
+                null,
+                textDrawable,
+                null
+            )
+        }
+
 
         for (i in fields!!.indices) {
             val checkBox = mCheckBoxes!![i]
@@ -159,14 +198,6 @@ class GroupCheckBox(
                 checkBox
             )
         }
-    }
-
-    fun setTitle(
-        @StringRes id: Int
-    ) {
-        mTextViewTitle.setText(
-            id
-        )
     }
 
     fun setTitle(

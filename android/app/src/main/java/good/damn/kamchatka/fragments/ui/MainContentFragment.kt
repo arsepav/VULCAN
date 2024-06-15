@@ -29,7 +29,6 @@ import good.damn.kamchatka.layout_managers.ZoomCenterLayoutManager
 import good.damn.kamchatka.models.view.Park
 import good.damn.kamchatka.views.RoundedImageView
 import good.damn.kamchatka.views.special.main_content.MainCardImage
-import good.damn.kamchatka.views.textviews.ImageSpanTextView
 
 class MainContentFragment
 : ScrollableFragment() {
@@ -75,7 +74,7 @@ class MainContentFragment
         val textViewKamchatka = AppCompatTextView(
             context
         )
-        val textViewKamchatka2 = ImageSpanTextView(
+        val textViewKamchatka2 = AppCompatTextView(
             context
         )
         val recyclerViewParks = RecyclerView(
@@ -185,7 +184,7 @@ class MainContentFragment
         Application.drawable(
             R.drawable.ic_info
         )?.let {
-            val b = (textViewKamchatka2.textSize)
+            val b = (textViewKamchatka2.textSize * 1.35f)
                 .toInt()
             it.setBounds(
                 0,
@@ -193,10 +192,15 @@ class MainContentFragment
                 b,
                 b
             )
-            textViewKamchatka2.text = "${textViewKamchatka2.text}   "
-            textViewKamchatka2.setImageSpan(
+            textViewKamchatka2.text = "${textViewKamchatka2.text}  "
+            textViewKamchatka2.gravity = Gravity
+                .CENTER_VERTICAL
+
+            textViewKamchatka2.setCompoundDrawables(
+                null,
+                null,
                 it,
-                textViewKamchatka2.text.length-1
+                null
             )
         }
 
