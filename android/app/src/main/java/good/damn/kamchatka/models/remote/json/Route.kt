@@ -34,8 +34,6 @@ data class Route(
                 "geom"
             ).getJSONArray(
                 "coordinates"
-            ).getJSONArray(
-                0
             )
 
             val coords = Array(geom.length()) {

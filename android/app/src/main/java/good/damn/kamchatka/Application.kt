@@ -16,20 +16,25 @@ import androidx.annotation.FontRes
 import androidx.annotation.StringRes
 import androidx.core.content.res.ResourcesCompat
 import good.damn.kamchatka.models.TokenAuth
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 
 class Application
 : Application() {
 
     companion object {
+        lateinit var RESOURCES: Resources
+
+        const val KEY_SHARED = "DATA"
+        const val URL = "http://91.224.86.144:8000"
 
         var WIDTH = 0
         var HEIGHT = 0
 
         var TOKEN: TokenAuth? = null
 
-        val KEY_SHARED = "DATA"
-
-        lateinit var RESOURCES: Resources
+        val JSON = "application/json; charset=utf-8"
+            .toMediaTypeOrNull()
 
         private val mHandler = Handler(
             Looper.getMainLooper()

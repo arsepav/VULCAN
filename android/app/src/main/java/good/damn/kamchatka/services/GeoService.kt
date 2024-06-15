@@ -1,5 +1,6 @@
 package good.damn.kamchatka.services
 
+import android.content.Context
 import android.util.Log
 import androidx.annotation.WorkerThread
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -13,24 +14,24 @@ import good.damn.kamchatka.models.map.AntroColors
 import good.damn.kamchatka.models.map.OOPTColors
 import good.damn.kamchatka.models.remote.json.OOPT
 import good.damn.kamchatka.models.remote.json.Route
-import good.damn.kamchatka.services.GeoService.Companion.JSON
-import good.damn.kamchatka.services.GeoService.Companion.URL_OOPT
 import good.damn.kamchatka.services.interfaces.OnGetRoutesListener
 import good.damn.kamchatka.services.interfaces.OnGetSecurityZonesListener
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.OkHttpClient
+import good.damn.kamchatka.services.network.NetworkService
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
 import kotlin.random.Random
 
-class GeoService {
+class GeoService(
+    context: Context
+): NetworkService(
+    context
+) {
 
     companion object {
         private const val TAG = "GeoService"
-        const val URL_OOPT = "http://91.224.86.144:8000/oopts"
-        val JSON = "application/json; charset=utf-8"
-            .toMediaTypeOrNull()
+        private const val URL_ROUTE = "${Application.URL}/geopaths"
+        private const val URL_OOPT = "${Application.URL}/oopts"
     }
 
     private var mOnGetZonesListener: OnGetSecurityZonesListener? = null
@@ -46,7 +47,9 @@ class GeoService {
         }
 
         makeRequest(
-            ""
+            Request.Builder()
+                .url(URL_ROUTE)
+                .get()
         ) { client, request ->
             queueRequest(
                 client,
@@ -60,8 +63,18 @@ class GeoService {
         if (mOnGetZonesListener == null) {
             return
         }
+
+        val body = "{\"OOPT_name\": \"\"}"
+            .toRequestBody(
+                Application.JSON
+            )
+
+        val request = Request.Builder()
+            .url(URL_OOPT)
+            .post(body)
+
         makeRequest(
-            "{\"OOPT_name\": \"\"}"
+            request
         ) { client, request ->
             queueRequest(
                 client,
@@ -161,40 +174,4 @@ class GeoService {
         }
     }
 
-}
-
-private fun GeoService.makeRequest(
-    jsonString: String,
-    c: ((OkHttpClient, Request)->Unit)
-) {
-    val client = OkHttpClient()
-    val request = Request.Builder()
-        .url(URL_OOPT)
-        .post(jsonString.toRequestBody(JSON))
-        .build()
-
-    c(client,request)
-}
-
-@WorkerThread
-private fun GeoService.queueRequest(
-    client: OkHttpClient,
-    request: Request,
-    process: ((JSONArray) -> Unit)
-) {
-    Thread {
-        val response = client.newCall(
-            request
-        ).execute()
-
-        val body = response
-            .body?.string()
-            ?: return@Thread
-
-        process(
-            JSONArray(
-                body
-            )
-        )
-    }.start()
 }

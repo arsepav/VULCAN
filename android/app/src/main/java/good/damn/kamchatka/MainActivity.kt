@@ -21,7 +21,7 @@ import good.damn.kamchatka.services.TokenService
 
 class MainActivity
 : AppCompatActivity(),
-ViewTreeObserver.OnGlobalLayoutListener{
+ViewTreeObserver.OnGlobalLayoutListener {
 
     private lateinit var mContainer: FrameLayout
 

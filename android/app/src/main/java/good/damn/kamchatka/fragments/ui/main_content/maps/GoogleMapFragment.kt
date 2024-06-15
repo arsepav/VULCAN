@@ -8,17 +8,21 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Polygon
+import com.google.android.gms.maps.model.RoundCap
 import good.damn.kamchatka.Application
+import good.damn.kamchatka.models.RouteMap
 import good.damn.kamchatka.models.SecurityZone
 import good.damn.kamchatka.models.map.OOPTColors
 import good.damn.kamchatka.services.GeoService
+import good.damn.kamchatka.services.interfaces.OnGetRoutesListener
 import good.damn.kamchatka.services.interfaces.OnGetSecurityZonesListener
 
 class GoogleMapFragment
 : SupportMapFragment(),
 OnMapReadyCallback,
 GoogleMap.OnPolygonClickListener,
-OnGetSecurityZonesListener {
+OnGetSecurityZonesListener,
+OnGetRoutesListener {
 
     companion object {
         private const val TAG = "MapsFragment"
@@ -45,6 +49,8 @@ OnGetSecurityZonesListener {
     override fun onMapReady(
         googleMap: GoogleMap
     ) {
+        val context = context ?: return
+
         map = googleMap
 
         val kamchatka = LatLng(
@@ -52,9 +58,17 @@ OnGetSecurityZonesListener {
             158.394596
         )
 
-        val geo = GeoService()
+        val geo = GeoService(
+            context
+        )
 
-        geo
+        geo.setOnGetZonesListener(
+            this
+        )
+
+        geo.setOnGetRoutesListener(
+            this
+        )
 
         geo.requestSecurityZones()
         geo.requestRoutes()
@@ -99,10 +113,31 @@ OnGetSecurityZonesListener {
             map.addPolygon(
                 zone.polygon
             ).apply {
+                isClickable = true
                 fillColor = zone.fillColor
                 strokeColor = zone.strokeColor
                 strokeWidth = zone.strokeWidth
                 tag = zone.title
+            }
+        }
+    }
+
+    override fun onGetRoutes(
+        routes: Array<RouteMap?>
+    ) {
+        val cap = RoundCap()
+        routes.forEach { route ->
+            if (route == null) {
+                return@forEach
+            }
+
+            map.addPolyline(
+                route.route
+            ).apply {
+                color = route.color
+                width = route.strokeWidth
+                startCap = cap
+                endCap = cap
             }
         }
     }
