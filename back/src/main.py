@@ -736,13 +736,15 @@ async def create_file(file1: UploadFile = File(...), file2: UploadFile = File(..
     file2_path = join(temp_dir, 'image.jp2.aux.xml')
     output_path = join(temp_dir, "output_file.txt")
 
-    with open(file1_path, "wb") as f:
-        shutil.copyfileobj(file1.file, f)
+    if d['segmentation']:
 
-    with open(file2_path, "wb") as f:
-        shutil.copyfileobj(file2.file, f)
+        with open(file1_path, "wb") as f:
+            shutil.copyfileobj(file1.file, f)
 
-    segment_with_coordinates(file1_path, output_path)
+        with open(file2_path, "wb") as f:
+            shutil.copyfileobj(file2.file, f)
+
+        segment_with_coordinates(file1_path, output_path)
 
     return FileResponse(output_path, filename="contur.geojson")
 

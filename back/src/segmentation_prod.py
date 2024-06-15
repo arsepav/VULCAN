@@ -17,12 +17,12 @@ def segment_with_coordinates(path_to_jp2, output_path):
     current_directory = os.getcwd()
     print("current_directory", current_directory)
 
-    device = torch.device('cpu')
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print("Использую устройство:", device)
 
     unet = UNet().to(device)
 
-    unet.load_state_dict(torch.load('models/unet_trained.model', map_location=torch.device('cpu')))
+    unet.load_state_dict(torch.load('models/unet_trained.model', map_location=device))
     unet.eval()
 
     rows = []
