@@ -5,9 +5,15 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PointF
+import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Button
 import androidx.annotation.ColorInt
+import good.damn.kamchatka.Application
+import good.damn.kamchatka.R
+import good.damn.kamchatka.extensions.boundsFrame
+import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.views.interactions.AnimatedTouchInteraction
 import good.damn.kamchatka.views.interactions.interfaces.OnActionListener
 import good.damn.kamchatka.views.interactions.interfaces.OnUpdateAnimationListener
@@ -127,6 +133,74 @@ class ButtonBack(
     }
 
     companion object {
+
+        fun createDefaultLinear(
+            measureUnit: Int,
+            @ColorInt strokeColor: Int,
+            context: Context
+        ): ButtonBack {
+            val b = createDefault(
+                strokeColor,
+                context
+            )
+
+            b.boundsLinear(
+                Gravity.START,
+                size = btnBackSize(
+                    measureUnit
+                ).toInt(),
+                top = btnBackTop(
+                    measureUnit
+                ),
+                left = btnBackStart(
+                    measureUnit
+                )
+            )
+
+            return b
+        }
+
+        fun createDefaultFrame(
+            measureUnit: Int,
+            @ColorInt strokeColor: Int,
+            context: Context
+        ): ButtonBack {
+            val b = createDefault(
+                strokeColor,
+                context
+            )
+
+            b.boundsFrame(
+                Gravity.START,
+                size = btnBackSize(
+                    measureUnit
+                ).toInt(),
+                top = btnBackTop(
+                    measureUnit
+                ),
+                left = btnBackStart(
+                    measureUnit
+                )
+            )
+
+            return b
+        }
+
+        fun createDefault(
+            @ColorInt strokeColor: Int,
+            context: Context
+        ): ButtonBack {
+            val b = ButtonBack(
+                context
+            )
+
+            b.setStrokeColor(
+                strokeColor
+            )
+
+            return b
+        }
+
         fun btnBackSize(
             measureUnit: Int
         ): Float {

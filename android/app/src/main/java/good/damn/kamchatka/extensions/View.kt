@@ -22,6 +22,12 @@ fun View.bottom(): Int {
     }
 }
 
+fun View.left(): Float {
+    margins().apply {
+        return leftMargin as Float
+    }
+}
+
 fun View.margins(): ViewGroup.MarginLayoutParams {
     return layoutParams as ViewGroup.MarginLayoutParams
 }
