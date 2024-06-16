@@ -53,7 +53,7 @@ class CardHeader(
         )
 
         imageViewBack.setImageScale(
-            0.65f,
+            0.76f,
             0.65f
         )
 

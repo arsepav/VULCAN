@@ -3,6 +3,7 @@ package good.damn.kamchatka.fragments
 import android.animation.Animator
 import android.animation.ValueAnimator
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -115,6 +116,14 @@ ValueAnimator.AnimatorUpdateListener {
     ) {
         mainActivity().pushFragment(
             fragment
+        )
+    }
+
+    fun pickImage(
+        completion: ((Uri)->Unit)
+    ) {
+        mainActivity().pickImage(
+            completion
         )
     }
 

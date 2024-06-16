@@ -4,7 +4,10 @@ import android.content.Context
 import android.view.Gravity
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatTextView
+import good.damn.kamchatka.Application
+import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsLinear
+import good.damn.kamchatka.extensions.setTextPx
 
 class CardItemDescription(
     context: Context
@@ -17,8 +20,7 @@ class CardItemDescription(
 
     override fun onCreateLinearLayout(
         layout: LinearLayout,
-        height: Int,
-        width: Int,
+        measureUnit: Int,
         left: Int
     ) {
         val textViewAbout = AppCompatTextView(
@@ -31,16 +33,61 @@ class CardItemDescription(
         textViewAbout.text = about
         textViewDesc.text = desc
 
+        Application.color(
+            R.color.titleColor
+        ).let {
+            textViewAbout.setTextColor(
+                it
+            )
+
+            textViewDesc.setTextColor(
+                it
+            )
+        }
+
+        Application.font(
+            R.font.open_sans_bold,
+            context
+        ).let {
+            textViewAbout.typeface = it
+        }
+
+        Application.font(
+            R.font.open_sans_regular,
+            context
+        ).let {
+            textViewDesc.typeface = it
+        }
+
+        (measureUnit * 0.04835f).let {
+            textViewAbout.setTextPx(
+                it
+            )
+        }
+
+        (measureUnit * 0.03743f).let {
+            textViewDesc.setTextPx(
+                it
+            )
+        }
+
         textViewAbout.boundsLinear(
-            Gravity.START,
-            left = left.toFloat(),
+            Gravity.START
         )
 
         textViewDesc.boundsLinear(
             Gravity.START,
-            left = left.toFloat(),
+            top = measureUnit * 0.04347f
         )
 
+        (measureUnit * 0.06159f).toInt().let {
+            layout.setPadding(
+                left,
+                it,
+                left,
+                it
+            )
+        }
 
         layout.apply {
             addView(

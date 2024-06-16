@@ -46,6 +46,8 @@ class CheckBoxRound(
 
     private val mTouchInteraction = AnimatedTouchInteraction()
 
+    private var mOnClickListener: OnClickListener? = null
+
     init {
         mPaintCheckStroke.style = Paint.Style.STROKE
 
@@ -108,6 +110,12 @@ class CheckBoxRound(
     }
 
     override fun setOnTouchListener(l: OnTouchListener?) = Unit
+    override fun setOnClickListener(
+        l: OnClickListener?
+    ) {
+        mOnClickListener = l
+        super.setOnClickListener(null)
+    }
 
 
     override fun onDown(
@@ -120,6 +128,7 @@ class CheckBoxRound(
         event: MotionEvent
     ) {
         isChecked = !isChecked
+        mOnClickListener?.onClick(v)
         invalidate()
     }
 

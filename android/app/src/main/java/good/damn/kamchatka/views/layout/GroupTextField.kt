@@ -201,4 +201,19 @@ class GroupTextField(
         mTextViewTitle.text = title
     }
 
+    fun getData(): HashMap<String, String> {
+        val map = HashMap<String, String>()
+        mTextFields?.forEach {
+            it.text?.toString()?.let {data ->
+                if (data.isBlank()) {
+                    return map
+                }
+                map[it.hint.toString()] = data
+            }
+
+        }
+
+        return map
+    }
+
 }

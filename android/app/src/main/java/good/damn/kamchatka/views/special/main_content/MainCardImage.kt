@@ -4,16 +4,19 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Typeface
-import android.util.Log
+import android.view.MotionEvent
+import android.view.View
 import androidx.annotation.ColorInt
-import androidx.annotation.ColorRes
 import androidx.appcompat.widget.AppCompatImageView
+import good.damn.kamchatka.views.interactions.AnimatedTouchInteraction
+import good.damn.kamchatka.views.interactions.interfaces.OnActionListener
+import good.damn.kamchatka.views.interactions.interfaces.OnUpdateAnimationListener
 
 class MainCardImage(
     context: Context
 ): AppCompatImageView(
     context
-) {
+), OnUpdateAnimationListener, OnActionListener {
 
     var typeface = Typeface.DEFAULT
         set(v) {
@@ -37,6 +40,10 @@ class MainCardImage(
             }
         }
 
+    var mOnClickListener: OnClickListener? = null
+
+    private val mTouchInteraction = AnimatedTouchInteraction()
+
     private var mSubtitlePos: Array<TextPosition>? = null
 
     private var mTitleX = 0f
@@ -48,6 +55,21 @@ class MainCardImage(
     init {
         mPaintTitle.isAntiAlias = true
         mPaintSubtitle.isAntiAlias = true
+
+        mTouchInteraction.minValue = 0.0f
+        mTouchInteraction.maxValue = 1.0f
+
+        mTouchInteraction.setOnUpdateAnimationListener(
+            this
+        )
+
+        mTouchInteraction.setOnActionListener(
+            this
+        )
+
+        super.setOnTouchListener(
+            mTouchInteraction
+        )
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
@@ -97,6 +119,26 @@ class MainCardImage(
                     mPaintSubtitle
                 )
             }
+        }
+    }
+
+    override fun onUpdateAnimation(
+        animatedValue: Float
+    ) {
+        scaleX = 1.0f + (1.0f-animatedValue) * 0.07f
+        scaleY = scaleX
+    }
+
+    override fun onDown(v: View, event: MotionEvent) = Unit
+
+    override fun onUp(
+        v: View,
+        event: MotionEvent
+    ) {
+        if (event.action == MotionEvent.ACTION_UP) {
+            mOnClickListener?.onClick(
+                v
+            )
         }
     }
 

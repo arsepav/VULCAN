@@ -14,8 +14,13 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.Polygon
 import com.google.android.gms.maps.model.RoundCap
 import good.damn.kamchatka.Application
+import good.damn.kamchatka.MainActivity
+import good.damn.kamchatka.R
+import good.damn.kamchatka.fragments.StackFragment
+import good.damn.kamchatka.fragments.ui.main_content.details.ParkDetailsFragment
 import good.damn.kamchatka.models.RouteMap
 import good.damn.kamchatka.models.SecurityZone
+import good.damn.kamchatka.models.ShortOOPT
 import good.damn.kamchatka.models.map.AntroColors
 import good.damn.kamchatka.models.map.OOPTColors
 import good.damn.kamchatka.services.GeoService
@@ -122,9 +127,17 @@ OnGetRoutesListener {
         poly: Polygon
     ) {
         context?.let {
-            Application.toast(
-                poly.tag?.toString() ?: return,
-                it
+            val oopt = poly.tag as? SecurityZone ?: return
+            pushFragment(
+                ParkDetailsFragment.create(
+                    ShortOOPT(
+                        oopt.oopt,
+                        it.getString(
+                            R.string.park
+                        ),
+                        shortName = ""
+                    )
+                )
             )
         }
     }
@@ -147,26 +160,14 @@ OnGetRoutesListener {
 
             val dangerRate = oopt.dangerRate.toInt()
 
-            zone.oopt.id?.let {
-                mOOPTColors[it] = fillColor
-            }
-
-
-            map.addMarker(
-                zone.marker
-            )?.apply {
-                setIcon(
-                    BitmapDescriptorFactory.fromResource(
-                        AntroColors.markers[dangerRate]
-                    )
-                )
-            }
+            mOOPTColors[zone.oopt.id] = fillColor
 
 
             map.addPolygon(
                 zone.polygon
             ).apply {
                 isClickable = true
+                tag = zone
                 this.fillColor = fillColor
                 strokeColor = AntroColors.colors[
                     dangerRate
@@ -189,6 +190,22 @@ OnGetRoutesListener {
             if (route == null) {
                 return@forEach
             }
+
+            val dangerRate = route.route.dangerRate.toInt()
+
+            map.addMarker(
+                MarkerOptions()
+                    .position(
+                        route.route.coords[0]
+                    )
+            )?.apply {
+                setIcon(
+                    BitmapDescriptorFactory.fromResource(
+                        AntroColors.markers[dangerRate]
+                    )
+                )
+            }
+
             map.addPolyline(
                 route.polyline
             ).apply {
@@ -204,6 +221,14 @@ OnGetRoutesListener {
                 }
             }
         }
+    }
+
+    fun pushFragment(
+        frag: StackFragment
+    ) {
+        (activity as? MainActivity)?.pushFragment(
+            frag
+        )
     }
 
 }

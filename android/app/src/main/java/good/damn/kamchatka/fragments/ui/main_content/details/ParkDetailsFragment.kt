@@ -62,7 +62,8 @@ OnGetRoutesListener, OnSelectModelListener<Route> {
         mCardItemRoutes.boundsLinear(
             Gravity.START,
             width = measureUnit,
-            height = (measureUnit * 0.7995f).toInt()
+            height = (measureUnit * 0.7995f).toInt(),
+            top = measureUnit * 0.0169f
         )
 
         mCardItemRoutes.setOnSelectRouteListener(
@@ -127,7 +128,8 @@ OnGetRoutesListener, OnSelectModelListener<Route> {
         pushFragment(
             RouteDetailsFragment.create(
                 model,
-                this.model
+                this.model,
+                routes
             )
         )
     }

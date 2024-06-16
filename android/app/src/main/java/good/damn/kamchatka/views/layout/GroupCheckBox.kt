@@ -6,6 +6,7 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.Gravity
+import android.view.View
 import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -26,7 +27,7 @@ class GroupCheckBox(
     context: Context
 ): LinearLayout(
     context
-) {
+), View.OnClickListener {
 
     companion object {
         private const val TAG = "GroupTextField"
@@ -158,6 +159,10 @@ class GroupCheckBox(
             val checkBox = mCheckBoxes!![i]
             val info = fields!![i]
 
+            checkBox.setOnClickListener(
+                this
+            )
+
             checkBox.setStrokeColor(
                 checkBoxColor
             )
@@ -202,10 +207,50 @@ class GroupCheckBox(
         }
     }
 
+
+    override fun onClick(
+        v: View?
+    ) {
+        mCheckBoxes?.forEach {
+            it.isChecked = false
+            it.invalidate()
+        }
+
+        (v as? CheckBoxRound)?.let {
+            it.isChecked = true
+            invalidate()
+        }
+    }
+
     fun setTitle(
         title: String
     ) {
         mTextViewTitle.text = title
     }
 
+    fun whoIsChecked(): String? {
+        mCheckBoxes?.forEach {
+            if (it.isChecked) {
+                return it.text
+            }
+        }
+
+        return null
+    }
+
+    fun getData(): HashMap<String, Boolean>? {
+        val map = HashMap<String,Boolean>()
+        var isCheckedOnce = false
+        mCheckBoxes?.forEach {
+            map[it.text] = it.isChecked
+            if (it.isChecked && !isCheckedOnce) {
+                isCheckedOnce = true
+            }
+        }
+        if (isCheckedOnce) {
+            return map
+        }
+
+        return null
+    }
 }

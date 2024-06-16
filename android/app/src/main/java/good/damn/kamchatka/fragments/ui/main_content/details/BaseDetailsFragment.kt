@@ -68,12 +68,12 @@ abstract class BaseDetailsFragment
         mCardName.boundsLinear(
             Gravity.START,
             width = measureUnit,
-            height = (measureUnit * 0.6521f).toInt(),
-            top = -50f
+            top = measureUnit * -0.05f
         )
         mCardDesc.boundsLinear(
             Gravity.START,
-            width = measureUnit
+            width = measureUnit,
+            top = measureUnit * 0.0169f
         )
 
         mCardHeader.layoutIt(
@@ -82,6 +82,12 @@ abstract class BaseDetailsFragment
 
         mCardName.layoutIt()
         mCardDesc.layoutIt()
+
+        layout.setBackgroundColor(
+            Application.color(
+                R.color.background2
+            )
+        )
 
         layout.apply {
             addView(mCardHeader)
