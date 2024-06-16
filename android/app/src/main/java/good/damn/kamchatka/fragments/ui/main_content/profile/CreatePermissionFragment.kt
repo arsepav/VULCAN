@@ -23,7 +23,6 @@ import good.damn.kamchatka.views.layout.GroupCheckBox
 import good.damn.kamchatka.views.layout.GroupTextField
 import good.damn.kamchatka.views.layout.models.GroupField
 import okhttp3.Response
-import kotlin.math.log
 
 class CreatePermissionFragment
 : Fragment() {
@@ -45,6 +44,12 @@ class CreatePermissionFragment
     private lateinit var mGroupFieldName: GroupTextField
     private lateinit var mGroupFieldPassport: GroupTextField
     private lateinit var mGroupFieldContact: GroupTextField
+
+    private lateinit var mGroupCheckRoute: GroupCheckBox
+    private lateinit var mGroupCheckTransport: GroupCheckBox
+    private lateinit var mGroupCheckVisiting: GroupCheckBox
+    private lateinit var mGroupCheckVisitingTargets: GroupCheckBox
+    private lateinit var mGroupCheckCamera: GroupCheckBox
 
     companion object {
         private const val TAG = "CreatePermissionFragmen"
@@ -113,19 +118,19 @@ class CreatePermissionFragment
         mGroupFieldContact = GroupTextField(
             context
         )
-        val groupCheckRoute = GroupCheckBox(
+        mGroupCheckRoute = GroupCheckBox(
             context
         )
-        val groupCheckTransport = GroupCheckBox(
+        mGroupCheckTransport = GroupCheckBox(
             context
         )
-        val groupCheckVisiting = GroupCheckBox(
+        mGroupCheckVisiting = GroupCheckBox(
             context
         )
-        val groupCheckVisitingTargets = GroupCheckBox(
+        mGroupCheckVisitingTargets = GroupCheckBox(
             context
         )
-        val groupCheckCamera = GroupCheckBox(
+        mGroupCheckCamera = GroupCheckBox(
             context
         )
         val btnNext = ButtonRound(
@@ -142,11 +147,11 @@ class CreatePermissionFragment
             mGroupFieldName.typeface = it
             mGroupFieldPassport.typeface = it
             mGroupFieldContact.typeface = it
-            groupCheckRoute.typeface = it
-            groupCheckTransport.typeface = it
-            groupCheckVisiting.typeface = it
-            groupCheckVisitingTargets.typeface = it
-            groupCheckCamera.typeface = it
+            mGroupCheckRoute.typeface = it
+            mGroupCheckTransport.typeface = it
+            mGroupCheckVisiting.typeface = it
+            mGroupCheckVisitingTargets.typeface = it
+            mGroupCheckCamera.typeface = it
         }
 
         // Typeface
@@ -172,11 +177,11 @@ class CreatePermissionFragment
         Application.color(
             R.color.titleColor
         ).let {
-            groupCheckRoute.textColor = it
-            groupCheckTransport.textColor = it
-            groupCheckVisiting.textColor = it
-            groupCheckVisitingTargets.textColor = it
-            groupCheckCamera.textColor = it
+            mGroupCheckRoute.textColor = it
+            mGroupCheckTransport.textColor = it
+            mGroupCheckVisiting.textColor = it
+            mGroupCheckVisitingTargets.textColor = it
+            mGroupCheckCamera.textColor = it
         }
         btnNext.setTextColorId(
             R.color.textColorBtn
@@ -197,29 +202,29 @@ class CreatePermissionFragment
 
         // Check box size
         (measureUnit * 0.0603f).let {
-            groupCheckRoute.checkBoxSize = it
-            groupCheckTransport.checkBoxSize = it
-            groupCheckVisiting.checkBoxSize = it
-            groupCheckVisitingTargets.checkBoxSize = it
-            groupCheckCamera.checkBoxSize = it
+            mGroupCheckRoute.checkBoxSize = it
+            mGroupCheckTransport.checkBoxSize = it
+            mGroupCheckVisiting.checkBoxSize = it
+            mGroupCheckVisitingTargets.checkBoxSize = it
+            mGroupCheckCamera.checkBoxSize = it
         }
 
         // Check box radius
-        (groupCheckRoute.checkBoxSize * 0.25f).let {
-            groupCheckRoute.checkBoxRadius = it
-            groupCheckTransport.checkBoxRadius = it
-            groupCheckVisiting.checkBoxRadius = it * 2f
-            groupCheckVisitingTargets.checkBoxRadius = it
-            groupCheckCamera.checkBoxRadius = it
+        (mGroupCheckRoute.checkBoxSize * 0.25f).let {
+            mGroupCheckRoute.checkBoxRadius = it
+            mGroupCheckTransport.checkBoxRadius = it
+            mGroupCheckVisiting.checkBoxRadius = it * 2f
+            mGroupCheckVisitingTargets.checkBoxRadius = it
+            mGroupCheckCamera.checkBoxRadius = it
         }
 
         // Check box stroke width
-        (groupCheckRoute.checkBoxSize * 0.06f).let {
-            groupCheckRoute.checkBoxStrokeWidth = it
-            groupCheckTransport.checkBoxStrokeWidth = it
-            groupCheckVisiting.checkBoxStrokeWidth = it
-            groupCheckVisitingTargets.checkBoxStrokeWidth = it
-            groupCheckCamera.checkBoxStrokeWidth = it
+        (mGroupCheckRoute.checkBoxSize * 0.06f).let {
+            mGroupCheckRoute.checkBoxStrokeWidth = it
+            mGroupCheckTransport.checkBoxStrokeWidth = it
+            mGroupCheckVisiting.checkBoxStrokeWidth = it
+            mGroupCheckVisitingTargets.checkBoxStrokeWidth = it
+            mGroupCheckCamera.checkBoxStrokeWidth = it
         }
 
 
@@ -227,28 +232,28 @@ class CreatePermissionFragment
         Application.color(
             R.color.titleColor
         ).let {
-            groupCheckRoute.checkBoxColor = it
-            groupCheckTransport.checkBoxColor = it
-            groupCheckVisiting.checkBoxColor = it
-            groupCheckVisitingTargets.checkBoxColor = it
-            groupCheckCamera.checkBoxColor = it
+            mGroupCheckRoute.checkBoxColor = it
+            mGroupCheckTransport.checkBoxColor = it
+            mGroupCheckVisiting.checkBoxColor = it
+            mGroupCheckVisitingTargets.checkBoxColor = it
+            mGroupCheckCamera.checkBoxColor = it
         }
 
 
         // Check box drawable
-        groupCheckRoute.textDrawable = Application.drawable(
+        mGroupCheckRoute.textDrawable = Application.drawable(
             R.drawable.ic_route
         )
-        groupCheckTransport.textDrawable = Application.drawable(
+        mGroupCheckTransport.textDrawable = Application.drawable(
             R.drawable.ic_car
         )
-        groupCheckVisiting.textDrawable = Application.drawable(
+        mGroupCheckVisiting.textDrawable = Application.drawable(
             R.drawable.ic_map
         )
-        groupCheckVisitingTargets.textDrawable = Application.drawable(
+        mGroupCheckVisitingTargets.textDrawable = Application.drawable(
             R.drawable.ic_extension
         )
-        groupCheckCamera.textDrawable = Application.drawable(
+        mGroupCheckCamera.textDrawable = Application.drawable(
             R.drawable.ic_camera
         )
 
@@ -264,11 +269,11 @@ class CreatePermissionFragment
         mGroupFieldContact.setTitle(
             R.string.contact_data
         )
-        groupCheckRoute.title = R.string.select_route
-        groupCheckTransport.title = R.string.use_transport
-        groupCheckVisiting.title = R.string.format_visiting
-        groupCheckVisitingTargets.title = R.string.target_visiting
-        groupCheckCamera.title = R.string.filming
+        mGroupCheckRoute.title = R.string.select_route
+        mGroupCheckTransport.title = R.string.use_transport
+        mGroupCheckVisiting.title = R.string.format_visiting
+        mGroupCheckVisitingTargets.title = R.string.target_visiting
+        mGroupCheckCamera.title = R.string.filming
 
 
 
@@ -330,20 +335,20 @@ class CreatePermissionFragment
                     it[i]?.name ?: "???"
                 )
             }
-            groupCheckRoute.fields = routeFields
+            mGroupCheckRoute.fields = routeFields
         }
 
 
 
 
 
-        groupCheckTransport.fields = arrayOf(
+        mGroupCheckTransport.fields = arrayOf(
             GroupField(
                 context,
                 R.string.passenger
             )
         )
-        groupCheckVisiting.fields = arrayOf(
+        mGroupCheckVisiting.fields = arrayOf(
             GroupField(
                 context,
                 R.string.adventure
@@ -353,7 +358,7 @@ class CreatePermissionFragment
                 R.string.one_day_adventure
             )
         )
-        groupCheckVisitingTargets.fields = arrayOf(
+        mGroupCheckVisitingTargets.fields = arrayOf(
             GroupField(
                 context,
                 R.string.target_visit1
@@ -387,7 +392,7 @@ class CreatePermissionFragment
                 R.string.target_visit8
             )
         )
-        groupCheckCamera.fields = arrayOf(
+        mGroupCheckCamera.fields = arrayOf(
             GroupField(
                 context,
                 R.string.req_film_1
@@ -415,11 +420,11 @@ class CreatePermissionFragment
         mGroupFieldName.titleTextSize.let {
             mGroupFieldPassport.titleTextSize = it
             mGroupFieldContact.titleTextSize = it
-            groupCheckRoute.titleTextSize = it
-            groupCheckTransport.titleTextSize = it
-            groupCheckVisiting.titleTextSize = it
-            groupCheckVisitingTargets.titleTextSize = it
-            groupCheckCamera.titleTextSize = it
+            mGroupCheckRoute.titleTextSize = it
+            mGroupCheckTransport.titleTextSize = it
+            mGroupCheckVisiting.titleTextSize = it
+            mGroupCheckVisitingTargets.titleTextSize = it
+            mGroupCheckCamera.titleTextSize = it
         }
 
         // Title bottom margin
@@ -427,11 +432,11 @@ class CreatePermissionFragment
         mGroupFieldName.titleBottomMargin.let {
             mGroupFieldPassport.titleBottomMargin = it
             mGroupFieldContact.titleBottomMargin = it
-            groupCheckRoute.titleBottomMargin = it
-            groupCheckTransport.titleBottomMargin = it
-            groupCheckVisiting.titleBottomMargin = it
-            groupCheckVisitingTargets.titleBottomMargin = it
-            groupCheckCamera.titleBottomMargin = it
+            mGroupCheckRoute.titleBottomMargin = it
+            mGroupCheckTransport.titleBottomMargin = it
+            mGroupCheckVisiting.titleBottomMargin = it
+            mGroupCheckVisitingTargets.titleBottomMargin = it
+            mGroupCheckCamera.titleBottomMargin = it
         }
 
 
@@ -440,11 +445,11 @@ class CreatePermissionFragment
             mGroupFieldName.interval = it
             mGroupFieldPassport.interval = it
             mGroupFieldContact.interval = it
-            groupCheckRoute.interval = it
-            groupCheckTransport.interval = it
-            groupCheckVisiting.interval = it
-            groupCheckVisitingTargets.interval = it
-            groupCheckCamera.interval = it
+            mGroupCheckRoute.interval = it
+            mGroupCheckTransport.interval = it
+            mGroupCheckVisiting.interval = it
+            mGroupCheckVisitingTargets.interval = it
+            mGroupCheckCamera.interval = it
         }
 
 
@@ -468,27 +473,27 @@ class CreatePermissionFragment
             width = widthGroup,
             top = topMargin
         )
-        groupCheckRoute.boundsLinear(
+        mGroupCheckRoute.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             width = widthGroup,
             top = topMargin
         )
-        groupCheckTransport.boundsLinear(
+        mGroupCheckTransport.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             width = widthGroup,
             top = topMargin
         )
-        groupCheckVisiting.boundsLinear(
+        mGroupCheckVisiting.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             width = widthGroup,
             top = topMargin
         )
-        groupCheckVisitingTargets.boundsLinear(
+        mGroupCheckVisitingTargets.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             width = widthGroup,
             top = topMargin
         )
-        groupCheckCamera.boundsLinear(
+        mGroupCheckCamera.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             width = widthGroup,
             top = topMargin
@@ -519,15 +524,15 @@ class CreatePermissionFragment
 
         // Check box text padding
         val checkBoxTextPadding = measureUnit * 0.03623f
-        groupCheckRoute
+        mGroupCheckRoute
             .checkBoxTextPadding = checkBoxTextPadding
-        groupCheckTransport
+        mGroupCheckTransport
             .checkBoxTextPadding = checkBoxTextPadding
-        groupCheckVisiting
+        mGroupCheckVisiting
             .checkBoxTextPadding = checkBoxTextPadding
-        groupCheckVisitingTargets
+        mGroupCheckVisitingTargets
             .checkBoxTextPadding = checkBoxTextPadding
-        groupCheckCamera
+        mGroupCheckCamera
             .checkBoxTextPadding = checkBoxTextPadding
 
 
@@ -537,11 +542,11 @@ class CreatePermissionFragment
         mGroupFieldName.layoutFields()
         mGroupFieldPassport.layoutFields()
         mGroupFieldContact.layoutFields()
-        groupCheckRoute.layoutFields()
-        groupCheckTransport.layoutFields()
-        groupCheckVisiting.layoutFields()
-        groupCheckVisitingTargets.layoutFields()
-        groupCheckCamera.layoutFields()
+        mGroupCheckRoute.layoutFields()
+        mGroupCheckTransport.layoutFields()
+        mGroupCheckVisiting.layoutFields()
+        mGroupCheckVisitingTargets.layoutFields()
+        mGroupCheckCamera.layoutFields()
 
 
 
@@ -556,19 +561,19 @@ class CreatePermissionFragment
             mGroupFieldContact
         )
         layout.addView(
-            groupCheckRoute
+            mGroupCheckRoute
         )
         layout.addView(
-            groupCheckTransport
+            mGroupCheckTransport
         )
         layout.addView(
-            groupCheckVisiting
+            mGroupCheckVisiting
         )
         layout.addView(
-            groupCheckVisitingTargets
+            mGroupCheckVisitingTargets
         )
         layout.addView(
-            groupCheckCamera
+            mGroupCheckCamera
         )
         layout.addView(
             btnNext
@@ -595,6 +600,25 @@ class CreatePermissionFragment
         if (routes?.isEmpty() ?: true) {
             Application.toast(
                 R.string.error,
+                view.context
+            )
+            return
+        }
+
+        val routeData = mGroupCheckRoute.getData()
+        val transportData = mGroupCheckTransport.getData()
+        val visitingData = mGroupCheckVisiting.getData()
+        val targetData = mGroupCheckVisitingTargets.getData()
+        val cameraData = mGroupCheckCamera.getData()
+
+        if (routeData == null
+            || transportData == null
+            || visitingData == null
+            || targetData == null
+            || cameraData == null
+        ) {
+            Application.toast(
+                R.string.need_to_select_one,
                 view.context
             )
             return
