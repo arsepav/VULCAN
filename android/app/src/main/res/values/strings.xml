@@ -86,6 +86,7 @@
     <string name="about_zone">О паркe</string>
     <string name="about_route">О маршруте</string>
     <string name="route">Маршрут</string>
+    <string name="visit_permission">Разрешение на посещение</string>
     <string-array name="rates">
         <item>Низкий уровень нагрузки</item>
         <item>Средний уровень нагрузки</item>

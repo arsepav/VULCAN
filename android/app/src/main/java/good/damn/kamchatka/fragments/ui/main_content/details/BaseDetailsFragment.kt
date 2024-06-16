@@ -4,13 +4,22 @@ import android.content.Context
 import android.graphics.drawable.BitmapDrawable
 import android.view.Gravity
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.LinearLayout
+import good.damn.kamchatka.Application
+import good.damn.kamchatka.R
+import good.damn.kamchatka.extensions.boundsFrame
 import good.damn.kamchatka.extensions.boundsLinear
+import good.damn.kamchatka.extensions.height
+import good.damn.kamchatka.extensions.setTextColorId
 import good.damn.kamchatka.fragments.ui.ScrollableFragment
 import good.damn.kamchatka.fragments.ui.main_content.AnthropInfoFragment
 import good.damn.kamchatka.fragments.ui.main_content.maps.MapsFragment
+import good.damn.kamchatka.fragments.ui.main_content.profile.RequestFragment
+import good.damn.kamchatka.models.Color
 import good.damn.kamchatka.models.ShortOOPT
 import good.damn.kamchatka.utils.ViewUtils
+import good.damn.kamchatka.views.button.ButtonRound
 import good.damn.kamchatka.views.special.details.CardHeader
 import good.damn.kamchatka.views.special.details.CardItemDescription
 import good.damn.kamchatka.views.special.details.CardItemName
@@ -95,6 +104,72 @@ abstract class BaseDetailsFragment<MODEL>
             this::onClickMap
         )
 
+        layout.setPadding(
+            0,
+            0,
+            0,
+            (measureUnit * 0.2815f).toInt()
+        )
+
+        return layout
+    }
+
+    override fun onCreateTopView(
+        context: Context,
+        measureUnit: Int
+    ): View? {
+        val layout = FrameLayout(
+            context
+        )
+
+        val btnMove = ButtonRound(
+            context
+        )
+
+
+        btnMove.setBackgroundColor(
+            Application.color(
+                R.color.titleColor
+            )
+        )
+
+        layout.setBackgroundColor(
+            Color.parseFromHexId(
+                R.color.background,
+                0.9f
+            )
+        )
+
+        btnMove.setText(
+            R.string.visit_permission
+        )
+
+        btnMove.setTextColorId(
+            R.color.textColorBtn
+        )
+
+        layout.boundsFrame(
+            Gravity.BOTTOM,
+            width = -1,
+            height = (measureUnit * 0.2415f).toInt()
+        )
+        btnMove.boundsFrame(
+            Gravity.CENTER,
+            width = (measureUnit * 0.932f).toInt(),
+            height = (layout.height() * 0.56f).toInt()
+        )
+
+        btnMove.cornerRadius = btnMove.height() * 0.3035f
+
+
+        layout.addView(
+            btnMove
+        )
+
+
+        btnMove.setOnClickListener(
+            this::onClickBtnMoveVisit
+        )
 
         return layout
     }
@@ -105,19 +180,27 @@ abstract class BaseDetailsFragment<MODEL>
         model = m
     }
 
-    abstract fun onClickMap(
+    protected abstract fun onClickMap(
         view: View
     )
 
 
-    abstract fun onCreateCardItems(
+    protected abstract fun onCreateCardItems(
         layout: LinearLayout,
         measureUnit: Int
     )
 
-    abstract fun onSetupProperties(
+    protected abstract fun onSetupProperties(
         model: MODEL?
     )
+
+    private fun onClickBtnMoveVisit(
+        view: View
+    ) {
+        pushFragment(
+            RequestFragment()
+        )
+    }
 
     private fun onClickDangerText(
         view: View
