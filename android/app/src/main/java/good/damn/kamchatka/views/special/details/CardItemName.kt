@@ -96,6 +96,9 @@ class CardItemName(
             height * 0.05925f
         )
 
+        mImageViewMap?.animation = {
+            mImageViewMap?.alpha = 0.75f + (1.0f-it) * 0.25f
+        }
 
         mImageViewMap?.setImageDrawable(
             R.drawable.details_map

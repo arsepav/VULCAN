@@ -27,6 +27,8 @@ OnUpdateAnimationListener {
 
     var radius = 1f
 
+    var animation: ((Float) -> Unit)? = null
+
     private val mPaintStroke = Paint()
     private val mPaintStrokeOffset = Paint()
     private val mPaintBack = Paint()
@@ -47,6 +49,11 @@ OnUpdateAnimationListener {
     private var mDrawable: Drawable? = null
 
     init {
+
+        animation = {
+            scaleX = 1.0f + it * 0.25f
+            scaleY = scaleX
+        }
         mPaintBack.color = 0
         mPaintStroke.color = 0
         mPaintStrokeOffset.color = 0
@@ -199,8 +206,9 @@ OnUpdateAnimationListener {
     override fun onUpdateAnimation(
         animatedValue: Float
     ) {
-        scaleX = 1.0f + animatedValue * 0.25f
-        scaleY = scaleX
+        animation?.invoke(
+            animatedValue
+        )
     }
 
     override fun setOnClickListener(
