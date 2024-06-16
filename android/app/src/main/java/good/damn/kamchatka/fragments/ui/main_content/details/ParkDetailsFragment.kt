@@ -127,7 +127,8 @@ OnGetRoutesListener, OnSelectModelListener<Route> {
         pushFragment(
             RouteDetailsFragment.create(
                 model,
-                this.model
+                this.model,
+                routes
             )
         )
     }

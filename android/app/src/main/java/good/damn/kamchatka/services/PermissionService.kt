@@ -79,13 +79,15 @@ class PermissionService(
                     )
                 )
         ) { client, request ->
-            val response = client
-                .newCall(request)
-                .execute()
+            Thread {
+                val response = client
+                    .newCall(request)
+                    .execute()
 
-            completionBackground(
-                response
-            )
+                completionBackground(
+                    response
+                )
+            }.start()
         }
     }
 

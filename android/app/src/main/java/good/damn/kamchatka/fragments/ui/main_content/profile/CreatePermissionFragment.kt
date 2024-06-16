@@ -23,6 +23,7 @@ import good.damn.kamchatka.views.layout.GroupCheckBox
 import good.damn.kamchatka.views.layout.GroupTextField
 import good.damn.kamchatka.views.layout.models.GroupField
 import okhttp3.Response
+import kotlin.math.log
 
 class CreatePermissionFragment
 : Fragment() {
@@ -30,6 +31,10 @@ class CreatePermissionFragment
     var routes: Array<Route?>? = null
 
     private var mPermissionService: PermissionService? = null
+
+    private lateinit var mGroupFieldName: GroupTextField
+    private lateinit var mGroupFieldPassport: GroupTextField
+    private lateinit var mGroupFieldContact: GroupTextField
 
     companion object {
         private const val TAG = "CreatePermissionFragmen"
@@ -56,13 +61,13 @@ class CreatePermissionFragment
             context
         )
 
-        val groupFieldName = GroupTextField(
+        mGroupFieldName = GroupTextField(
             context
         )
-        val groupFieldPassport = GroupTextField(
+        mGroupFieldPassport = GroupTextField(
             context
         )
-        val groupFieldContact = GroupTextField(
+        mGroupFieldContact = GroupTextField(
             context
         )
         val groupCheckRoute = GroupCheckBox(
@@ -91,9 +96,9 @@ class CreatePermissionFragment
             R.font.open_sans_regular,
             context
         ).let {
-            groupFieldName.typeface = it
-            groupFieldPassport.typeface = it
-            groupFieldContact.typeface = it
+            mGroupFieldName.typeface = it
+            mGroupFieldPassport.typeface = it
+            mGroupFieldContact.typeface = it
             groupCheckRoute.typeface = it
             groupCheckTransport.typeface = it
             groupCheckVisiting.typeface = it
@@ -136,13 +141,13 @@ class CreatePermissionFragment
 
 
         // Stroke colors
-        groupFieldName.fieldColor = Application.color(
+        mGroupFieldName.fieldColor = Application.color(
             R.color.mountainsColor
         )
-        groupFieldPassport.fieldColor = Application.color(
+        mGroupFieldPassport.fieldColor = Application.color(
             R.color.signInStrokeColor2
         )
-        groupFieldContact.fieldColor = Application.color(
+        mGroupFieldContact.fieldColor = Application.color(
             R.color.signInStrokeColor3
         )
 
@@ -207,13 +212,13 @@ class CreatePermissionFragment
 
 
         // Group titles
-        groupFieldName.setTitle(
+        mGroupFieldName.setTitle(
             R.string.snl
         )
-        groupFieldPassport.setTitle(
+        mGroupFieldPassport.setTitle(
             R.string.passport_data
         )
-        groupFieldContact.setTitle(
+        mGroupFieldContact.setTitle(
             R.string.contact_data
         )
         groupCheckRoute.title = R.string.select_route
@@ -227,7 +232,7 @@ class CreatePermissionFragment
 
 
         // Fields
-        groupFieldName.fields = arrayOf(
+        mGroupFieldName.fields = arrayOf(
             GroupField(
                 context,
                 R.string.surname,
@@ -244,7 +249,7 @@ class CreatePermissionFragment
                 R.drawable.ic_profile_out
             )
         )
-        groupFieldPassport.fields = arrayOf(
+        mGroupFieldPassport.fields = arrayOf(
             GroupField(
                 context,
                 R.string.birthDate,
@@ -271,7 +276,7 @@ class CreatePermissionFragment
                 R.drawable.ic_passport
             )
         )
-        groupFieldContact.fields = arrayOf(
+        mGroupFieldContact.fields = arrayOf(
             GroupField(
                 context,
                 R.string.email,
@@ -371,10 +376,10 @@ class CreatePermissionFragment
 
 
         // Title Size
-        groupFieldName.titleTextSize = measureUnit * 0.04835f
-        groupFieldName.titleTextSize.let {
-            groupFieldPassport.titleTextSize = it
-            groupFieldContact.titleTextSize = it
+        mGroupFieldName.titleTextSize = measureUnit * 0.04835f
+        mGroupFieldName.titleTextSize.let {
+            mGroupFieldPassport.titleTextSize = it
+            mGroupFieldContact.titleTextSize = it
             groupCheckRoute.titleTextSize = it
             groupCheckTransport.titleTextSize = it
             groupCheckVisiting.titleTextSize = it
@@ -383,10 +388,10 @@ class CreatePermissionFragment
         }
 
         // Title bottom margin
-        groupFieldName.titleBottomMargin = measureUnit * 0.04589f
-        groupFieldName.titleBottomMargin.let {
-            groupFieldPassport.titleBottomMargin = it
-            groupFieldContact.titleBottomMargin = it
+        mGroupFieldName.titleBottomMargin = measureUnit * 0.04589f
+        mGroupFieldName.titleBottomMargin.let {
+            mGroupFieldPassport.titleBottomMargin = it
+            mGroupFieldContact.titleBottomMargin = it
             groupCheckRoute.titleBottomMargin = it
             groupCheckTransport.titleBottomMargin = it
             groupCheckVisiting.titleBottomMargin = it
@@ -397,9 +402,9 @@ class CreatePermissionFragment
 
         // Intervals
         (measureUnit * 0.0193f).let {
-            groupFieldName.interval = it
-            groupFieldPassport.interval = it
-            groupFieldContact.interval = it
+            mGroupFieldName.interval = it
+            mGroupFieldPassport.interval = it
+            mGroupFieldContact.interval = it
             groupCheckRoute.interval = it
             groupCheckTransport.interval = it
             groupCheckVisiting.interval = it
@@ -413,17 +418,17 @@ class CreatePermissionFragment
         val widthGroup = (measureUnit * 0.8961f).toInt()
         val topMargin = measureUnit * 0.09782f
         val marginStart = (measureUnit - widthGroup) * 0.5f
-        groupFieldName.boundsLinear(
+        mGroupFieldName.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             width = widthGroup,
             top = topMargin
         )
-        groupFieldPassport.boundsLinear(
+        mGroupFieldPassport.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             width = widthGroup,
             top = topMargin
         )
-        groupFieldContact.boundsLinear(
+        mGroupFieldContact.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             width = widthGroup,
             top = topMargin
@@ -494,9 +499,9 @@ class CreatePermissionFragment
 
 
         // Layout fields
-        groupFieldName.layoutFields()
-        groupFieldPassport.layoutFields()
-        groupFieldContact.layoutFields()
+        mGroupFieldName.layoutFields()
+        mGroupFieldPassport.layoutFields()
+        mGroupFieldContact.layoutFields()
         groupCheckRoute.layoutFields()
         groupCheckTransport.layoutFields()
         groupCheckVisiting.layoutFields()
@@ -507,13 +512,13 @@ class CreatePermissionFragment
 
         // Adding views
         layout.addView(
-            groupFieldName
+            mGroupFieldName
         )
         layout.addView(
-            groupFieldPassport
+            mGroupFieldPassport
         )
         layout.addView(
-            groupFieldContact
+            mGroupFieldContact
         )
         layout.addView(
             groupCheckRoute
@@ -560,6 +565,26 @@ class CreatePermissionFragment
             return
         }
 
+        val nameData = mGroupFieldName.getData()
+        val passportData = mGroupFieldPassport.getData()
+        val contactData = mGroupFieldContact.getData()
+
+        if (nameData.isEmpty()
+            || passportData.isEmpty()
+            || contactData.isEmpty()
+        ) {
+            Application.toast(
+                R.string.not_all_data,
+                view.context
+            )
+            return
+        }
+
+        Log.d(TAG, "onClickBtnNext: $nameData")
+        Log.d(TAG, "onClickBtnNext: $passportData")
+        Log.d(TAG, "onClickBtnNext: $contactData")
+
+        return
         val id = routes!![0]?.id ?: return
 
         mPermissionService?.createPermission(
@@ -568,7 +593,7 @@ class CreatePermissionFragment
             name = "some name",
             lastname = "some lastname",
             birthday = "2025-01-01",
-            citizenship = 25,
+            citizenship = 1,
             isMale = true,
             passport = "9999999999",
             email = "someemail@gmail.com",

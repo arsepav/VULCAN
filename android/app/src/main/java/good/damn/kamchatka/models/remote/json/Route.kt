@@ -6,6 +6,7 @@ import org.json.JSONObject
 data class Route(
     val id: Int?,
     val name: String?,
+    val desc: String?,
     val coords: Array<LatLng>,
     val dangerRate: Float,
     val ooptId: Int?,
@@ -21,7 +22,11 @@ data class Route(
 
             val name = json.get(
                 "name"
-            ) as? String ?: return null
+            ) as? String
+
+            val desc = json.get(
+                "description"
+            ) as? String
 
             val ooptId = json.get(
                 "oopt_id"
@@ -29,7 +34,7 @@ data class Route(
 
             val categoryId = json.get(
                 "category_id"
-            ) as? Int ?: return null
+            ) as? Int
 
             val dangerRate = (json.get(
                 "path_load"
@@ -52,6 +57,7 @@ data class Route(
             return Route(
                 id,
                 name,
+                desc,
                 coords,
                 dangerRate,
                 ooptId,

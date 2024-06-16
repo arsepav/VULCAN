@@ -32,7 +32,9 @@ open class NetworkService(
             val token = Application.TOKEN
             val auth = if (
                 token == null
-            ) "" else "${token.tokenType} ${token.token}"
+            ) "" else "Bearer ${token.token}"
+
+            Log.d(TAG, "CLIENT: AUTH: $auth ")
 
             response.request.newBuilder()
                 .header(

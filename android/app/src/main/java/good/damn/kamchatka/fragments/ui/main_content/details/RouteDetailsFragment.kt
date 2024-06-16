@@ -37,9 +37,11 @@ class RouteDetailsFragment
 
     fun setModelDetails(
         route: Route?,
-        m: ShortOOPT?
+        m: ShortOOPT?,
+        routes: Array<Route?>?
     ) {
         mRoute = route
+        this.routes = routes
         super.setModelDetails(m)
     }
 
@@ -58,7 +60,7 @@ class RouteDetailsFragment
             )
 
             mCardName.name = it.name
-            mCardDesc.desc = it.name
+            mCardDesc.desc = it.desc
 
             mCardName.type = getString(
                 R.string.route
@@ -73,12 +75,14 @@ class RouteDetailsFragment
     companion object {
         fun create(
             route: Route?,
-            oopt: ShortOOPT?
+            oopt: ShortOOPT?,
+            routes: Array<Route?>?,
         ): BaseDetailsFragment {
             RouteDetailsFragment().let {
                 it.setModelDetails(
                     route,
-                    oopt
+                    oopt,
+                    routes
                 )
                 return it
             }
