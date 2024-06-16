@@ -67,9 +67,7 @@ class ProfileFragment
         textViewAppName.setText(
             R.string.app_name
         )
-        textViewHello.setText(
-            R.string.hello
-        )
+        textViewHello.text = "${getString(R.string.hello)} ${Application.TOKEN?.name}"
 
 
 

@@ -17,8 +17,23 @@ class PermissionService(
     companion object {
         private const val TAG = "PermissionService"
         private const val URL_CREATE = "${Application.URL}/create_visit_permission"
+        private const val URL_GET = "${Application.URL}/visit_permissions_user"
     }
 
+    fun getPermissions() {
+        makeRequest(
+            Request.Builder()
+                .url(URL_GET)
+                .get()
+        ) { client, request ->
+            Thread {
+                val response = client.newCall(
+                    request
+                ).execute()
+
+            }.start()
+        }
+    }
 
     fun createPermission(
         arrivalDate: String,
