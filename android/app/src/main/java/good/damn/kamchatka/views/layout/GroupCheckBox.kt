@@ -228,6 +228,16 @@ class GroupCheckBox(
         mTextViewTitle.text = title
     }
 
+    fun whoIsChecked(): String? {
+        mCheckBoxes?.forEach {
+            if (it.isChecked) {
+                return it.text
+            }
+        }
+
+        return null
+    }
+
     fun getData(): HashMap<String, Boolean>? {
         val map = HashMap<String,Boolean>()
         var isCheckedOnce = false

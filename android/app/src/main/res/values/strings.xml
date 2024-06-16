@@ -65,17 +65,15 @@
     <string name="passenger">Я пассажир</string>
     <string name="adventure">Многодненвый тур</string>
     <string name="one_day_adventure">Дневная экскурсия</string>
-    <string name="target_visit1">Однодневная поездка/экскурсия</string>
-    <string name="target_visit2">Многодневный пешеходный туризм</string>
-    <string name="target_visit3">Лыжный туризм</string>
-    <string name="target_visit4">Спортивные мероприятия</string>
-    <string name="target_visit5">Научные исследования</string>
-    <string name="target_visit6">Видео/фотосъемка</string>
-    <string name="target_visit7">Альпинизм</string>
-    <string name="target_visit8">Другое</string>
-    <string name="req_film_1">Без профессиональной съемки</string>
-    <string name="req_film_2">Проведение профессиональной видеосъёмки</string>
-    <string name="req_film_3">Съемка с использование БПЛА</string>
+    <string name="target_ski">Лыжный туризм</string>
+    <string name="target_sport">Спортивные мероприятия</string>
+    <string name="target_science">Научные исследования</string>
+    <string name="target_photo">Видео/фотосъемка</string>
+    <string name="target_mountaineering">Альпинизм</string>
+    <string name="target_other">Другое</string>
+    <string name="req_without">Без профессиональной съемки</string>
+    <string name="req_profi">Проведение профессиональной видеосъёмки</string>
+    <string name="req_drone">Съемка с использование БПЛА</string>
     <string name="next">Далее</string>
     <string name="enter_your_email">Введите свой Email</string>
     <string name="msg_email">"Это тестовый экран.\nВ рамках кейса функция\nвосстановления пароля не реализована.</string>
@@ -93,6 +91,7 @@
     <string name="error">Произошла ошибка</string>
     <string name="not_all_data">Не все поля заполнены</string>
     <string name="need_to_select_one">Нужно отметить хотя бы один пункт</string>
+    <string name="success">Успешно</string>
     <string-array name="rates">
         <item>Низкий уровень нагрузки</item>
         <item>Средний уровень нагрузки</item>

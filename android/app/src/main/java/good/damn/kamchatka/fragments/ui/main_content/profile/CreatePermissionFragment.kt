@@ -10,6 +10,7 @@ import android.widget.ScrollView
 import androidx.annotation.WorkerThread
 import androidx.fragment.app.Fragment
 import good.damn.kamchatka.Application
+import good.damn.kamchatka.MainActivity
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.extensions.height
@@ -40,6 +41,20 @@ class CreatePermissionFragment
     private var keyPassport = ""
     private var keyEmail = ""
     private var keyNumber = ""
+
+    private var keyVisitDays = ""
+    private var keyVisitOneDay = ""
+
+    private var keySki = ""
+    private var keySport = ""
+    private var keyScience = ""
+    private var keyPhoto = ""
+    private var keyMountain = ""
+    private var keyAnother = ""
+
+    private var keyCameraWithout = ""
+    private var keyCameraProfi = ""
+    private var keyCameraDrones = ""
 
     private lateinit var mGroupFieldName: GroupTextField
     private lateinit var mGroupFieldPassport: GroupTextField
@@ -86,6 +101,44 @@ class CreatePermissionFragment
             R.string.telephone
         )
 
+        keyVisitDays = getString(
+            R.string.adventure
+        )
+        keyVisitOneDay = getString(
+            R.string.one_day_adventure
+        )
+
+
+        keySki = getString(
+            R.string.target_ski
+        )
+        keySport = getString(
+            R.string.target_sport
+        )
+        keyScience = getString(
+            R.string.target_science
+        )
+        keyPhoto = getString(
+            R.string.target_photo
+        )
+        keyMountain = getString(
+            R.string.target_mountaineering
+        )
+        keyAnother = getString(
+            R.string.target_other
+        )
+
+
+
+        keyCameraWithout = getString(
+            R.string.req_without
+        )
+        keyCameraProfi = getString(
+            R.string.req_profi
+        )
+        keyCameraDrones = getString(
+            R.string.req_drone
+        )
     }
 
     override fun onCreateView(
@@ -350,60 +403,41 @@ class CreatePermissionFragment
         )
         mGroupCheckVisiting.fields = arrayOf(
             GroupField(
-                context,
-                R.string.adventure
+                keyVisitDays
             ),
             GroupField(
-                context,
-                R.string.one_day_adventure
+                keyVisitOneDay
             )
         )
         mGroupCheckVisitingTargets.fields = arrayOf(
             GroupField(
-                context,
-                R.string.target_visit1
+                keySki
             ),
             GroupField(
-                context,
-                R.string.target_visit2
+                keySport
             ),
             GroupField(
-                context,
-                R.string.target_visit3
+                keyScience
             ),
             GroupField(
-                context,
-                R.string.target_visit4
+                keyPhoto
             ),
             GroupField(
-                context,
-                R.string.target_visit5
+                keyMountain
             ),
             GroupField(
-                context,
-                R.string.target_visit6
-            ),
-            GroupField(
-                context,
-                R.string.target_visit7
-            ),
-            GroupField(
-                context,
-                R.string.target_visit8
+                keyAnother
             )
         )
         mGroupCheckCamera.fields = arrayOf(
             GroupField(
-                context,
-                R.string.req_film_1
+                keyCameraWithout
             ),
             GroupField(
-                context,
-                R.string.req_film_2
+                keyCameraProfi
             ),
             GroupField(
-                context,
-                R.string.req_film_3
+                keyCameraDrones
             )
         )
 
@@ -605,7 +639,7 @@ class CreatePermissionFragment
             return
         }
 
-        val routeData = mGroupCheckRoute.getData()
+        val routeData = mGroupCheckRoute.whoIsChecked()
         val transportData = mGroupCheckTransport.getData()
         val visitingData = mGroupCheckVisiting.getData()
         val targetData = mGroupCheckVisitingTargets.getData()
@@ -643,7 +677,36 @@ class CreatePermissionFragment
         Log.d(TAG, "onClickBtnNext: $passportData")
         Log.d(TAG, "onClickBtnNext: $contactData")
 
-        val id = routes!![0]?.id ?: return
+        var id = -1
+        routes?.forEach {
+            if (it?.name == null) {
+                return
+            }
+
+            if (it.name == routeData) {
+                it.id?.let { choiceId ->
+                    id = choiceId
+                }
+            }
+        }
+
+        if (id == -1) {
+            Application.toast(
+                "ERROR_ID: $id",
+                view.context
+            )
+            return
+        }
+
+        view.isEnabled = false
+
+        var videoProf = cameraData[keyCameraProfi]!!
+        var videoDrones = cameraData[keyCameraDrones]!!
+
+        if (cameraData[keyCameraWithout]!!) {
+            videoProf = false
+            videoDrones = false
+        }
 
         mPermissionService?.createPermission(
             arrivalDate = "2025-06-16",
@@ -657,15 +720,15 @@ class CreatePermissionFragment
             email = contactData[keyEmail]!!,
             phoneNumber = contactData[keyNumber]!!,
             pathId = id,
-            isOneDay = true,
-            purposeSkis = true,
-            purposeSport = true,
-            purposeScience = true,
-            purposePhotoVideo = true,
-            purposeMountain = true,
-            purposeAnother = true,
-            photoVideoProf = false,
-            photoVideoDrones = false,
+            isOneDay = visitingData[keyVisitOneDay]!!,
+            purposeSkis = targetData[keySki]!!,
+            purposeSport = targetData[keySport]!!,
+            purposeScience = targetData[keyScience]!!,
+            purposePhotoVideo = targetData[keyPhoto]!!,
+            purposeMountain = targetData[keyMountain]!!,
+            purposeAnother = targetData[keyAnother]!!,
+            photoVideoProf = videoProf,
+            photoVideoDrones = videoDrones,
             this::onResponsePermission
         )
     }
@@ -674,10 +737,26 @@ class CreatePermissionFragment
     private fun onResponsePermission(
         response: Response
     ) {
+        Application.ui {
+            context?.let { context ->
+                if (response.code == 200) {
+                    Application.toast(
+                        R.string.success,
+                        context
+                    )
+                    (activity as? MainActivity)?.popFragment()
+                    return@ui
+                }
 
-        val body = response.body?.string()
-        Log.d(TAG, "onResponsePermission: ${response.code} $body")
+                val body = response.body?.string()
 
+                Application.toast(
+                    "${getString(R.string.error)} ${response.code} $body",
+                    context
+                )
+            }
+
+        }
     }
 
 }
