@@ -32,12 +32,55 @@ class CreatePermissionFragment
 
     private var mPermissionService: PermissionService? = null
 
+    private var keyName = ""
+    private var keySurname = ""
+    private var keyLastName = ""
+    private var keyBirth = ""
+    private var keyCitizenship = ""
+    private var keyGender = ""
+    private var keyPassport = ""
+    private var keyEmail = ""
+    private var keyNumber = ""
+
     private lateinit var mGroupFieldName: GroupTextField
     private lateinit var mGroupFieldPassport: GroupTextField
     private lateinit var mGroupFieldContact: GroupTextField
 
     companion object {
         private const val TAG = "CreatePermissionFragmen"
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        keySurname = getString(
+            R.string.surname
+        )
+        keyName = getString(
+            R.string.firstName
+        )
+        keyLastName = getString(
+            R.string.lastName
+        )
+        keyBirth = getString(
+            R.string.birthDate
+        )
+        keyCitizenship = getString(
+            R.string.country_passport
+        )
+        keyGender = getString(
+            R.string.gender
+        )
+        keyPassport = getString(
+            R.string.passport_id
+        )
+        keyEmail = getString(
+            R.string.email
+        )
+        keyNumber = getString(
+            R.string.telephone
+        )
+
     }
 
     override fun onCreateView(
@@ -234,30 +277,25 @@ class CreatePermissionFragment
         // Fields
         mGroupFieldName.fields = arrayOf(
             GroupField(
-                context,
-                R.string.surname,
+                keySurname,
                 R.drawable.ic_profile
             ),
             GroupField(
-                context,
-                R.string.firstName,
+                keyName,
                 R.drawable.ic_profile_out
             ),
             GroupField(
-                context,
-                R.string.lastName,
+                keyLastName,
                 R.drawable.ic_profile_out
             )
         )
         mGroupFieldPassport.fields = arrayOf(
             GroupField(
-                context,
-                R.string.birthDate,
+                keyBirth,
                 R.drawable.ic_calendar
             ),
             GroupField(
-                context,
-                R.string.country_passport,
+                keyCitizenship,
                 R.drawable.ic_identity_card
             ),
             GroupField(
@@ -271,20 +309,17 @@ class CreatePermissionFragment
                 R.drawable.ic_profile_out
             ),
             GroupField(
-                context,
-                R.string.passport_id,
+                keyPassport,
                 R.drawable.ic_passport
             )
         )
         mGroupFieldContact.fields = arrayOf(
             GroupField(
-                context,
-                R.string.email,
+                keyEmail,
                 R.drawable.ic_email
             ),
             GroupField(
-                context,
-                R.string.telephone,
+               keyNumber,
                 R.drawable.ic_call
             )
         )
@@ -584,20 +619,19 @@ class CreatePermissionFragment
         Log.d(TAG, "onClickBtnNext: $passportData")
         Log.d(TAG, "onClickBtnNext: $contactData")
 
-        return
         val id = routes!![0]?.id ?: return
 
         mPermissionService?.createPermission(
-            arrivalDate = "2025-02-13",
-            surname = "some surname",
-            name = "some name",
-            lastname = "some lastname",
-            birthday = "2025-01-01",
-            citizenship = 1,
-            isMale = true,
-            passport = "9999999999",
-            email = "someemail@gmail.com",
-            phoneNumber = "+74447778787",
+            arrivalDate = "2025-06-16",
+            surname = nameData[keySurname]!!,
+            name = nameData[keyName]!!,
+            lastname = nameData[keyLastName]!!,
+            birthday = passportData[keyBirth]!!,
+            citizenship = passportData[keyCitizenship]!!.toInt(),
+            isMale = passportData[keyGender]!!.contains("M".toRegex()),
+            passport = passportData[keyPassport]!!,
+            email = contactData[keyEmail]!!,
+            phoneNumber = contactData[keyNumber]!!,
             pathId = id,
             isOneDay = true,
             purposeSkis = true,
