@@ -16,6 +16,7 @@ import good.damn.kamchatka.fragments.ui.ScrollableFragment
 import good.damn.kamchatka.fragments.ui.main_content.AnthropInfoFragment
 import good.damn.kamchatka.fragments.ui.main_content.maps.MapsFragment
 import good.damn.kamchatka.fragments.ui.main_content.profile.RequestFragment
+import good.damn.kamchatka.fragments.ui.main_content.visit_permission.PermissionFragment
 import good.damn.kamchatka.models.Color
 import good.damn.kamchatka.models.ShortOOPT
 import good.damn.kamchatka.utils.ViewUtils
@@ -24,14 +25,14 @@ import good.damn.kamchatka.views.special.details.CardHeader
 import good.damn.kamchatka.views.special.details.CardItemDescription
 import good.damn.kamchatka.views.special.details.CardItemName
 
-abstract class BaseDetailsFragment<MODEL>
+abstract class BaseDetailsFragment
 : ScrollableFragment() {
 
     protected lateinit var mCardHeader: CardHeader
     protected lateinit var mCardName: CardItemName
     protected lateinit var mCardDesc: CardItemDescription
 
-    protected var model: MODEL? = null
+    protected var model: ShortOOPT? = null
 
     final override fun onCreateContentView(
         context: Context,
@@ -56,9 +57,7 @@ abstract class BaseDetailsFragment<MODEL>
             this::onClickBtnBack
         )
 
-        onSetupProperties(
-            model
-        )
+        onSetupProperties()
 
 
         mCardHeader.boundsLinear(
@@ -175,7 +174,7 @@ abstract class BaseDetailsFragment<MODEL>
     }
 
     fun setModelDetails(
-        m: MODEL?
+        m: ShortOOPT?
     ) {
         model = m
     }
@@ -190,21 +189,24 @@ abstract class BaseDetailsFragment<MODEL>
         measureUnit: Int
     )
 
-    protected abstract fun onSetupProperties(
-        model: MODEL?
-    )
+    protected abstract fun onSetupProperties()
 
     private fun onClickBtnMoveVisit(
         view: View
     ) {
-        pushFragment(
-            RequestFragment()
-        )
+        model?.let {
+            pushFragment(
+                PermissionFragment.create(
+                    it
+                )
+            )
+        }
     }
 
     private fun onClickDangerText(
         view: View
     ) {
+
         pushFragment(
             AnthropInfoFragment()
         )

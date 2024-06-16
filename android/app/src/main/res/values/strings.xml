@@ -87,6 +87,9 @@
     <string name="about_route">О маршруте</string>
     <string name="route">Маршрут</string>
     <string name="visit_permission">Разрешение на посещение</string>
+    <string name="perm_single">Индивидуальное</string>
+    <string name="perm_group_hu">Групповое - физ. лица</string>
+    <string name="perm_group_com">Групповое - юр. лица / ИП</string>
     <string-array name="rates">
         <item>Низкий уровень нагрузки</item>
         <item>Средний уровень нагрузки</item>

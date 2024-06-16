@@ -9,6 +9,7 @@ import com.google.android.gms.maps.model.LatLng
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.fragments.StackFragment
+import good.damn.kamchatka.models.ShortOOPT
 
 class MapsFragment
 : StackFragment() {

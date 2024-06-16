@@ -1,10 +1,15 @@
 package good.damn.kamchatka.fragments.ui.main_content.profile
 
 import android.content.Context
+import android.os.Bundle
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.ScrollView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.Group
+import androidx.fragment.app.Fragment
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsLinear
@@ -21,34 +26,25 @@ import good.damn.kamchatka.views.layout.GroupTextField
 import good.damn.kamchatka.views.layout.models.GroupField
 
 class RequestFragment
-: ScrollableFragment() {
+: Fragment() {
 
-    override fun hasPreciseMeasurement(): Boolean {
-        return false
-    }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
-    override fun onCreateContentView(
-        context: Context,
-        measureUnit: Int
-    ): View {
+        val measureUnit = Application.WIDTH
+        val context = context ?: return null
 
         // Allocating views
+        val scrollView = ScrollView(
+            context
+        )
         val layout = ViewUtils.verticalLinearLayout(
             context
         )
-        val btnBack = ButtonBack.createDefaultLinear(
-            measureUnit,
-            Application.color(
-                R.color.titleColor
-            ),
-            context
-        )
-        val textViewObjectName = AppCompatTextView(
-            context
-        )
-        val textViewObjectType = AppCompatTextView(
-            context
-        )
+
         val groupFieldName = GroupTextField(
             context
         )
@@ -95,12 +91,7 @@ class RequestFragment
 
 
         // Typeface
-        textViewObjectName.typeface = Application.font(
-            R.font.open_sans_bold,
-            context
-        )
-        textViewObjectType.typeface =
-            textViewObjectName.typeface
+
         btnNext.typeface = Application.font(
             R.font.open_sans_semi_bold,
             context
@@ -119,15 +110,7 @@ class RequestFragment
 
 
         // Text colors
-        textViewObjectName.setTextColorId(
-            R.color.titleColor
-        )
-        textViewObjectType.setTextColor(
-            Color.parseFromHexId(
-                R.color.titleColor,
-                0.3f
-            )
-        )
+
         groupCheckRoute.textColor = Application.color(
             R.color.titleColor
         )
@@ -345,12 +328,6 @@ class RequestFragment
 
 
         // Text
-        textViewObjectName.setText(
-            "Южно-Камчатский"
-        )
-        textViewObjectType.setText(
-            "Природный парк"
-        )
         btnNext.setText(
             R.string.next
         )
@@ -398,16 +375,7 @@ class RequestFragment
         val widthGroup = (measureUnit * 0.8961f).toInt()
         val topMargin = measureUnit * 0.09782f
         val marginStart = (measureUnit - widthGroup) * 0.5f
-        textViewObjectName.boundsLinear(
-            Gravity.START,
-            top = measureUnit * 0.07729f,
-            left = marginStart
-        )
-        textViewObjectType.boundsLinear(
-            Gravity.START,
-            top = measureUnit * 0.00657f,
-            left = marginStart
-        )
+
         groupFieldName.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             width = widthGroup,
@@ -463,12 +431,6 @@ class RequestFragment
         )
 
         // Text size
-        textViewObjectName.setTextPx(
-            measureUnit * 0.05314f
-        )
-        textViewObjectType.setTextPx(
-            measureUnit * 0.03743f
-        )
         btnNext.setTextPx(
             btnNext.height() * 0.2678f
         )
@@ -508,15 +470,6 @@ class RequestFragment
 
         // Adding views
         layout.addView(
-            btnBack
-        )
-        layout.addView(
-            textViewObjectName
-        )
-        layout.addView(
-            textViewObjectType
-        )
-        layout.addView(
             groupFieldName
         )
         layout.addView(
@@ -546,26 +499,11 @@ class RequestFragment
 
 
         // Listeners
-        btnBack.setOnClickListener(
-            this::onClickBtnBack
-        )
-        btnNext.setOnClickListener(
-            this::onClickBtnNext
+
+        scrollView.addView(
+            layout
         )
 
-
-        return layout
+        return scrollView
     }
-}
-
-private fun RequestFragment.onClickBtnBack(
-    view: View
-) {
-    popFragment()
-}
-
-private fun RequestFragment.onClickBtnNext(
-    view: View
-) {
-
 }

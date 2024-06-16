@@ -5,17 +5,20 @@ import android.widget.LinearLayout
 import good.damn.kamchatka.R
 import good.damn.kamchatka.fragments.ui.main_content.maps.MapsFragment
 import good.damn.kamchatka.models.RouteMap
+import good.damn.kamchatka.models.ShortOOPT
 import good.damn.kamchatka.models.remote.json.Route
 import good.damn.kamchatka.services.GeoService
 
 class RouteDetailsFragment
-: BaseDetailsFragment<Route>() {
+: BaseDetailsFragment() {
+
+    private var mRoute: Route? = null
 
     override fun onClickMap(
         view: View
     ) {
         MapsFragment().let {
-            val coords = model?.coords
+            val coords = mRoute?.coords
                 ?: return
 
             if (coords.isEmpty()) {
@@ -32,17 +35,23 @@ class RouteDetailsFragment
         }
     }
 
+    fun setModelDetails(
+        route: Route?,
+        m: ShortOOPT?
+    ) {
+        mRoute = route
+        super.setModelDetails(m)
+    }
+
     override fun onCreateCardItems(
         layout: LinearLayout,
         measureUnit: Int
     ) {
-        mCardName.dangerRate = model?.dangerRate ?: 11.0f
+        mCardName.dangerRate = mRoute?.dangerRate ?: 11.0f
     }
 
-    override fun onSetupProperties(
-        model: Route?
-    ) {
-        model?.let {
+    override fun onSetupProperties() {
+        mRoute?.let {
 
             mCardHeader.setBackgroundResource(
                 R.drawable.zakaznik
@@ -63,11 +72,13 @@ class RouteDetailsFragment
 
     companion object {
         fun create(
-            route: Route?
-        ): BaseDetailsFragment<Route> {
+            route: Route?,
+            oopt: ShortOOPT?
+        ): BaseDetailsFragment {
             RouteDetailsFragment().let {
                 it.setModelDetails(
-                    route
+                    route,
+                    oopt
                 )
                 return it
             }

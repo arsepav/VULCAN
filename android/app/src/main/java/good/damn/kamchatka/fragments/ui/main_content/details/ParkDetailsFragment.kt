@@ -16,14 +16,12 @@ import good.damn.kamchatka.views.special.details.CardItemRoutes
 import good.damn.kamchatka.views.special.details.listeners.OnSelectModelListener
 
 class ParkDetailsFragment
-: BaseDetailsFragment<ShortOOPT>(),
+: BaseDetailsFragment(),
 OnGetRoutesListener, OnSelectModelListener<Route> {
 
     private lateinit var mCardItemRoutes: CardItemRoutes
 
-    override fun onSetupProperties(
-        model: ShortOOPT?
-    ) {
+    override fun onSetupProperties() {
         model?.oopt?.apply {
             mCardName.name = name
             mCardDesc.desc = desc
@@ -126,7 +124,8 @@ OnGetRoutesListener, OnSelectModelListener<Route> {
     ) {
         pushFragment(
             RouteDetailsFragment.create(
-                model
+                model,
+                this.model
             )
         )
     }
@@ -134,7 +133,7 @@ OnGetRoutesListener, OnSelectModelListener<Route> {
     companion object {
         fun create(
             zone: ShortOOPT
-        ): BaseDetailsFragment<ShortOOPT> {
+        ): BaseDetailsFragment {
             ParkDetailsFragment().let {
                 it.setModelDetails(
                     zone
