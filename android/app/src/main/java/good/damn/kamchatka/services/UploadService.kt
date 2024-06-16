@@ -1,16 +1,13 @@
 package good.damn.kamchatka.services
 
 import android.content.Context
-import android.provider.MediaStore.Audio.Media
-import android.util.Log
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.services.network.NetworkService
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.Request
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import org.json.JSONObject
 import java.io.File
 
 class UploadService(
@@ -29,7 +26,7 @@ class UploadService(
         file: File,
         completion: ((Int) -> Unit)
     ) {
-        val body = MultipartBody.Builder()
+        val mbody = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
             .addFormDataPart(
                 "file",
@@ -39,7 +36,7 @@ class UploadService(
         makeRequest(
             Request.Builder()
                 .url(URL_FILE)
-                .post(body)
+                .post(mbody)
         ) { client, request ->
             Thread {
 
@@ -47,12 +44,18 @@ class UploadService(
                     request
                 ).execute()
 
-                val body = response.body?.string()
+                val body = response.body?.string() ?: return@Thread
 
-                Log.d(TAG, "upload: $response $body")
+                val json = JSONObject(
+                    body
+                )
+
+                val fileId = json.get(
+                    "file_id"
+                ) as? Int ?: 0
 
                 Application.ui {
-                    completion(1)
+                    completion(fileId)
                 }
 
                 Thread.currentThread()

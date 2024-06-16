@@ -8,6 +8,7 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import good.damn.kamchatka.extensions.boundsFrame
 import good.damn.kamchatka.fragments.StackFragment
+import good.damn.kamchatka.services.ReportEcologyService
 import good.damn.kamchatka.services.UploadService
 import good.damn.kamchatka.utils.ViewUtils
 import good.damn.kamchatka.views.layout.GroupCheckBox
@@ -74,12 +75,24 @@ class ReportEcologyFragment
         file: File
     ) {
         val context = context ?: return
+
+        val rep = ReportEcologyService(
+            context
+        )
+
         UploadService(
             context
         ).upload(
             file
-        ) {
+        ) { fileId ->
+            rep.report(
+                "Some name",
+                "Some description",
+                fileId,
+                3
+            ) {
 
+            }
         }
     }
 
