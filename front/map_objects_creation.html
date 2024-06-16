@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Points on Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <link rel="stylesheet" href="static/styles.css">
+</head>
+<body>
+    <!-- Navigation Panel -->
+    
+
+    <div id="map"></div>
+    <div id="control-panel">
+        <form id="point-form">
+            <h2>Добавление туристических объектов</h2>
+            <label for="name">Название:</label>
+            <input type="text" id="name" name="name" required><br>
+
+            <label for="description">Описание:</label>
+            <input type="text" id="description" name="description" required><br>
+
+            <label for="category">Категория:</label>
+            <div class="select-container">
+                <select id="category" name="category" required></select>
+            </div><br>
+
+            <label for="oopt">Относится к ООПТ:</label>
+            <div class="select-container">
+                <select id="oopt" name="oopt" required></select>
+            </div><br>
+
+            <label for="file">Прикрепите фотографию:</label>
+            <div class="file-input-container">
+                <input type="file" id="file" name="file">
+                <label for="file">Выбрать фотографию</label>
+                <span class="file-name" id="file-name">Фотография не выбрана</span>
+            </div><br>
+
+            <label for="area">Площадь объекта:</label>
+            <input type="number" id="area" name="area" required><br>
+
+            <label for="person_area">Площать необходимая туристу:</label>
+            <input type="number" id="person_area" name="person_area" required><br>
+
+            <label for="Rf_coefficient">Коеффицент возвращения:</label>
+            <input type="number" id="Rf_coefficient" name="Rf_coefficient" required><br>
+
+            <label for="t_coefficient">Количество дней в еденицу времени:</label>
+            <input type="number" id="t_coefficient" name="t_coefficient" required><br>
+
+            <button id="save-point" type="submit">Сохранить точку</button>
+        </form>
+    </div>
+
+    <div id="navigation-panel">
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/'">
+            <img src="http://91.224.86.144:8000/downloadfile/49" alt="Icon 1">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/map_oopt'">
+            <img src="http://91.224.86.144:8000/downloadfile/54" alt="Icon 7">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/map'">
+            <img src="http://91.224.86.144:8000/downloadfile/51" alt="Icon 2">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/map_objects_creation'" style="background-color: rgba(173, 173, 173, 0.295); border-radius: 10px;">
+            <img src="http://91.224.86.144:8000/downloadfile/50" alt="Icon 3">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/ecology_problems_list_viewer'">
+            <img src="http://91.224.86.144:8000/downloadfile/55" alt="Icon 4">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/ecology_problems_viewer'">
+            <img src="http://91.224.86.144:8000/downloadfile/52" alt="Icon 5">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/permission_approve_page'">
+            <img src="http://91.224.86.144:8000/downloadfile/48" alt="Icon 6">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/upload_file_page'">
+            <img src="http://91.224.86.144:8000/downloadfile/54" alt="Icon 8">
+        </button>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        const apiBaseUrl = 'http://{{ ip }}:8000';
+        
+        // Initialize the map
+        var map = L.map('map').setView([55.914298, 158.918540], 7);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Array to store point coordinates
+        var pointCoordinates = [];
+
+        // Function to handle map clicks
+        function onMapClick(e) {
+            var latLng = e.latlng;
+            pointCoordinates = [latLng.lat, latLng.lng];
+
+            // Remove any existing markers
+            map.eachLayer(function(layer) {
+                if (layer instanceof L.Marker) {
+                    map.removeLayer(layer);
+                }
+            });
+
+            // Create a new marker
+            L.marker(latLng).addTo(map);
+        }
+
+        // Event listener for map clicks
+        map.on('click', onMapClick);
+
+        // Function to fetch categories and populate the select element
+        async function fetchCategories() {
+            const response = await fetch(`${apiBaseUrl}/oopt_objects_categories`);
+            const categories = await response.json();
+            const categorySelect = document.getElementById('category');
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.id;
+                option.text = category.name;
+                categorySelect.add(option);
+            });
+        }
+
+        // Function to fetch OOPTs and populate the select element
+        async function fetchOOPTs() {
+            const response = await fetch(`${apiBaseUrl}/oopts`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ OOPT_name: '' })
+            });
+            const oopts = await response.json();
+            const ooptSelect = document.getElementById('oopt');
+            oopts.forEach(oopt => {
+                const option = document.createElement('option');
+                option.value = oopt.id;
+                option.text = oopt.name;
+                ooptSelect.add(option);
+            });
+        }
+
+        // Fetch categories and OOPTs on page load
+        fetchCategories();
+        fetchOOPTs();
+
+        // Function to upload file
+        async function uploadFile(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const response = await fetch(`${apiBaseUrl}/uploadfile/`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                return data.file_id;
+            } else {
+                throw new Error('Ошибка загрузки файла');
+            }
+        }
+
+        // Function to save the point
+        async function savePoint(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const description = document.getElementById('description').value;
+            const category_id = document.getElementById('category').value;
+            const oopt_id = document.getElementById('oopt').value;
+            const area = document.getElementById('area').value;
+            const person_area = document.getElementById('person_area').value;
+            const Rf_coefficient = document.getElementById('Rf_coefficient').value;
+            const t_coefficient = document.getElementById('t_coefficient').value;
+            const file = document.getElementById('file').files[0];
+
+            let file_id = null;
+            if (file) {
+                try {
+                    file_id = await uploadFile(file);
+                } catch (error) {
+                    alert("Ошибка загрузки файла: " + error.message);
+                    return;
+                }
+            }
+
+            if (!name || !description || !category_id || !oopt_id) {
+                alert("Все поля обязательны!");
+                return;
+            }
+
+            if (pointCoordinates.length === 0) {
+                alert('Выберете точку на карте!');
+                return;
+            }
+
+            const pointData = {
+                name: name,
+                description: description,
+                category_id: parseInt(category_id),
+                oopt_id: parseInt(oopt_id),
+                geom: {
+                    type: "Point",
+                    coordinates: pointCoordinates
+                },
+                file_id: file_id,
+                area: parseFloat(area),
+                person_area: parseFloat(person_area),
+                Rf_coefficient: parseInt(Rf_coefficient),
+                t_coefficient: parseInt(t_coefficient)
+            };
+
+            const response = await fetch(`${apiBaseUrl}/add_oopt_object`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(pointData)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                alert("Точка сохранена с id: " + result.id);
+            } else {
+                alert("Ошибка сохранения точки");
+            }
+        }
+
+        // Event listener for form submission
+        document.getElementById('point-form').addEventListener('submit', savePoint);
+
+        // Function to fetch and add OOPTs to the map
+        async function addOOPTsToMap() {
+            const response = await fetch(`${apiBaseUrl}/oopts`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ OOPT_name: '' })
+            });
+            const oopts = await response.json();
+
+            // Function to swap latitude and longitude in coordinates
+            function swapLatLng(coordinates) {
+                return coordinates.map(coord => {
+                    if (Array.isArray(coord[0])) {
+                        return swapLatLng(coord); // Recursively swap for nested arrays
+                    } else {
+                        return [coord[1], coord[0]]; // Swap [longitude, latitude] to [latitude, longitude]
+                    }
+                });
+            }
+
+            // Loop through each OOPT and add to the map
+            oopts.forEach(oopt => {
+                const swappedGeom = {...oopt.geom};  // Create a shallow copy of the geometry object
+                swappedGeom.coordinates = swapLatLng(oopt.geom.coordinates);  // Swap the coordinates
+
+                const geojsonFeature = {
+                    "type": "Feature",
+                    "geometry": swappedGeom,
+                    "properties": {
+                        "name": oopt.name
+                    }
+                };
+
+                L.geoJSON(geojsonFeature, {
+                    style: {
+                        color: 'red'
+                    },
+                    onEachFeature: function (feature, layer) {
+                        layer.bindTooltip(feature.properties.name, {permanent: false, direction: 'top'});
+                    }
+                }).addTo(map);
+            });
+        }
+
+        // Fetch and add OOPTs to the map on page load
+        addOOPTsToMap();
+    </script>
+</body>
+</html>
