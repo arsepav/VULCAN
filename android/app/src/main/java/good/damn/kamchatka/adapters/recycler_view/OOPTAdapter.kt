@@ -5,14 +5,14 @@ import androidx.recyclerview.widget.RecyclerView
 import good.damn.kamchatka.models.ShortOOPT
 import good.damn.kamchatka.utils.HTTPUtils
 import good.damn.kamchatka.views.holders.ViewHolderOOPT
-import good.damn.kamchatka.views.special.details.listeners.OnSelectOOPTListener
+import good.damn.kamchatka.views.special.details.listeners.OnSelectModelListener
 
 class OOPTAdapter(
     private val mRecyclerViewHeight: Float,
     private val mZones: Array<ShortOOPT?>
 ): RecyclerView.Adapter<ViewHolderOOPT>() {
 
-    var onSelectOOPTListener: OnSelectOOPTListener? = null
+    var onSelectOOPTListener: OnSelectModelListener<ShortOOPT>? = null
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -43,7 +43,7 @@ class OOPTAdapter(
         )
 
         holder.itemView.setOnClickListener {
-            onSelectOOPTListener?.onSelectOOPT(
+            onSelectOOPTListener?.onSelectModel(
                 zone
             )
         }

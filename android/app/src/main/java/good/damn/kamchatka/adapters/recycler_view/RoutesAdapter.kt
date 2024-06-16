@@ -3,8 +3,10 @@ package good.damn.kamchatka.adapters.recycler_view
 import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import good.damn.kamchatka.models.ShortOOPT
 import good.damn.kamchatka.models.remote.json.Route
 import good.damn.kamchatka.views.holders.ViewHolderRoute
+import good.damn.kamchatka.views.special.details.listeners.OnSelectModelListener
 
 class RoutesAdapter(
     private val mRoutes: Array<Route?>,
@@ -14,6 +16,9 @@ class RoutesAdapter(
     companion object {
         private const val TAG = "RoutesAdapter"
     }
+
+    var onSelectRouteListener: OnSelectModelListener<Route>? = null
+
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -32,16 +37,22 @@ class RoutesAdapter(
         holder: ViewHolderRoute,
         position: Int
     ) {
-        val route = mRoutes[position]
+        val route = mRoutes[position] ?: return
 
-        Log.d(TAG, "onBindViewHolder: ${route} ${route?.name}")
+        Log.d(TAG, "onBindViewHolder: ${route.name}")
         holder.setName(
-            route?.name
+            route.name
         )
 
         holder.setDangerRate(
-            route?.dangerRate?.toInt() ?: 0
+            route.dangerRate.toInt()
         )
+
+        holder.itemView.setOnClickListener {
+            onSelectRouteListener?.onSelectModel(
+                route
+            )
+        }
 
     }
 

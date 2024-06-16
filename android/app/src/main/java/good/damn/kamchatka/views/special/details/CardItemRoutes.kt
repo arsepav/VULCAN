@@ -2,32 +2,34 @@ package good.damn.kamchatka.views.special.details
 
 import android.content.Context
 import android.view.Gravity
-import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.Recycler
 import good.damn.kamchatka.R
 import good.damn.kamchatka.adapters.recycler_view.RoutesAdapter
 import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.extensions.height
 import good.damn.kamchatka.item_decorations.MarginItemDecoration
 import good.damn.kamchatka.models.remote.json.Route
+import good.damn.kamchatka.views.special.details.listeners.OnSelectModelListener
 
 class CardItemRoutes(
     context: Context
 ): CardItem(
     context
 ) {
+    private var mOnSelectRouteListener: OnSelectModelListener<Route>? = null
     var routes: Array<Route?>? = null
         set(v) {
             field = v
             v?.let {
-                mRecyclerViewRoutes.adapter = RoutesAdapter(
+                val a = RoutesAdapter(
                     it,
                     mRecyclerViewRoutes.height()
                 )
+                a.onSelectRouteListener = mOnSelectRouteListener
+                mRecyclerViewRoutes.adapter = a
             }
         }
 
@@ -76,5 +78,11 @@ class CardItemRoutes(
                 (width * 0.03985f).toInt()
             )
         )
+    }
+    
+    fun setOnSelectRouteListener(
+        l: OnSelectModelListener<Route>
+    ) {
+        mOnSelectRouteListener = l
     }
 }

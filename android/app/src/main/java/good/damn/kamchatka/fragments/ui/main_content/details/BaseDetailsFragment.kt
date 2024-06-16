@@ -2,32 +2,29 @@ package good.damn.kamchatka.fragments.ui.main_content.details
 
 import android.content.Context
 import android.graphics.drawable.BitmapDrawable
-import android.util.Log
 import android.view.Gravity
 import android.view.View
+import android.widget.LinearLayout
 import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.fragments.ui.ScrollableFragment
 import good.damn.kamchatka.fragments.ui.main_content.AnthropInfoFragment
 import good.damn.kamchatka.fragments.ui.main_content.maps.MapsFragment
-import good.damn.kamchatka.models.RouteMap
 import good.damn.kamchatka.models.ShortOOPT
-import good.damn.kamchatka.services.GeoService
-import good.damn.kamchatka.services.interfaces.OnGetRoutesListener
 import good.damn.kamchatka.utils.ViewUtils
 import good.damn.kamchatka.views.special.details.CardHeader
 import good.damn.kamchatka.views.special.details.CardItemDescription
 import good.damn.kamchatka.views.special.details.CardItemName
-import good.damn.kamchatka.views.special.details.CardItemRoutes
 
-class BaseDetailsFragment
-: ScrollableFragment(), OnGetRoutesListener {
+abstract class BaseDetailsFragment<MODEL>
+: ScrollableFragment() {
 
-    private lateinit var mCardName: CardItemName
-    private lateinit var mCardItemRoutes: CardItemRoutes
+    protected lateinit var mCardHeader: CardHeader
+    protected lateinit var mCardName: CardItemName
+    protected lateinit var mCardDesc: CardItemDescription
 
-    private lateinit var mZone: ShortOOPT
+    protected var model: MODEL? = null
 
-    override fun onCreateContentView(
+    final override fun onCreateContentView(
         context: Context,
         measureUnit: Int
     ): View {
@@ -35,46 +32,27 @@ class BaseDetailsFragment
         val layout = ViewUtils.verticalLinearLayout(
             context
         )
-        val cardHeader = CardHeader(
+        mCardHeader = CardHeader(
             context
         )
+
         mCardName = CardItemName(
             context
         )
-        val cardDesc = CardItemDescription(
-            context
-        )
-        mCardItemRoutes = CardItemRoutes(
+        mCardDesc = CardItemDescription(
             context
         )
 
-        cardHeader.setOnClickBackListener(
+        mCardHeader.setOnClickBackListener(
             this::onClickBtnBack
         )
 
-        mZone.oopt.apply {
-            mCardName.name = name
-            cardDesc.desc = "$desc"
-            cardDesc.about = "О парке"
-        }
-
-        mZone.apply {
-            mCardName.type = type
-            if (image == null) {
-                return@apply
-            }
-            cardHeader.background = BitmapDrawable(
-                resources,
-                image
-            )
-        }
+        onSetupProperties(
+            model
+        )
 
 
-
-
-
-
-        cardHeader.boundsLinear(
+        mCardHeader.boundsLinear(
             Gravity.START,
             width = measureUnit,
             height = (measureUnit * 0.6473f).toInt(),
@@ -86,42 +64,28 @@ class BaseDetailsFragment
             height = (measureUnit * 0.6521f).toInt(),
             top = -50f
         )
-        cardDesc.boundsLinear(
+        mCardDesc.boundsLinear(
             Gravity.START,
             width = measureUnit
         )
-        mCardItemRoutes.boundsLinear(
-            Gravity.START,
-            width = measureUnit,
-            height = (measureUnit * 0.7995f).toInt()
-        )
 
-        cardHeader.layoutIt(
+        mCardHeader.layoutIt(
             measureUnit
         )
 
         mCardName.layoutIt()
-        cardDesc.layoutIt()
-        mCardItemRoutes.layoutIt()
+        mCardDesc.layoutIt()
 
         layout.apply {
-            addView(cardHeader)
+            addView(mCardHeader)
             addView(mCardName)
-            addView(cardDesc)
-            addView(mCardItemRoutes)
-        }
-
-
-        GeoService(
-            context
-        ).let {
-            it.setOnGetRoutesListener(
-                this
-            )
-            it.requestRoutes(
-                ooptId = mZone.oopt.id ?: -1
+            addView(mCardDesc)
+            onCreateCardItems(
+                layout,
+                measureUnit
             )
         }
+
 
         mCardName.setOnClickRateText(
             this::onClickDangerText
@@ -135,68 +99,37 @@ class BaseDetailsFragment
         return layout
     }
 
-    override fun onGetRoutes(
-        routes: Array<RouteMap?>
+    fun setModelDetails(
+        m: MODEL?
     ) {
-        if (routes.isEmpty()) {
-            return
-        }
-
-        var rate = 0f
-        mCardItemRoutes.routes = Array(routes.size) {
-            routes[it]?.route?.let {
-                rate += it.dangerRate
-                it
-            }
-        }
-        mCardName.dangerRate = rate / routes.size
+        model = m
     }
 
-    fun setSecurityZone(
-        zone: ShortOOPT
-    ) {
-        mZone = zone
-    }
+    abstract fun onClickMap(
+        view: View
+    )
 
-    private fun onClickMap(
+
+    abstract fun onCreateCardItems(
+        layout: LinearLayout,
+        measureUnit: Int
+    )
+
+    abstract fun onSetupProperties(
+        model: MODEL?
+    )
+
+    private fun onClickDangerText(
         view: View
     ) {
-        mZone.oopt.coords?.let {
-            if (it.isEmpty()) {
-                return
-            }
-            pushFragment(
-                MapsFragment.create(
-                    it[(it.size * 0.5f).toInt()]
-                )
-            )
-        }
+        pushFragment(
+            AnthropInfoFragment()
+        )
     }
 
-    companion object {
-        fun create(
-            zone: ShortOOPT
-        ): BaseDetailsFragment {
-            val frag = BaseDetailsFragment()
-            frag.setSecurityZone(
-                zone
-            )
-            return frag
-        }
+    private fun onClickBtnBack(
+        view: View
+    ) {
+        popFragment()
     }
-
-}
-
-private fun BaseDetailsFragment.onClickDangerText(
-    view: View
-) {
-    pushFragment(
-        AnthropInfoFragment()
-    )
-}
-
-private fun BaseDetailsFragment.onClickBtnBack(
-    view: View
-) {
-    popFragment()
 }

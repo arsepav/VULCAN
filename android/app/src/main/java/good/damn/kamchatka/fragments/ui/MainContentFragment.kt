@@ -22,7 +22,7 @@ import good.damn.kamchatka.extensions.textSizeBounds
 import good.damn.kamchatka.extensions.top
 import good.damn.kamchatka.fragments.ui.main_content.AnthropInfoFragment
 import good.damn.kamchatka.fragments.ui.main_content.LikesFragment
-import good.damn.kamchatka.fragments.ui.main_content.details.BaseDetailsFragment
+import good.damn.kamchatka.fragments.ui.main_content.details.ParkDetailsFragment
 import good.damn.kamchatka.fragments.ui.main_content.maps.MapsFragment
 import good.damn.kamchatka.fragments.ui.main_content.profile.ProfileFragment
 import good.damn.kamchatka.item_decorations.MarginItemDecoration
@@ -32,12 +32,12 @@ import good.damn.kamchatka.models.ShortOOPT
 import good.damn.kamchatka.services.GeoService
 import good.damn.kamchatka.services.interfaces.OnGetSecurityZonesListener
 import good.damn.kamchatka.views.RoundedImageView
-import good.damn.kamchatka.views.special.details.listeners.OnSelectOOPTListener
+import good.damn.kamchatka.views.special.details.listeners.OnSelectModelListener
 import good.damn.kamchatka.views.special.main_content.MainCardImage
 
 class MainContentFragment
 : ScrollableFragment(),
-OnSelectOOPTListener,
+OnSelectModelListener<ShortOOPT>,
 OnGetSecurityZonesListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -413,11 +413,11 @@ OnGetSecurityZonesListener {
         return layout
     }
 
-    override fun onSelectOOPT(
+    override fun onSelectModel(
         zone: ShortOOPT
     ) {
         pushFragment(
-            BaseDetailsFragment.create(
+            ParkDetailsFragment.create(
                 zone
             )
         )
