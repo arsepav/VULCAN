@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="MainStyle" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="colorAccent">@color/editTextText</item>
+        <item name="colorPrimary">@color/editTextText</item>
+        <item name="colorSecondary">@color/editTextText</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+</resources>

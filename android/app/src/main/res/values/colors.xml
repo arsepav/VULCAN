@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background">#ffffffff</color>
+    <color name="editTextHint">#747474</color>
+    <color name="editTextText">#FF08193A</color>
+    <color name="editTextBack">#FFFFFF</color>
+    <color name="btnText">#1A1A1A</color>
+    <color name="btnBack">#FF000000</color>
+    <color name="btnBackArrow">#C5C5C5</color>
+
+    <color name="accentColor">#08193A</color>
+    <color name="accentColor30">#4C08193A</color>
+
+    <color name="titleColor">#ff18191F</color>
+    <color name="largeTextColor">#3D405B</color>
+    <color name="mountainsColor">#AAEE4A</color>
+    <color name="mountainsColorTransp">#F4FFE4</color>
+
+    <color name="signInStrokeColor2">#6BA351</color>
+    <color name="signInStrokeColor3">#365F46</color>
+    <color name="textColorBtn">#ffffffff</color>
+
+    <color name="requestColor">#ff323232</color>
+
+    <color name="policyTerms">#9FA4A7</color>
+    <color name="requestColor2">#BABABC</color>
+</resources>
