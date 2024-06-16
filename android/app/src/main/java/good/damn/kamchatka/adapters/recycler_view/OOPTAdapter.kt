@@ -35,7 +35,7 @@ class OOPTAdapter(
         val zone = mZones[position]
         val oopt = zone?.oopt ?: return
         holder.setName(
-            oopt.name
+            zone.shortName
         )
 
         holder.setType(

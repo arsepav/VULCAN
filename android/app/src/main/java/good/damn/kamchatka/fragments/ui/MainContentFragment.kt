@@ -432,9 +432,16 @@ OnGetSecurityZonesListener {
 
         val oopts: Array<ShortOOPT?> = Array(zones.size) {
             val zone = zones[it] ?: return@Array null
+
+            var name = zone.oopt.name
+            if (name.length > 16) {
+                name = "${name.substring(0,16)}…"
+            }
+
             ShortOOPT(
                 zone.oopt,
-                type
+                type,
+                shortName = name
             )
         }
 
@@ -444,9 +451,6 @@ OnGetSecurityZonesListener {
         ).let {
             it.onSelectOOPTListener = this
             mRecyclerViewOOPT.adapter = it
-
-            mImageViewLike.requestLayout()
-            mImageViewProfile.requestLayout()
         }
     }
 

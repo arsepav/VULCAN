@@ -7,9 +7,9 @@ import com.google.android.gms.maps.model.LatLng
 import org.json.JSONObject
 
 data class OOPT(
-    val id: Int?,
-    val name: String?,
-    val desc: String?,
+    val id: Int,
+    val name: String,
+    val desc: String,
     val dangerRate: Float,
     val coords: Array<LatLng>?,
     val image_url: String?
