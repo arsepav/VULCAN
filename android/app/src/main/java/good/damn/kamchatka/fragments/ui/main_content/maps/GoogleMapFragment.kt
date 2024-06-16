@@ -162,19 +162,19 @@ OnGetRoutesListener {
             if (route == null) {
                 return@forEach
             }
-
             map.addPolyline(
-                route.route
+                route.polyline
             ).apply {
+                route.route.apply {
+                    color = if (
+                        ooptId == null
+                    ) errorColor else mOOPTColors[ooptId]
+                        ?: errorColor
 
-                color = if (
-                    route.ooptId == null
-                ) errorColor else mOOPTColors[route.ooptId]
-                    ?: errorColor
-
-                width = route.strokeWidth
-                startCap = cap
-                endCap = cap
+                    width = 10.0f
+                    startCap = cap
+                    endCap = cap
+                }
             }
         }
     }

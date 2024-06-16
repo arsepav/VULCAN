@@ -7,6 +7,7 @@ data class Route(
     val id: Int?,
     val name: String?,
     val coords: Array<LatLng>,
+    val dangerRate: Float,
     val ooptId: Int?,
     val categoryId: Int?
 ) {
@@ -36,6 +37,8 @@ data class Route(
                 "coordinates"
             )
 
+            val dangerRate = 0.2f
+
             val coords = Array(geom.length()) {
                 val point = geom.getJSONArray(it)
                 LatLng(
@@ -48,6 +51,7 @@ data class Route(
                 id,
                 name,
                 coords,
+                dangerRate,
                 ooptId,
                 categoryId
             )

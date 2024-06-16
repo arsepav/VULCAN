@@ -1,10 +1,9 @@
 package good.damn.kamchatka.models
 
 import com.google.android.gms.maps.model.PolylineOptions
+import good.damn.kamchatka.models.remote.json.Route
 
 data class RouteMap(
-    val route: PolylineOptions,
-    val color: Int,
-    val strokeWidth: Float,
-    val ooptId: Int?
+    val polyline: PolylineOptions,
+    val route: Route
 )

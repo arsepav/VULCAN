@@ -6,7 +6,6 @@ import androidx.cardview.widget.CardView
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsFrame
 import good.damn.kamchatka.extensions.boundsFrameRight
-import good.damn.kamchatka.extensions.setImageDrawableId
 import good.damn.kamchatka.models.Color
 import good.damn.kamchatka.views.RoundedImageView
 
@@ -15,6 +14,9 @@ class CardHeader(
 ): CardView(
     context
 ) {
+
+    private var mOnClickBack: OnClickListener? = null
+
     fun layoutIt(
         measureUnit: Int
     ) {
@@ -23,6 +25,10 @@ class CardHeader(
         )
         val imageViewLike = RoundedImageView(
             context
+        )
+
+        imageViewBack.setOnClickListener(
+            mOnClickBack
         )
 
         // Background color
@@ -91,5 +97,11 @@ class CardHeader(
             imageViewLike
         )
 
+    }
+
+    fun setOnClickBackListener(
+        l: OnClickListener
+    ) {
+        mOnClickBack = l
     }
 }

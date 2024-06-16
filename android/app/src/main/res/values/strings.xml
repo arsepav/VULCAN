@@ -81,4 +81,5 @@
     <string name="msg_email">"Это тестовый экран.\nВ рамках кейса функция\nвосстановления пароля не реализована.</string>
     <string name="no_network">Нет подключения к интернету</string>
     <string name="park">Природный парк</string>
+    <string name="routes">Маршруты</string>
 </resources>

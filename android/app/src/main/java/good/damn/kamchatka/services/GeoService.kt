@@ -108,9 +108,7 @@ class GeoService(
                 .addAll(c.asIterable())
             RouteMap(
                 polyline,
-                0xffFFC700.toInt(),
-                10.0f,
-                route.id
+                route
             )
         }
 

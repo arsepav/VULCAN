@@ -4,21 +4,23 @@ import android.content.Context
 import android.graphics.drawable.BitmapDrawable
 import android.view.Gravity
 import android.view.View
-import android.widget.LinearLayout
-import androidx.appcompat.widget.AppCompatImageView
-import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsLinear
-import good.damn.kamchatka.fragments.StackFragment
 import good.damn.kamchatka.fragments.ui.ScrollableFragment
-import good.damn.kamchatka.models.SecurityZone
+import good.damn.kamchatka.models.RouteMap
 import good.damn.kamchatka.models.ShortOOPT
+import good.damn.kamchatka.services.GeoService
+import good.damn.kamchatka.services.interfaces.OnGetRoutesListener
 import good.damn.kamchatka.utils.ViewUtils
 import good.damn.kamchatka.views.special.details.CardHeader
+import good.damn.kamchatka.views.special.details.CardItem
 import good.damn.kamchatka.views.special.details.CardItemDescription
 import good.damn.kamchatka.views.special.details.CardItemName
+import good.damn.kamchatka.views.special.details.CardItemRoutes
 
 class BaseDetailsFragment
-: ScrollableFragment() {
+: ScrollableFragment(), OnGetRoutesListener {
+
+    private lateinit var mCardItemRoutes: CardItemRoutes
 
     private lateinit var mZone: ShortOOPT
 
@@ -37,6 +39,22 @@ class BaseDetailsFragment
         )
         val cardDesc = CardItemDescription(
             context
+        )
+        mCardItemRoutes = CardItemRoutes(
+            context
+        )
+
+        GeoService(
+            context
+        ).let {
+            it.setOnGetRoutesListener(
+                this
+            )
+            it.requestRoutes()
+        }
+
+        cardHeader.setOnClickBackListener(
+            this::onClickBtnBack
         )
 
         mZone.oopt.apply {
@@ -73,10 +91,14 @@ class BaseDetailsFragment
             height = (measureUnit * 0.6521f).toInt(),
             top = -50f
         )
-
         cardDesc.boundsLinear(
             Gravity.START,
             width = measureUnit
+        )
+        mCardItemRoutes.boundsLinear(
+            Gravity.START,
+            width = measureUnit,
+            height = (measureUnit * 0.7995f).toInt()
         )
 
         cardHeader.layoutIt(
@@ -85,11 +107,13 @@ class BaseDetailsFragment
 
         cardName.layoutIt()
         cardDesc.layoutIt()
+        mCardItemRoutes.layoutIt()
 
         layout.apply {
             addView(cardHeader)
             addView(cardName)
             addView(cardDesc)
+            addView(mCardItemRoutes)
         }
 
 
@@ -115,4 +139,19 @@ class BaseDetailsFragment
         }
     }
 
+    override fun onGetRoutes(
+        routes: Array<RouteMap?>
+    ) {
+        mCardItemRoutes.routes = Array(routes.size) {
+            routes[it]?.route
+        }
+    }
+
+}
+
+
+private fun BaseDetailsFragment.onClickBtnBack(
+    view: View
+) {
+    popFragment()
 }
