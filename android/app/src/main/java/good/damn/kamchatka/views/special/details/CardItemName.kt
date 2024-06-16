@@ -3,15 +3,12 @@ package good.damn.kamchatka.views.special.details
 import android.content.Context
 import android.view.Gravity
 import android.widget.LinearLayout
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.extensions.height
-import good.damn.kamchatka.extensions.left
 import good.damn.kamchatka.extensions.setTextPx
-import good.damn.kamchatka.extensions.textSizeBounds
 import good.damn.kamchatka.models.Color
 import good.damn.kamchatka.models.map.AntroColors
 import good.damn.kamchatka.views.LabelView
@@ -62,8 +59,7 @@ class CardItemName(
 
     override fun onCreateLinearLayout(
         layout: LinearLayout,
-        height: Int,
-        width: Int,
+        measureUnit: Int,
         left: Int
     ) {
         val textViewName = AppCompatTextView(
@@ -97,14 +93,14 @@ class CardItemName(
 
 
         textViewName.setTextPx(
-            height * 0.08148f
+            measureUnit * 0.05131f
         )
         textViewType.setTextPx(
-            height * 0.05925f
+            measureUnit * 0.03743f
         )
 
         mTextViewRateText?.setTextPx(
-            height * 0.0574f
+            measureUnit * 0.03743f
         )
 
         mImageViewMap?.animation = {
@@ -172,38 +168,34 @@ class CardItemName(
         }
 
 
-        (width * 0.0483f).let { left ->
+        (measureUnit * 0.0483f).let { left ->
             textViewName.boundsLinear(
-                Gravity.START,
-                top = (height * 0.0888f),
-                left = left
+                Gravity.START
             )
             textViewType.boundsLinear(
                 Gravity.START,
-                left = textViewName.left(),
-                top = height * 0.001f
+                top = measureUnit * 0.003f
             )
             mImageViewMap?.boundsLinear(
                 Gravity.CENTER_HORIZONTAL,
-                width = (width * 0.913f).toInt(),
-                height = (height * 0.311f).toInt(),
-                top = (height * 0.0888f)
+                width = (measureUnit * 0.913f).toInt(),
+                height = (measureUnit * 0.20289f).toInt(),
+                top = measureUnit * 0.05797f
             )
             layoutRate.boundsLinear(
                 Gravity.START,
-                left = left,
-                top = (height * 0.0888f)
+                top = measureUnit * 0.05797f
             )
         }
 
         mTextViewDangerRate.boundsLinear(
             Gravity.START,
-            height = (height * 0.0777f).toInt(),
-            width = (width * 0.06521f).toInt()
+            height = (measureUnit * 0.05072f).toInt(),
+            width = (measureUnit * 0.06521f).toInt()
         )
         mTextViewRateText?.boundsLinear(
             Gravity.START,
-            left = width * 0.02657f
+            left = measureUnit * 0.02657f
         )
 
         mTextViewDangerRate.apply {
@@ -211,6 +203,15 @@ class CardItemName(
             textColor = 0xffffffff.toInt()
         }
 
+
+        (measureUnit * 0.06159f).toInt().let {
+            layout.setPadding(
+                left,
+                it,
+                left,
+                it
+            )
+        }
 
 
         layoutRate.addView(
