@@ -13,6 +13,7 @@ import good.damn.kamchatka.models.Color
 import good.damn.kamchatka.models.map.AntroColors
 import good.damn.kamchatka.views.LabelView
 import good.damn.kamchatka.views.RoundedImageView
+import kotlin.math.roundToInt
 
 class CardItemName(
     context: Context
@@ -187,7 +188,6 @@ class CardItemName(
                 top = measureUnit * 0.05797f
             )
         }
-
         mTextViewDangerRate.boundsLinear(
             Gravity.START,
             height = (measureUnit * 0.05072f).toInt(),

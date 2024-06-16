@@ -52,7 +52,7 @@
     <string name="birthDate">Дата рождения</string>
     <string name="country_passport">Гражданство</string>
     <string name="region_register">Регион регистрации</string>
-    <string name="gender">Пол</string>
+    <string name="gender">Пол (М,Ж)</string>
     <string name="passport_id">Серия и номер паспорта</string>
     <string name="snl">ФИО</string>
     <string name="passport_data">Паспортные данные</string>
@@ -93,6 +93,7 @@
     <string name="need_to_select_one">Нужно отметить хотя бы один пункт</string>
     <string name="success">Успешно</string>
     <string name="permission_requests_list">Заявки</string>
+    <string name="need_gender">Нужно выбрать пол: М и Ж</string>
     <string-array name="rates">
         <item>Низкий уровень нагрузки</item>
         <item>Средний уровень нагрузки</item>

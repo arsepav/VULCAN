@@ -10,18 +10,23 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import good.damn.kamchatka.Application
+import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsFrame
 import good.damn.kamchatka.extensions.boundsFrameRight
 import good.damn.kamchatka.extensions.boundsLinear
+import good.damn.kamchatka.extensions.height
 import good.damn.kamchatka.extensions.setTextPx
+import good.damn.kamchatka.extensions.size
 import good.damn.kamchatka.models.map.AntroColors
 import good.damn.kamchatka.utils.ViewUtils
+import good.damn.kamchatka.views.LabelView
 import org.w3c.dom.Text
 
 class ViewHolderRoute(
     layout: LinearLayout,
     private val mPreview: CardView,
-    private val mTextViewDanger: TextView,
+    private val mTextViewDanger: LabelView,
     private val mTextViewName: TextView
 ): RecyclerView.ViewHolder(
     layout
@@ -49,6 +54,7 @@ class ViewHolderRoute(
         mTextViewDanger.setBackgroundColor(
             AntroColors.colors[v]
         )
+        mTextViewDanger.requestLayout()
     }
 
     companion object {
@@ -65,9 +71,10 @@ class ViewHolderRoute(
             val textViewName = AppCompatTextView(
                 context
             )
-            val textViewDangerRate = AppCompatTextView(
+            val textViewDangerRate = LabelView(
                 context
             )
+
 
             preview.apply {
                 cardElevation = 0.0f
@@ -75,21 +82,35 @@ class ViewHolderRoute(
                     0xffcacaca.toInt()
                 )
                 (recyclerViewHeight * 0.5269f).toInt().let {
+                    size ->
                     boundsLinear(
                         Gravity.START,
-                        width = it,
-                        height = it
+                        size = size
                     )
-                    textViewDangerRate.setTextPx(
-                        it * 0.1532f
+                    radius = size * 0.14203f
+                    layout.size(
+                        width = size,
+                        height = recyclerViewHeight
+                    )
+
+                    textViewName.setTextPx(
+                        size * 0.1154f
+                    )
+
+                    textViewName.boundsLinear(
+                        Gravity.START,
+                        top = size * 0.08394f
+                    )
+
+                    textViewDangerRate.boundsLinear(
+                        Gravity.END,
+                        height = (size * 0.15328f).toInt(),
+                        width = (size * 0.19708f).toInt(),
+                        top = size * 0.08759f,
+                        left = size * 0.708f
                     )
                 }
 
-
-                textViewDangerRate.boundsFrameRight(
-                    Gravity.END,
-                    top = recyclerViewHeight * 0.08759f
-                )
 
                 addView(
                     textViewDangerRate
@@ -97,10 +118,25 @@ class ViewHolderRoute(
 
             }
 
-            textViewName.boundsLinear(
-                Gravity.START
-            )
+            textViewDangerRate.apply {
+                cornerRadius = this.height() * 0.25f
+                textColor = 0xffffffff.toInt()
+            }
 
+            Application.color(
+                R.color.titleColor
+            ).let {
+                textViewName.setTextColor(
+                    it
+                )
+            }
+
+            Application.font(
+                R.font.open_sans_semi_bold,
+                context
+            ).let {
+                textViewName.typeface = it
+            }
 
 
             layout.addView(preview)

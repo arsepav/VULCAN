@@ -677,6 +677,15 @@ class CreatePermissionFragment
         Log.d(TAG, "onClickBtnNext: $passportData")
         Log.d(TAG, "onClickBtnNext: $contactData")
 
+        val gender = passportData[keyGender]!!
+        if (!(gender == "М" || gender == "Ж")) {
+            Application.toast(
+                R.string.need_gender,
+                view.context
+            )
+            return
+        }
+
         var id = -1
         routes?.forEach {
             if (it?.name == null) {
@@ -714,8 +723,8 @@ class CreatePermissionFragment
             name = nameData[keyName]!!,
             lastname = nameData[keyLastName]!!,
             birthday = passportData[keyBirth]!!,
-            citizenship = passportData[keyCitizenship]!!.toInt(),
-            isMale = true,
+            citizenship = 1,
+            isMale = gender.contains("М".toRegex()),
             passport = passportData[keyPassport]!!,
             email = contactData[keyEmail]!!,
             phoneNumber = contactData[keyNumber]!!,
