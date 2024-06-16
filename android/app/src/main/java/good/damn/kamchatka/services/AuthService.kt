@@ -1,7 +1,9 @@
 package good.damn.kamchatka.services
 
+import android.content.Context
 import android.util.Log
 import good.damn.kamchatka.Application
+import good.damn.kamchatka.services.network.NetworkService
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
@@ -11,14 +13,16 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import org.json.JSONObject
 
-class AuthService {
+class AuthService(
+    context: Context
+): NetworkService(
+    context
+) {
 
     companion object {
         private const val TAG = "AuthService"
-        private val JSON = "application/json; charset=utf-8".toMediaTypeOrNull()
-        private const val URL = "http://91.224.86.144:8000/"
-        private const val URL_REGISTER = "${URL}register"
-        private const val URL_TOKEN = "${URL}token"
+        private const val URL_REGISTER = "${Application.URL}/register"
+        private const val URL_TOKEN = "${Application.URL}/token"
     }
 
     fun token(
@@ -106,23 +110,23 @@ class AuthService {
         json: JSONObject,
         completion: (Response) -> Unit
     ) {
-        val client = OkHttpClient()
+        makeRequest(
+            Request.Builder()
+                .url(url)
+                .post(json.toString().toRequestBody(
+                    Application.JSON
+                ))
+        ) { client, request ->
+            Thread {
+                val response = client.newCall(
+                    request
+                ).execute()
 
-        val body = json.toString()
-            .toRequestBody(JSON)
+                completion(response)
+            }.start()
+        }
 
-        val request = Request.Builder()
-            .url(url)
-            .post(body)
-            .build()
 
-        Thread {
-            val response = client.newCall(
-                request
-            ).execute()
-
-            completion(response)
-        }.start()
     }
 
 }

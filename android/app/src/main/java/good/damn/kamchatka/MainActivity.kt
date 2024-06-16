@@ -16,6 +16,7 @@ import good.damn.kamchatka.fragments.StackFragment
 import good.damn.kamchatka.fragments.ui.MainContentFragment
 import good.damn.kamchatka.fragments.ui.auth.SignInFragment
 import good.damn.kamchatka.fragments.ui.SplashFragment
+import good.damn.kamchatka.services.AuthService
 import good.damn.kamchatka.services.TimeService
 import good.damn.kamchatka.services.TokenService
 

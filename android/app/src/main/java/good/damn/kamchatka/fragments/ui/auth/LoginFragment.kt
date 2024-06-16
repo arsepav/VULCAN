@@ -27,17 +27,23 @@ import org.json.JSONObject
 class LoginFragment
 : LoginBaseFragment() {
 
-    private val mAuthService = AuthService()
+    private var mAuthService: AuthService? = null
 
     private lateinit var mTextFieldEmail: TextFieldRound
     private lateinit var mTextFieldPassword: TextFieldRoundPassword
     private lateinit var mBtnLogin: ButtonRound
     private lateinit var mTextViewForgotPassword: TextView
 
+    private var mPassword = ""
+
     override fun onCreateContentFrameView(
         context: Context,
         measureUnit: Int
     ): View {
+
+        mAuthService = AuthService(
+            context
+        )
 
         val heightField = (measureUnit * 0.1135f)
             .toInt()
@@ -217,7 +223,7 @@ class LoginFragment
         val email = mTextFieldEmail
             .text?.toString() ?: return
 
-        val password = mTextFieldPassword
+        mPassword = mTextFieldPassword
             .text?.toString() ?: return
 
         if (NotifyUtils.notifyBlankField(
@@ -227,14 +233,14 @@ class LoginFragment
 
 
         if (NotifyUtils.notifyBlankField(
-            password,
+                mPassword,
             mTextFieldPassword
         )) return
 
         enableInteraction(false)
-        mAuthService.token(
+        mAuthService?.token(
             email,
-            password,
+            mPassword,
             this::onResponseToken
         )
 
@@ -271,6 +277,7 @@ class LoginFragment
             }
 
             val tokenAuth = TokenAuth.createFromJSON(
+                mPassword,
                 JSONObject(
                     body
                 )

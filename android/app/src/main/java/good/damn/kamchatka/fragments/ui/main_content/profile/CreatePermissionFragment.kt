@@ -1,11 +1,13 @@
 package good.damn.kamchatka.fragments.ui.main_content.profile
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ScrollView
+import androidx.annotation.WorkerThread
 import androidx.fragment.app.Fragment
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
@@ -14,16 +16,24 @@ import good.damn.kamchatka.extensions.height
 import good.damn.kamchatka.extensions.setTextColorId
 import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.models.remote.json.Route
+import good.damn.kamchatka.services.PermissionService
 import good.damn.kamchatka.utils.ViewUtils
 import good.damn.kamchatka.views.button.ButtonRound
 import good.damn.kamchatka.views.layout.GroupCheckBox
 import good.damn.kamchatka.views.layout.GroupTextField
 import good.damn.kamchatka.views.layout.models.GroupField
+import okhttp3.Response
 
 class CreatePermissionFragment
 : Fragment() {
 
     var routes: Array<Route?>? = null
+
+    private var mPermissionService: PermissionService? = null
+
+    companion object {
+        private const val TAG = "CreatePermissionFragmen"
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,6 +43,10 @@ class CreatePermissionFragment
 
         val measureUnit = Application.WIDTH
         val context = context ?: return null
+
+        mPermissionService = PermissionService(
+            context
+        )
 
         // Allocating views
         val scrollView = ScrollView(
@@ -537,6 +551,49 @@ class CreatePermissionFragment
     private fun onClickBtnNext(
         view: View
     ) {
+
+        if (routes?.isEmpty() ?: true) {
+            Application.toast(
+                R.string.error,
+                view.context
+            )
+            return
+        }
+
+        val id = routes!![0]?.id ?: return
+
+        mPermissionService?.createPermission(
+            arrivalDate = "2025-02-13",
+            surname = "some surname",
+            name = "some name",
+            lastname = "some lastname",
+            birthday = "2025-01-01",
+            citizenship = 25,
+            isMale = true,
+            passport = "9999999999",
+            email = "someemail@gmail.com",
+            phoneNumber = "+74447778787",
+            pathId = id,
+            isOneDay = true,
+            purposeSkis = true,
+            purposeSport = true,
+            purposeScience = true,
+            purposePhotoVideo = true,
+            purposeMountain = true,
+            purposeAnother = true,
+            photoVideoProf = false,
+            photoVideoDrones = false,
+            this::onResponsePermission
+        )
+    }
+
+    @WorkerThread
+    private fun onResponsePermission(
+        response: Response
+    ) {
+
+        val body = response.body?.string()
+        Log.d(TAG, "onResponsePermission: ${response.code} $body")
 
     }
 

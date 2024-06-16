@@ -37,7 +37,7 @@ class SignInFragment
         private const val TAG = "AuthFragment"
     }
 
-    private val mAuthService = AuthService()
+    private var mAuthService: AuthService? = null
     private var mTokenService: TokenService? = null
 
     private var mEmail = ""
@@ -78,6 +78,10 @@ class SignInFragment
         context: Context,
         measureUnit: Int
     ): View {
+
+        mAuthService = AuthService(
+            context
+        )
 
         val widthField = measureUnit * 0.816f
         val heightField = measureUnit * 0.1135f
@@ -413,7 +417,7 @@ class SignInFragment
         mEmail = email
         mPassword = password
 
-        mAuthService.registerUser(
+        mAuthService?.registerUser(
             email = email,
             password = password,
             name = name,
@@ -476,7 +480,7 @@ class SignInFragment
                 R.string.almostReady,
                 context
             )
-            mAuthService.token(
+            mAuthService?.token(
                 mEmail,
                 mPassword,
                 this::onResponseToken
@@ -507,6 +511,7 @@ class SignInFragment
                 return@ui
             }
             val tokenAuth = TokenAuth.createFromJSON(
+                mPassword,
                 JSONObject(
                     body!!
                 )

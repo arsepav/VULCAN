@@ -90,6 +90,7 @@
     <string name="perm_single">Индивидуальное</string>
     <string name="perm_group_hu">Групповое - физ. лица</string>
     <string name="perm_group_com">Групповое - юр. лица / ИП</string>
+    <string name="error">Произошла ошибка</string>
     <string-array name="rates">
         <item>Низкий уровень нагрузки</item>
         <item>Средний уровень нагрузки</item>
