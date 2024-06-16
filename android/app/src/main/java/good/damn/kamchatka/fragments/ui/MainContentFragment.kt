@@ -21,7 +21,9 @@ import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.extensions.textSizeBounds
 import good.damn.kamchatka.extensions.top
 import good.damn.kamchatka.fragments.ui.main_content.AnthropInfoFragment
-import good.damn.kamchatka.fragments.ui.main_content.LikesFragment
+import good.damn.kamchatka.fragments.ui.blocks.LikeFragment
+import good.damn.kamchatka.fragments.ui.blocks.MonumentsFragment
+import good.damn.kamchatka.fragments.ui.blocks.ZakaznikiFragment
 import good.damn.kamchatka.fragments.ui.main_content.details.ParkDetailsFragment
 import good.damn.kamchatka.fragments.ui.main_content.maps.MapsFragment
 import good.damn.kamchatka.fragments.ui.main_content.profile.ProfileFragment
@@ -108,6 +110,17 @@ OnGetSecurityZonesListener {
         )
 
 
+        cardImageZakaznik.mOnClickListener = View.OnClickListener {
+            pushFragment(
+                ZakaznikiFragment()
+            )
+        }
+
+        cardImageNatureMon.mOnClickListener = View.OnClickListener {
+            pushFragment(
+                MonumentsFragment()
+            )
+        }
 
 
         // Image drawable
@@ -476,7 +489,7 @@ private fun MainContentFragment.onClickBtnLike(
     view: View
 ) {
     pushFragment(
-        LikesFragment()
+        LikeFragment()
     )
 }
 

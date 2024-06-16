@@ -3,6 +3,7 @@ package good.damn.kamchatka.views.holders
 import android.content.Context
 import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import good.damn.kamchatka.utils.ViewUtils
 
@@ -30,6 +31,9 @@ class ViewHolderPermission(
         fun create(
             context: Context
         ): ViewHolderPermission {
+            val card = CardView(
+                context
+            )
             val layout = ViewUtils.verticalLinearLayout(
                 context
             )
@@ -41,11 +45,18 @@ class ViewHolderPermission(
             )
 
 
+
+
+
             layout.addView(
                 textViewName
             )
             layout.addView(
                 textViewState
+            )
+
+            card.addView(
+                layout
             )
 
             return ViewHolderPermission(

@@ -94,6 +94,12 @@
     <string name="success">Успешно</string>
     <string name="permission_requests_list">Заявки</string>
     <string name="need_gender">Нужно выбрать пол: М и Ж</string>
+    <string name="zakazniki_title">13 природных\nзаказников</string>
+    <string name="zakazniki_desc">Здесь будут отражаться природные\nзаказники и информация о них по аналогии\nс другими маршрутам/ООПТ</string>
+    <string name="zakazniki_msg">Это тестовый экран.\nВ рамках кейса экран \n”13 природных заказников” не реализован.</string>
+    <string name="monuments_msg">Это тестовый экран.\nВ рамках кейса экран\n”63 памятника природы” не реализован.</string>
+    <string name="monuments_title">63 памятника\nприроды</string>
+    <string name="monuments_desc">Здесь будут отражаться\nприродные памятники и информация о них по\nаналогии с другими маршрутам/ООПТ</string>
     <string-array name="rates">
         <item>Низкий уровень нагрузки</item>
         <item>Средний уровень нагрузки</item>
