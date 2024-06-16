@@ -37,27 +37,82 @@
         .nav-button:hover img {
             opacity: 0.7;
         }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 60%;
+            margin: auto;
+            overflow: hidden;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #0066cc;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        h2 {
+            font-size: 1.75em;
+            margin-bottom: 10px;
+        }
+        p, ul, ol, pre {
+            font-size: 1.25em;
+            margin-bottom: 20px;
+        }
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        pre {
+            background: #f4f4f4;
+            border-left: 5px solid #0066cc;
+            padding: 10px;
+            overflow: auto;
+        }
     </style>
 </head>
 <body>
     <div style="display: flex; flex-direction: row;">
-        <div style="width: 150px;"></div>
+        <div style="width: 250px;"></div>
         <div>
-            <header>
-                <h1>Тут можно написать инфу о проекте</h1>
-            </header>
-            <main>
-                <h2>About the Project</h2>
-                <p>This project aims to provide a comprehensive solution for users to interact with various features such as authorization, file uploads, and map interactions.</p>
-                <p>The main features of this project include:</p>
-                <ul>
-                    <li><strong>Authorization:</strong> Users can log in and out securely, and access protected content that requires authentication.</li>
-                    <li><strong>File Upload:</strong> Users can upload files through a simple and intuitive interface.</li>
-                    <li><strong>Map Interaction:</strong> A map feature that allows users to view and interact with geographical data.</li>
-                </ul>
-                <p>We have implemented a robust authorization system to ensure that users' data is secure and only accessible to authorized individuals. The file upload functionality supports various file types and ensures smooth and efficient file handling. Our map feature provides a detailed and interactive experience for users to explore and interact with geographical information.</p>
-                <p>This project is designed with user experience in mind, featuring a clean and simple interface that is easy to navigate and use. We continuously strive to improve our features and provide the best possible service to our users.</p>
-            </main>
+            <h1>VULCAN</h1>
+
+            <p>
+                Проект направлен на создание комплексного мобильного приложения и обновление портала "Экологический мониторинг в Камчатском крае" для улучшения управления и охраны особо охраняемых природных территорий (ООПТ) на Камчатке. Приложение включает туристические маршруты с учетом антропогенной нагрузки, возможность сообщать об экологических проблемах. Создано расширение для портала, которое позволяет мониторить антропогенную нагрузку на ООПТ и маршруты, а также позволяет актуализировать информацию сервиса.
+            </p>
+
+            <p>
+                Прототип сервиса находится по ссылке: <a href="http://91.224.86.144:8000/">http://91.224.86.144:8000/</a><br>
+                <a href="http://91.224.86.144:8000/docs">http://91.224.86.144:8000/docs</a> - для просмотра всех энд-поинтов, а также просмотра формата принимаемой и отправляемой информации.<br>
+            </p>
+
+            <p>
+                В прототипе реализованы функции добавления ООПТ, туристических объектов и туристических путей. Страницы, отвечающие за это, находятся на 2-4 страницах.
+            </p>
+
+            <p>
+                Страницы 5, 6 отвечают за мониторинг экологических проблем и позволяют просматривать экологические проблемы как в формате списка, так и на карте.
+            </p>
+
+            <p>
+                7 страница позволяет рассматривать заявки на посещение и мониторить нагрузку на ООПТ и маршруты в тот период времени, когда турист хочет посетить маршрут.
+            </p>
+
+            <p>
+            <a href="https://disk.yandex.ru/d/pkPcInxsMFpLJA">Ссылка на скачивание приложения</a>
+            </p>
+
         </div>
     </div>
     <div id="navigation-panel">
