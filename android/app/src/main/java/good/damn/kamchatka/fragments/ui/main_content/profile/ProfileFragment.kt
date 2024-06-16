@@ -211,7 +211,9 @@ class ProfileFragment
     private fun onClickCardViewRequest(
         view: View
     ) {
-
+        pushFragment(
+            ViewPermissionsFragment()
+        )
     }
 
 }

@@ -92,6 +92,7 @@
     <string name="not_all_data">Не все поля заполнены</string>
     <string name="need_to_select_one">Нужно отметить хотя бы один пункт</string>
     <string name="success">Успешно</string>
+    <string name="permission_requests_list">Заявки</string>
     <string-array name="rates">
         <item>Низкий уровень нагрузки</item>
         <item>Средний уровень нагрузки</item>

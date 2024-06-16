@@ -11,7 +11,7 @@ import good.damn.kamchatka.adapters.fragment_adapters.FragmentAdapter
 import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.fragments.StackFragment
-import good.damn.kamchatka.fragments.ui.main_content.profile.CreatePermissionFragment
+import good.damn.kamchatka.fragments.ui.main_content.visit_permission.pager.CreatePermissionFragment
 import good.damn.kamchatka.fragments.ui.main_content.visit_permission.pager.TypePermissionFragment
 import good.damn.kamchatka.models.Color
 import good.damn.kamchatka.models.ShortOOPT

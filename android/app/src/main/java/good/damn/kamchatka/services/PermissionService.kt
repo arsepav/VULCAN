@@ -3,10 +3,12 @@ package good.damn.kamchatka.services
 import android.content.Context
 import android.net.Network
 import good.damn.kamchatka.Application
+import good.damn.kamchatka.models.permission.PermissionRequest
 import good.damn.kamchatka.services.network.NetworkService
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
+import org.json.JSONArray
 import org.json.JSONObject
 
 class PermissionService(
@@ -20,7 +22,9 @@ class PermissionService(
         private const val URL_GET = "${Application.URL}/visit_permissions_user"
     }
 
-    fun getPermissions() {
+    fun getPermissions(
+        completionBackground: (Array<PermissionRequest>) -> Unit
+    ) {
         makeRequest(
             Request.Builder()
                 .url(URL_GET)
@@ -30,6 +34,21 @@ class PermissionService(
                 val response = client.newCall(
                     request
                 ).execute()
+                val body = response.body?.string() ?: return@Thread
+
+                val json = JSONArray(
+                    body
+                )
+
+                val permissions: Array<PermissionRequest> = Array(json.length()) {
+                    PermissionRequest.createFromJSON(
+                        json.getJSONObject(it)
+                    )
+                }
+
+                completionBackground(
+                    permissions
+                )
 
             }.start()
         }
