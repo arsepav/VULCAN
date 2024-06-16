@@ -3,12 +3,17 @@ package good.damn.kamchatka
 import android.animation.ValueAnimator
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.AccelerateInterpolator
 import android.widget.FrameLayout
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowInsetsControllerCompat
@@ -22,9 +27,13 @@ import good.damn.kamchatka.services.TokenService
 
 class MainActivity
 : AppCompatActivity(),
-ViewTreeObserver.OnGlobalLayoutListener {
+ViewTreeObserver.OnGlobalLayoutListener,
+ActivityResultCallback<Uri?> {
 
     private lateinit var mContainer: FrameLayout
+    private lateinit var mContentLauncher: ActivityResultLauncher<String>
+
+    private var mCompletionPickImage: ((Uri)->Unit)? = null
 
     companion object {
         private const val TAG = "MainActivity"
@@ -35,6 +44,11 @@ ViewTreeObserver.OnGlobalLayoutListener {
     ) {
         super.onCreate(
             savedInstanceState
+        )
+
+        mContentLauncher = registerForActivityResult(
+            ActivityResultContracts.GetContent(),
+            this
         )
 
         setNavigationBarColor(
@@ -130,6 +144,28 @@ ViewTreeObserver.OnGlobalLayoutListener {
         }
 
         popFragment()
+    }
+
+
+    override fun onActivityResult(
+        result: Uri?
+    ) {
+        if (result == null) {
+            return
+
+        }
+        mCompletionPickImage?.invoke(
+            result
+        )
+    }
+
+    fun pickImage(
+        completion: (Uri) -> Unit
+    ) {
+        mCompletionPickImage = completion
+        mContentLauncher.launch(
+            "*/*"
+        )
     }
 
     fun popFragment() {

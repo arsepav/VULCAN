@@ -9,6 +9,7 @@ import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.extensions.setTextPx
+import good.damn.kamchatka.models.Color
 import good.damn.kamchatka.models.map.AntroColors
 import good.damn.kamchatka.views.RoundedImageView
 
@@ -136,6 +137,20 @@ class CardItemName(
             textViewType.typeface = it
         }
 
+        Application.color(
+            R.color.titleColor
+        ).let {
+            textViewName.setTextColor(
+                it
+            )
+
+            textViewType.setTextColor(
+                Color.parseFromHex(
+                    it,
+                    0.3f
+                )
+            )
+        }
 
 
         (width * 0.0483f).let { left ->

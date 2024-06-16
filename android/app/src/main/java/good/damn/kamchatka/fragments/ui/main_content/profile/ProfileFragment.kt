@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
+import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import good.damn.kamchatka.Application
@@ -54,6 +55,9 @@ class ProfileFragment
         val cardViewRequest = CardViewRequest(
             context
         )
+        val btnReport = AppCompatButton(
+            context
+        )
         val vulcanMsg = ViewUtils.vulcanTextView(
             R.string.profile_msg,
             context,
@@ -70,6 +74,9 @@ class ProfileFragment
         textViewHello.text = "${getString(R.string.hello)} ${Application.TOKEN?.name}"
 
 
+        btnReport.setText(
+            "Report"
+        )
 
         // Drawable
         imageViewAvatar.setImageDrawable(
@@ -150,6 +157,11 @@ class ProfileFragment
             height = (measureUnit * 0.3913f).toInt(),
             top = textViewHello.textSizeBounds() + textViewHello.top() + measureUnit * 0.0724f
         )
+        btnReport.boundsFrame(
+            Gravity.START,
+            width = -1,
+            top = cardViewRequest.bottom().toFloat()
+        )
         vulcanMsg.boundsFrame(
             Gravity.START,
             top = Application.HEIGHT * 0.671f,
@@ -186,6 +198,9 @@ class ProfileFragment
             cardViewRequest
         )
         layout.addView(
+            btnReport
+        )
+        layout.addView(
             vulcanMsg
         )
 
@@ -200,6 +215,9 @@ class ProfileFragment
         cardViewRequest.setOnClickListener(
             this::onClickCardViewRequest
         )
+        btnReport.setOnClickListener(
+            this::onClickBtnReport
+        )
 
 
 
@@ -207,6 +225,13 @@ class ProfileFragment
         return layout
     }
 
+    private fun onClickBtnReport(
+        view: View
+    ) {
+        pushFragment(
+            ReportEcologyFragment()
+        )
+    }
 
     private fun onClickCardViewRequest(
         view: View
