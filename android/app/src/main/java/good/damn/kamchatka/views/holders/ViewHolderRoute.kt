@@ -97,12 +97,14 @@ class ViewHolderRoute(
 
             }
 
+            textViewName.boundsLinear(
+                Gravity.START
+            )
 
 
-            layout.apply {
-                addView(preview)
-                addView(textViewName)
-            }
+
+            layout.addView(preview)
+            layout.addView(textViewName)
 
 
             return ViewHolderRoute(

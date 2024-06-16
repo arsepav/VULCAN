@@ -1,5 +1,6 @@
 package good.damn.kamchatka.adapters.recycler_view
 
+import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import good.damn.kamchatka.models.remote.json.Route
@@ -9,6 +10,10 @@ class RoutesAdapter(
     private val mRoutes: Array<Route?>,
     private val mRecyclerViewHeight: Int
 ): RecyclerView.Adapter<ViewHolderRoute>() {
+
+    companion object {
+        private const val TAG = "RoutesAdapter"
+    }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -29,6 +34,7 @@ class RoutesAdapter(
     ) {
         val route = mRoutes[position]
 
+        Log.d(TAG, "onBindViewHolder: ${route} ${route?.name}")
         holder.setName(
             route?.name
         )

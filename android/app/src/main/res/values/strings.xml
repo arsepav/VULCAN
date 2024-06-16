@@ -82,4 +82,10 @@
     <string name="no_network">Нет подключения к интернету</string>
     <string name="park">Природный парк</string>
     <string name="routes">Маршруты</string>
+    <string name="calculating_rate">Расчёт нагрузки...</string>
+    <string-array name="rates">
+        <item>Низкий уровень нагрузки</item>
+        <item>Средний уровень нагрузки</item>
+        <item>Высокий уровень нагрузки</item>
+    </string-array>
 </resources>

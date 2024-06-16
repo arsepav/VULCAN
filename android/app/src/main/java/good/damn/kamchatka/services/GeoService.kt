@@ -37,14 +37,22 @@ class GeoService(
     private var mOnGetZonesListener: OnGetSecurityZonesListener? = null
     private var mOnGetRoutesListener: OnGetRoutesListener? = null
 
-    fun requestRoutes() {
+    fun requestRoutes(
+        ooptId: Int = -1
+    ) {
         if (mOnGetRoutesListener == null) {
             return
         }
 
+        var urlParam = URL_ROUTE
+
+        if (ooptId != -1) {
+            urlParam += "?oopt_id=$ooptId"
+        }
+
         makeRequest(
             Request.Builder()
-                .url(URL_ROUTE)
+                .url(urlParam)
                 .get()
         ) { client, request ->
             queueRequest(
@@ -102,10 +110,12 @@ class GeoService(
                 json.getJSONObject(it)
             )
 
+            Log.d(TAG, "processRoutes: ${route?.coords}")
             val c = route?.coords ?: return@Array null
 
             val polyline = PolylineOptions()
                 .addAll(c.asIterable())
+            
             RouteMap(
                 polyline,
                 route

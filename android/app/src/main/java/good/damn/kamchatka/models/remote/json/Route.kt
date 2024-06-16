@@ -31,13 +31,15 @@ data class Route(
                 "category_id"
             ) as? Int ?: return null
 
+            val dangerRate = (json.get(
+                "path_load"
+            ) as? Double)?.toFloat() ?: 5f
+
             val geom = json.getJSONObject(
                 "geom"
             ).getJSONArray(
                 "coordinates"
             )
-
-            val dangerRate = 0.2f
 
             val coords = Array(geom.length()) {
                 val point = geom.getJSONArray(it)
