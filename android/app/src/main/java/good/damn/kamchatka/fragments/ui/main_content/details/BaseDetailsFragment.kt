@@ -7,6 +7,7 @@ import android.view.Gravity
 import android.view.View
 import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.fragments.ui.ScrollableFragment
+import good.damn.kamchatka.fragments.ui.main_content.AnthropInfoFragment
 import good.damn.kamchatka.models.RouteMap
 import good.damn.kamchatka.models.ShortOOPT
 import good.damn.kamchatka.services.GeoService
@@ -121,6 +122,11 @@ class BaseDetailsFragment
             )
         }
 
+        mCardName.setOnClickRateText(
+            this::onClickDangerText
+        )
+
+
         return layout
     }
 
@@ -162,6 +168,13 @@ class BaseDetailsFragment
 
 }
 
+private fun BaseDetailsFragment.onClickDangerText(
+    view: View
+) {
+    pushFragment(
+        AnthropInfoFragment()
+    )
+}
 
 private fun BaseDetailsFragment.onClickBtnBack(
     view: View

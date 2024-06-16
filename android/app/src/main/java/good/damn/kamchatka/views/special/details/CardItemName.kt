@@ -22,8 +22,9 @@ class CardItemName(
     var dangerRate = 0.3f
         set(v) {
             field = v
-            mTextViewDangerRate.text = "%.1f".format(v)
-            mTextViewDangerRate.setBackgroundColor(
+
+            mTextViewDangerRate?.text = "%.1f".format(v)
+            mTextViewDangerRate?.setBackgroundColor(
                 AntroColors.colors[
                     if (v > 10.0f)
                         9
@@ -34,7 +35,7 @@ class CardItemName(
             val arr = resources.getStringArray(
                 R.array.rates
             )
-            mTextViewRateText.text = when (
+            mTextViewRateText?.text = when (
                 v.toInt()
             ) {
                 in 0..2 -> arr[0]
@@ -43,8 +44,8 @@ class CardItemName(
             }
         }
 
-    private lateinit var mTextViewDangerRate: AppCompatTextView
-    private lateinit var mTextViewRateText: AppCompatTextView
+    private var mTextViewDangerRate: AppCompatTextView? = null
+    private var mTextViewRateText: AppCompatTextView? = null
 
     override fun onCreateLinearLayout(
         layout: LinearLayout,
@@ -77,7 +78,7 @@ class CardItemName(
 
         textViewName.text = name
         textViewType.text = type
-        mTextViewRateText.setText(
+        mTextViewRateText?.setText(
             R.string.calculating_rate
         )
 
@@ -93,6 +94,27 @@ class CardItemName(
         imageViewMap.setImageDrawable(
             R.drawable.details_map
         )
+
+        mTextViewRateText?.let {
+            Application.drawable(
+                R.drawable.ic_info
+            )?.let { d ->
+                val s = (it.textSize * 1.2f)
+                    .toInt()
+                d.setBounds(
+                    0,
+                    0,
+                    s,
+                    s
+                )
+                it.setCompoundDrawables(
+                    null,
+                    null,
+                    d,
+                    null
+                )
+            }
+        }
 
 
 
@@ -126,10 +148,10 @@ class CardItemName(
             )
         }
 
-        mTextViewDangerRate.boundsLinear(
+        mTextViewDangerRate?.boundsLinear(
             Gravity.START
         )
-        mTextViewRateText.boundsLinear(
+        mTextViewRateText?.boundsLinear(
             Gravity.START
         )
 
@@ -155,5 +177,12 @@ class CardItemName(
         )
     }
 
+    fun setOnClickRateText(
+        l: OnClickListener?
+    ) {
+        mTextViewRateText?.setOnClickListener(
+            l
+        )
+    }
 
 }
