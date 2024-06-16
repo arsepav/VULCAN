@@ -9,6 +9,8 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.Polygon
 import com.google.android.gms.maps.model.RoundCap
 import good.damn.kamchatka.Application
@@ -31,6 +33,8 @@ OnGetRoutesListener {
     companion object {
         private const val TAG = "MapsFragment"
     }
+
+    var markerLatLng: LatLng? = null
 
     private val mZoneColors = OOPTColors
         .entries
@@ -66,6 +70,37 @@ OnGetRoutesListener {
             158.394596
         )
 
+        map.moveCamera(
+            CameraUpdateFactory
+                .newLatLngZoom(
+                    kamchatka,
+                    5.0f
+                )
+        )
+
+        Log.d(TAG, "onMapReady: SPECIAL_MARKER: $markerLatLng")
+        markerLatLng?.let {
+            map.addMarker(
+                MarkerOptions()
+                    .position(it)
+                    .icon(
+                        BitmapDescriptorFactory.defaultMarker(
+                            BitmapDescriptorFactory.HUE_CYAN
+                        )
+                    ).zIndex(
+                        1.0f
+                    )
+            )
+
+            map.moveCamera(
+                CameraUpdateFactory
+                    .newLatLngZoom(
+                        it,
+                        6.0f
+                    )
+            )
+        }
+
 
         mGeoService?.setOnGetZonesListener(
             this
@@ -76,14 +111,6 @@ OnGetRoutesListener {
         )
 
         mGeoService?.requestSecurityZones()
-
-        map.moveCamera(
-            CameraUpdateFactory
-                .newLatLngZoom(
-                    kamchatka,
-                    5.0f
-                )
-        )
 
         map.setOnPolygonClickListener(
             this

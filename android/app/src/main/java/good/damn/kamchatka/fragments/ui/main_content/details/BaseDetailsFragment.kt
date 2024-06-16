@@ -8,6 +8,7 @@ import android.view.View
 import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.fragments.ui.ScrollableFragment
 import good.damn.kamchatka.fragments.ui.main_content.AnthropInfoFragment
+import good.damn.kamchatka.fragments.ui.main_content.maps.MapsFragment
 import good.damn.kamchatka.models.RouteMap
 import good.damn.kamchatka.models.ShortOOPT
 import good.damn.kamchatka.services.GeoService
@@ -126,27 +127,12 @@ class BaseDetailsFragment
             this::onClickDangerText
         )
 
+        mCardName.setOnClickMap(
+            this::onClickMap
+        )
+
 
         return layout
-    }
-
-
-    fun setSecurityZone(
-        zone: ShortOOPT
-    ) {
-        mZone = zone
-    }
-
-    companion object {
-        fun create(
-            zone: ShortOOPT
-        ): BaseDetailsFragment {
-            val frag = BaseDetailsFragment()
-            frag.setSecurityZone(
-                zone
-            )
-            return frag
-        }
     }
 
     override fun onGetRoutes(
@@ -164,6 +150,39 @@ class BaseDetailsFragment
             }
         }
         mCardName.dangerRate = rate / routes.size
+    }
+
+    fun setSecurityZone(
+        zone: ShortOOPT
+    ) {
+        mZone = zone
+    }
+
+    private fun onClickMap(
+        view: View
+    ) {
+        mZone.oopt.coords?.let {
+            if (it.isEmpty()) {
+                return
+            }
+            pushFragment(
+                MapsFragment.create(
+                    it[(it.size * 0.5f).toInt()]
+                )
+            )
+        }
+    }
+
+    companion object {
+        fun create(
+            zone: ShortOOPT
+        ): BaseDetailsFragment {
+            val frag = BaseDetailsFragment()
+            frag.setSecurityZone(
+                zone
+            )
+            return frag
+        }
     }
 
 }

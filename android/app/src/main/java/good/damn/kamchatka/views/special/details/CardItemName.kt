@@ -3,6 +3,7 @@ package good.damn.kamchatka.views.special.details
 import android.content.Context
 import android.view.Gravity
 import android.widget.LinearLayout
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
@@ -35,17 +36,22 @@ class CardItemName(
             val arr = resources.getStringArray(
                 R.array.rates
             )
-            mTextViewRateText?.text = when (
+
+            val t = when (
                 v.toInt()
             ) {
                 in 0..2 -> arr[0]
                 in 3..5 -> arr[1]
                 else -> arr[2]
             }
+
+            mTextViewRateText?.text = "$t  "
         }
 
     private var mTextViewDangerRate: AppCompatTextView? = null
     private var mTextViewRateText: AppCompatTextView? = null
+    private var mImageViewMap: RoundedImageView? = null
+
 
     override fun onCreateLinearLayout(
         layout: LinearLayout,
@@ -59,7 +65,7 @@ class CardItemName(
         val textViewType = AppCompatTextView(
             context
         )
-        val imageViewMap = RoundedImageView(
+        mImageViewMap = RoundedImageView(
             context
         )
         val layoutRate = LinearLayout(
@@ -91,7 +97,7 @@ class CardItemName(
         )
 
 
-        imageViewMap.setImageDrawable(
+        mImageViewMap?.setImageDrawable(
             R.drawable.details_map
         )
 
@@ -99,6 +105,7 @@ class CardItemName(
             Application.drawable(
                 R.drawable.ic_info
             )?.let { d ->
+                it.text = "${it.text}  "
                 val s = (it.textSize * 1.2f)
                     .toInt()
                 d.setBounds(
@@ -137,7 +144,7 @@ class CardItemName(
                 Gravity.START,
                 left = left
             )
-            imageViewMap.boundsLinear(
+            mImageViewMap?.boundsLinear(
                 Gravity.CENTER_HORIZONTAL,
                 width = (width * 0.913f).toInt(),
                 height = (height * 0.311f).toInt()
@@ -170,10 +177,18 @@ class CardItemName(
             textViewType
         )
         layout.addView(
-            imageViewMap
+            mImageViewMap
         )
         layout.addView(
             layoutRate
+        )
+    }
+
+    fun setOnClickMap(
+        l: OnClickListener?
+    ) {
+        mImageViewMap?.setOnClickListener(
+            l
         )
     }
 
