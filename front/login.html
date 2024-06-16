@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Авторизация</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            padding: 10px;
+        }
+        h1 {
+            width: 100%;
+            text-align: center;
+            color: #333;
+        }
+        #message {
+            color: red;
+            margin-bottom: 10px;
+        }
+        #login-form, #protected-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="password"] {
+            width: 75%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        a {
+            margin-top: 20px;
+            display: block;
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        #logout {
+            display: none;
+            background-color: #f44336;
+        }
+        #logout:hover {
+            background-color: #e53935;
+        }
+        #protected-content {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Авторизация</h1>
+    <div id="message"></div>
+
+    <div id="login-form">
+        <label for="username">Имя пользователя:</label>
+        <input type="text" id="username" name="username" required>
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" name="password" required>
+        <br>
+        <button id="login">Войти</button>
+    </div>
+
+    <button id="logout">Выйти</button>
+
+    <script>
+        const apiBase = 'http://{{ ip }}:8000'; // URL вашего API
+        let accessToken = localStorage.getItem('access_token');
+
+        // Функция для отправки запросов с токеном авторизации
+        async function fetchData(url) {
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('user-info').innerText = `Username: ${data.username}, Email: ${data.email}`;
+                } else {
+                    document.getElementById('user-info').innerText = 'Failed to fetch data';
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                document.getElementById('user-info').innerText = 'Error fetching data';
+            }
+        }
+
+        // Обработчик для кнопки входа
+        document.getElementById('login').addEventListener('click', async () => {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            console.log(username, password)
+
+            try {
+                const response = await fetch(`${apiBase}/token`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                console.log(response)
+                if (response.ok) {
+                    const data = await response.json();
+                    accessToken = data.access_token;
+                    localStorage.setItem('access_token', accessToken);
+                    document.getElementById('logout').style.display = 'inline';
+                    document.getElementById('login-form').style.display = 'none';
+                    document.getElementById('message').innerText = 'Login successful';
+                    window.location.href = '/';
+                } else {
+                    document.getElementById('message').innerText = 'Login failed';
+                }
+            } catch (error) {
+                console.error('Error logging in:', error);
+                document.getElementById('message').innerText = 'Error logging in';
+            }
+        });
+
+        document.getElementById('logout').addEventListener('click', () => {
+            localStorage.removeItem('access_token');
+            accessToken = null;
+            document.getElementById('logout').style.display = 'none';
+            document.getElementById('login-form').style.display = 'block';
+            document.getElementById('protected-content').style.display = 'none';
+            document.getElementById('message').innerText = '';
+        });
+
+        // Обработчик для кнопки получения защищенных данных
+        document.getElementById('fetch-data').addEventListener('click', () => {
+            fetchData(`${apiBase}/users/me`);
+        });
+
+        // Проверка наличия токена при загрузке страницы
+        window.addEventListener('load', () => {
+            if (accessToken) {
+                document.getElementById('logout').style.display = 'inline';
+                document.getElementById('login-form').style.display = 'none';
+                document.getElementById('protected-content').style.display = 'block';
+                document.getElementById('message').innerText = 'Already logged in';
+            }
+        });
+    </script>
+</body>
+</html>

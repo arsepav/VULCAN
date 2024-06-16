@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visit Permissions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            margin: 0;
+        }
+        .sidebar {
+            width: 25%;
+            background-color: #f8f8f8;
+            padding: 10px;
+            overflow-y: auto;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .permission-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1;
+        }
+        .permission-list li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+        }
+        .permission-list li.not-reviewed {
+            background-color: #f0f0f0;
+        }
+        .permission-list li.approved {
+            background-color: #d4edda;
+        }
+        .permission-list li.rejected {
+            background-color: #f8d7da;
+        }
+        .permission-list li:hover {
+            background-color: #e0e0e0;
+        }
+        .permission-details {
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-top: 10px;
+            display: none;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .button.approve {
+            background-color: #28a745;
+        }
+        .button.reject {
+            background-color: #dc3545;
+        }
+        .filter-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .filter-container select {
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        #navigation-panel {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 75px;
+            height: 100%;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 0;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .nav-button {
+            background: none;
+            padding: 15px;
+            border: none;
+            margin: 10px 0;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .nav-button img {
+            width: 30px;
+            height: 30px;
+        }
+
+        .nav-button:hover img {
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div style="width: 90px;"></div>
+    <div class="sidebar">
+        <h1>Запросы на посещение</h1>
+        <div class="filter-container">
+            <label for="filter-select">Фильтры: </label>
+            <select id="filter-select">
+                <option value="all">Показать все</option>
+                <option value="not-reviewed">Не отвеченые</option>
+            </select>
+        </div>
+        <ul class="permission-list" id="permission-list"></ul>
+    </div>
+    <div class="content">
+        <div class="permission-details" id="permission-details"></div>
+        <div class="buttons">
+            <button class="button approve" id="approve-button">Разрешить</button>
+            <button class="button reject" id="reject-button">Отклонить</button>
+        </div>
+    </div>
+    <div id="navigation-panel">
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/'">
+            <img src="http://91.224.86.144:8000/downloadfile/49" alt="Icon 1">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/map_oopt'">
+            <img src="http://91.224.86.144:8000/downloadfile/54" alt="Icon 7">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/map'">
+            <img src="http://91.224.86.144:8000/downloadfile/51" alt="Icon 2">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/map_objects_creation'">
+            <img src="http://91.224.86.144:8000/downloadfile/50" alt="Icon 3">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/ecology_problems_list_viewer'">
+            <img src="http://91.224.86.144:8000/downloadfile/55" alt="Icon 4">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/ecology_problems_viewer'">
+            <img src="http://91.224.86.144:8000/downloadfile/52" alt="Icon 5">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/permission_approve_page'" style="background-color: rgba(173, 173, 173, 0.295); border-radius: 10px;">
+            <img src="http://91.224.86.144:8000/downloadfile/48" alt="Icon 6">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/upload_file_page'">
+            <img src="http://91.224.86.144:8000/downloadfile/54" alt="Icon 8">
+        </button>
+    </div>
+    <script>
+        document.getElementById('filter-select').addEventListener('change', fetchPermissions);
+
+        async function fetchPermissions() {
+            const filter = document.getElementById('filter-select').value;
+            const notReviewedOnly = filter === 'not-reviewed';
+
+            let url = 'http://{{ ip }}:8000/visit_permissions';
+            if (notReviewedOnly) {
+                url += '?not_reviewed_only=true';
+            }
+
+            try {
+                let response = await fetch(url);
+                if (response.ok) {
+                    let permissions = await response.json();
+                    let list = document.getElementById('permission-list');
+                    list.innerHTML = '';  // Clear the list before adding new items
+
+                    permissions.forEach(permission => {
+                        let listItem = document.createElement('li');
+                        listItem.textContent = `${permission.surname} ${permission.name} ${permission.lastname} - OOPT ID: ${permission.path_id}`;
+                        listItem.className = permission.reviewed ? (permission.approved ? 'approved' : 'rejected') : 'not-reviewed';
+                        listItem.addEventListener('click', () => showPermissionDetails(permission.id));
+                        list.appendChild(listItem);
+                    });
+                } else {
+                    alert('Failed to fetch permissions');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function showPermissionDetails(permissionId) {
+            try {
+                let response = await fetch(`http://{{ ip }}:8000/visit-permissions/${permissionId}`);
+                if (response.ok) {
+                    let permission = await response.json();
+                    let detailsDiv = document.getElementById('permission-details');
+                    detailsDiv.innerHTML = `
+                        <div style="display: flex;">
+                            <div style="flex: 1; padding-right: 20px;">
+                                <h2>Детали запроса:</h2>
+                                <p><strong>Дата прибытия:</strong> ${permission.arrival_date}</p>
+                                <p><strong>Фамилия:</strong> ${permission.surname}</p>
+                                <p><strong>Имя:</strong> ${permission.name}</p>
+                                <p><strong>Отчество:</strong> ${permission.lastname}</p>
+                                <p><strong>Дата рождения:</strong> ${permission.birthday}</p>
+                                <p><strong>Гражданство:</strong> ${permission.citizenship_country}</p>
+                                <p><strong>Пол:</strong> ${permission.isMale ? 'Male' : 'Female'}</p>
+                                <p><strong>Паспорт:</strong> ${permission.passport}</p>
+                                <p><strong>Email:</strong> ${permission.email}</p>
+                                <p><strong>Номер телефона:</strong> ${permission.phone_number}</p>
+                                <p><strong>Путь:</strong> ${permission.path}</p>
+                                <br>
+                                <b>Цель посещения:</b><br>
+                                <p><strong>Однодневное посещение:</strong> ${permission.is_one_day_only}</p>
+                                <p><strong>Лыжный туризм:</strong> ${permission.purpose_skis}</p>
+                                <p><strong>Спортивные мероприятия:</strong> ${permission.purpose_sport}</p>
+                                <p><strong>Научные исследования:</strong> ${permission.purpose_science}</p>
+                                <p><strong>Видео/фотосъемка:</strong> ${permission.purpose_photo_video}</p>
+                                <p><strong>Альпинизм:</strong> ${permission.purpose_mountaineering}</p>
+                                <p><strong>Другое:</strong> ${permission.purpose_another}</p>
+                                <p><strong>Проведение профессиональной фото/видеоcъемки:</strong> ${permission.photo_video_professional}</p>
+                                <p><strong>Съемка с использование БПЛА:</strong> ${permission.photo_video_drones}</p>
+                                <p><strong>Рассмотрено:</strong> ${permission.reviewed}</p>
+                                <p><strong>Одобрено:</strong> ${permission.approved}</p>
+                            </div>
+                            <div style="flex: 1;">
+                                <div style="border: 2px solid ${permission.oopt_load > 0.5 ? 'red' : 'black'}; padding: 10px; margin-bottom: 20px;">
+                                    <p><strong>Нагрузка ООПТ:</strong> ${permission.oopt_load}</p>
+                                </div>
+                                <div style="border: 2px solid ${permission.path_load > 0.5 ? 'red' : 'black'}; padding: 10px;">
+                                    <p><strong>Нагрузка пути:</strong> ${permission.path_load}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    `;
+                    detailsDiv.style.display = 'block';
+
+                    document.getElementById('approve-button').onclick = () => reviewPermission(permission.id, true);
+                    document.getElementById('reject-button').onclick = () => reviewPermission(permission.id, false);
+                } else {
+                    alert('Failed to fetch permission details');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function reviewPermission(permissionId, approved) {
+            try {
+                let response = await fetch(`http://{{ ip }}:8000/visit-permissions/${permissionId}/review?approved=${approved}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                    }
+                });
+
+                if (response.ok) {
+                    alert('Разрешение обновлено');
+                    fetchPermissions();
+                } else {
+                    alert('Ошибка');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        window.onload = fetchPermissions;
+    </script>
+</body>
+</html>

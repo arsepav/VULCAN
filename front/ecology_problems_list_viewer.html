@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecology Problems List</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        #column {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        #filters {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background: #f4f4f4;
+            border-bottom: 1px solid #ccc;
+        }
+        #content {
+            display: flex;
+            height: 100%;
+        }
+
+        #problem-list {
+            flex: 1 1 auto;
+            overflow-y: auto;
+            border-right: 1px solid #ccc;
+        }
+
+        #problem-details {
+            flex-grow: 1;
+            padding: 10px;
+            overflow-y: auto;
+            width: 1200px;
+        }
+        .problem-item {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+            cursor: pointer;
+        }
+        .problem-item:hover {
+            background-color: #e0e0e0;
+        }
+        .problem-item.selected {
+            background-color: #d0d0d0;
+        }
+        #map-link {
+            display: block;
+            margin-top: 10px;
+        }
+        form {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        form label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        form input, form textarea, form select, form button {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        form textarea {
+            resize: vertical;
+            height: 100px;
+        }
+        form button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        form button:hover {
+            background-color: #0056b3;
+        }
+        .all{
+            width: 100%;
+        }
+        .framed {
+            border: 2px solid black;
+            padding: 10px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div id="navigation-panel">
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/'">
+            <img src="http://91.224.86.144:8000/downloadfile/49" alt="Icon 1">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/map_oopt'">
+            <img src="http://91.224.86.144:8000/downloadfile/54" alt="Icon 7">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/map'">
+            <img src="http://91.224.86.144:8000/downloadfile/51" alt="Icon 2">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/map_objects_creation'">
+            <img src="http://91.224.86.144:8000/downloadfile/50" alt="Icon 3">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/ecology_problems_list_viewer'" style="background-color: rgba(173, 173, 173, 0.295); border-radius: 10px;">
+            <img src="http://91.224.86.144:8000/downloadfile/55" alt="Icon 4">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/ecology_problems_viewer'">
+            <img src="http://91.224.86.144:8000/downloadfile/52" alt="Icon 5">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/permission_approve_page'">
+            <img src="http://91.224.86.144:8000/downloadfile/48" alt="Icon 6">
+        </button>
+        <button class="nav-button" onclick="location.href='http://{{ ip }}:8000/upload_file_page'">
+            <img src="http://91.224.86.144:8000/downloadfile/54" alt="Icon 8">
+        </button>
+    </div>
+
+    <div id="content" class="all">
+        <div style="width: 100px;"></div>
+        <div id="column">
+            <div id="filters">
+                <div>
+                    <label for="category-filter">Категория:</label>
+                    <div class="select-container">
+                        <select id="category-filter">
+                            <option value="">Все</option>
+                            <!-- Options will be dynamically added here -->
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label for="state-filter">Статус:</label>
+                    <div class="select-container">
+                        <select id="state-filter">
+                            <option value="">Все</option>
+                            <!-- Options will be dynamically added here -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <button id="apply-filters">Применить фильтры</button>
+            <div id="problem-list">
+                <!-- Problem list will be dynamically added here -->
+            </div>
+        </div>
+        <div id="problem-details">
+            <div style="display: flex; justify-content: space-between;">
+                <div>
+                    <h2 id="problem-name">Выберите экологическую проблему из списка</h2>
+                    <p id="problem-description">Здесь будет описание проблемы</p>
+
+                    <div class="framed">
+                        <b id="problem-category">Категория проблемы</b><br>
+                    </div>
+                    <div class="framed">
+                        <b id="problem-state">Состояние проблемы</b>
+                    </div>
+                </div>
+                <div style="position: relative;">
+                    <img id="problem-image" src="" alt="Problem Image" style="width: 400px; height: 400px; border-radius: 10px; object-fit: cover; margin-left: 20px;">
+                    <a id="map-link" href="" target="_blank" style="position: absolute; left: 30px; bottom: 30px;">
+                        <img src="https://cdn-icons-png.flaticon.com/512/5087/5087352.png" alt="Show on Map" style="width: 54px; height: 54px;">
+                    </a>
+                </div>
+            </div>
+            <form id="report-form">
+                <label for="report-name">Название:</label>
+                <input type="text" id="report-name" name="report-name">
+                <label for="report-description">Комментарий:</label>
+                <textarea id="report-description" name="report-description"></textarea>
+                <div class="file-input-container">
+                    <input type="file" id="report-file" name="report-file">
+                    <label for="report-file">Прикрепить файл (не обязательно)</label>
+                    <span class="file-name"></span>
+                </div>
+                <label for="new-state">Новый Статус:</label>
+                <div class="select-container">
+                    <select id="new-state" name="new-state">
+                        <!-- Options will be dynamically added here -->
+                    </select>
+                </div>
+                <label for="new-responsible">Ответственный:</label>
+                <div class="select-container">
+                    <select id="new-responsible" name="new-responsible">
+                        <!-- Options will be dynamically added here -->
+                    </select>
+                </div>
+                <button type="submit" id="submit-report">Сохранить</button>
+            </form>
+        </div>
+    </div>
+    <script>
+
+        
+        const apiBaseUrl = 'http://{{ ip }}:8000';
+        let activeProblemId = {{ ecology_problem_id }};
+
+        async function uploadFile(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const response = await fetch(`${apiBaseUrl}/uploadfile/`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                return data.file_id;
+            } else {
+                throw new Error('Failed to upload file');
+            }
+        }
+
+        document.getElementById('report-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            if (!activeProblemId){
+                alert("Выберите экологическую проблему!");
+                return;
+            }
+
+            const formData = new FormData(event.target);
+            const reportData = {
+                'name': formData.get('report-name'),
+                'description': formData.get('report-description'),
+                'file_id': formData.get('report-file') ? await uploadFile(formData.get('report-file')) : null,
+                'new_state': parseInt(formData.get('new-state')),
+                'responsible_id': formData.get('new-responsible') ? parseInt(formData.get('new-responsible')) : 1,
+                'ecology_problem_id': activeProblemId
+            };
+
+            const json = JSON.stringify(reportData);
+
+            console.log(json);
+            const response = await fetch(`${apiBaseUrl}/update_problem_status_and_report`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: json
+            });
+
+            if (response.ok) {
+                alert('Репорт успешно добавлен');
+                applyFilters();
+            } else {
+                alert('Не удалось прикрепить репорт');
+            }
+        });
+
+        async function fetchCategories() {
+            const response = await fetch(`${apiBaseUrl}/ecology_problem_categories`);
+            return await response.json();
+        }
+
+        async function fetchStates() {
+            const response = await fetch(`${apiBaseUrl}/ecology_problem_states`);
+            return await response.json();
+        }
+
+        async function fetchAdmins() {
+            const response = await fetch(`${apiBaseUrl}/admins`);
+            return await response.json();
+        }
+
+        async function fetchProblems(categoryId, stateId) {
+            let url = `${apiBaseUrl}/ecology_problems`;
+            if (categoryId || stateId) {
+                const params = new URLSearchParams();
+                if (categoryId) {
+                    params.append('category_id', categoryId);
+                }
+                if (stateId) {
+                    params.append('state_id', stateId);
+                }
+                url += `?${params.toString()}`;
+            }
+            const response = await fetch(url);
+            return await response.json();
+        }
+
+        function populateSelect(selectElement, options, pred) {
+            if (pred){
+                selectElement.innerHTML = '<option value="">Все</option>';
+            }
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.id;
+                optionElement.textContent = option.name;
+                selectElement.appendChild(optionElement);
+            });
+        }
+
+        async function initializeFilters() {
+            const [categories, states, admins] = await Promise.all([fetchCategories(), fetchStates(), fetchAdmins()]);
+            const categoryFilter = document.getElementById('category-filter');
+            const stateFilter = document.getElementById('state-filter');
+            const newStateSelect = document.getElementById('new-state');
+            const newAdminSelect = document.getElementById('new-responsible');
+
+            populateSelect(categoryFilter, categories, true);
+            populateSelect(stateFilter, states, true);
+            populateSelect(newStateSelect, states, false);
+            populateSelect(newAdminSelect, admins, false);
+        }
+
+        function createProblemItem(problem) {
+            console.log(problem)
+            const problemItem = document.createElement('div');
+            problemItem.classList.add('problem-item');
+            problemItem.textContent = problem.name;
+            problemItem.addEventListener('click', async () => {
+                activeProblemId = problem.id;
+                document.getElementById('problem-name').textContent = problem.name;
+                document.getElementById('problem-description').textContent = problem.description;
+                document.getElementById('problem-state').textContent = problem.state;
+                document.getElementById('problem-category').textContent = problem.category;
+                const imgElement = document.getElementById('problem-image');
+                imgElement.src = problem.image_url ? problem.image_url : '';
+                imgElement.alt = problem.name;
+                document.getElementById('map-link').href = `${apiBaseUrl}/ecology_problems_viewer?ecology_problem_id=${problem.id}`;
+
+                document.querySelectorAll('.problem-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                problemItem.classList.add('selected');
+            });
+            return problemItem;
+        }
+
+        async function applyFilters() {
+            const categoryId = document.getElementById('category-filter').value;
+            const stateId = document.getElementById('state-filter').value;
+            const problems = await fetchProblems(categoryId, stateId);
+            const problemList = document.getElementById('problem-list');
+            problemList.innerHTML = '';
+            problems.forEach(problem => {
+                const problemItem = createProblemItem(problem);
+                problemList.appendChild(problemItem);
+                if (problem.id == activeProblemId){
+                    problemItem.click()
+                }
+            });
+        }
+
+        document.getElementById('apply-filters').addEventListener('click', applyFilters);
+
+        initializeFilters().then(applyFilters);
+
+
+
+    </script>
+</body>
+</html>
