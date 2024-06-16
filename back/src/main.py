@@ -768,7 +768,8 @@ def get_admins(db: Session = Depends(database.get_db)):
                        'name': user.name,
                        'surname': user.surname,
                        'lastname': user.lastname,
-                       'phone_number': user.phone_number
+                       'phone_number': user.phone_number,
+                       'avatar_url': 'https://cdn-icons-png.flaticon.com/512/2304/2304226.png'
                        })
     return result
 
