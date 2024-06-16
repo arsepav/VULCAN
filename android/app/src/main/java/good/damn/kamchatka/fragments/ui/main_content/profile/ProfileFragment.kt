@@ -74,7 +74,7 @@ class ProfileFragment
 
 
         // Drawable
-        imageViewAvatar.setImageDrawableId(
+        imageViewAvatar.setImageDrawable(
             R.drawable.icon
         )
 

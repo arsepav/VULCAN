@@ -36,6 +36,12 @@ class CardItemDescription(
             left = left.toFloat(),
         )
 
+        textViewDesc.boundsLinear(
+            Gravity.START,
+            left = left.toFloat(),
+        )
+
+
         layout.apply {
             addView(
                 textViewAbout

@@ -12,13 +12,15 @@ import android.view.View
 import android.view.animation.OvershootInterpolator
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.annotation.ColorInt
+import androidx.annotation.DrawableRes
+import good.damn.kamchatka.Application
 import good.damn.kamchatka.views.interactions.AnimatedTouchInteraction
 import good.damn.kamchatka.views.interactions.interfaces.OnActionListener
 import good.damn.kamchatka.views.interactions.interfaces.OnUpdateAnimationListener
 
 class RoundedImageView(
     context: Context
-): AppCompatImageView(
+): View(
     context
 ), OnActionListener,
 OnUpdateAnimationListener {
@@ -41,6 +43,8 @@ OnUpdateAnimationListener {
 
     private val mTouchInteraction = AnimatedTouchInteraction()
     private var mOnClickListener: OnClickListener? = null
+
+    private var mDrawable: Drawable? = null
 
     init {
         mPaintBack.color = 0
@@ -72,6 +76,20 @@ OnUpdateAnimationListener {
         super.setOnTouchListener(
             mTouchInteraction
         )
+    }
+
+    fun setImageDrawable(
+        @DrawableRes id: Int
+    ) {
+        mDrawable = Application.drawable(
+            id
+        )
+    }
+
+    fun setImageDrawable(
+        drawable: Drawable?
+    ) {
+        mDrawable = drawable
     }
 
     override fun setBackgroundColor(color: Int) {
@@ -110,7 +128,7 @@ OnUpdateAnimationListener {
         val yOffset = (height * mImageScaleY * 0.5f)
             .toInt()
 
-        drawable?.setBounds(
+        mDrawable?.setBounds(
             xOffset,
             yOffset,
             width-xOffset,
@@ -141,7 +159,7 @@ OnUpdateAnimationListener {
             )
         }
 
-        drawable.draw(
+        mDrawable?.draw(
             canvas
         )
 
@@ -201,7 +219,6 @@ OnUpdateAnimationListener {
     ) {
         mImageScaleX = x
         mImageScaleY = y
-        requestLayout()
     }
 
     fun setStrokeOffsetColor(

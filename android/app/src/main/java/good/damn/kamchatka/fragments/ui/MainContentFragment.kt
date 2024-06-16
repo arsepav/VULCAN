@@ -29,7 +29,6 @@ import good.damn.kamchatka.item_decorations.MarginItemDecoration
 import good.damn.kamchatka.layout_managers.ZoomCenterLayoutManager
 import good.damn.kamchatka.models.SecurityZone
 import good.damn.kamchatka.models.ShortOOPT
-import good.damn.kamchatka.models.view.Park
 import good.damn.kamchatka.services.GeoService
 import good.damn.kamchatka.services.interfaces.OnGetSecurityZonesListener
 import good.damn.kamchatka.views.RoundedImageView
@@ -55,6 +54,8 @@ OnGetSecurityZonesListener {
     }
 
     private lateinit var mRecyclerViewOOPT: RecyclerView
+    private lateinit var mImageViewProfile: RoundedImageView
+    private lateinit var mImageViewLike: RoundedImageView
 
     override fun onCreateContentView(
         context: Context,
@@ -81,10 +82,10 @@ OnGetSecurityZonesListener {
         val textViewAppName = TextView(
             context
         )
-        val imageViewProfile = RoundedImageView(
+        mImageViewProfile = RoundedImageView(
             context
         )
-        val imageViewLike = RoundedImageView(
+        mImageViewLike = RoundedImageView(
             context
         )
         val imageViewKamchatka = AppCompatImageView(
@@ -110,12 +111,12 @@ OnGetSecurityZonesListener {
 
 
         // Image drawable
-        imageViewProfile.setImageDrawable(
+        mImageViewProfile.setImageDrawable(
             Application.drawable(
                 R.mipmap.ic_launcher
             )
         )
-        imageViewLike.setImageDrawable(
+        mImageViewLike.setImageDrawable(
             Application.drawable(
                 R.drawable.ic_like
             )
@@ -135,8 +136,8 @@ OnGetSecurityZonesListener {
 
 
         // CornerRadius
-        imageViewProfile.radius = btnProfileWidth * 0.5f
-        imageViewLike.radius = btnProfileWidth * 0.5f
+        mImageViewProfile.radius = btnProfileWidth * 0.5f
+        mImageViewLike.radius = btnProfileWidth * 0.5f
 
 
 
@@ -225,17 +226,17 @@ OnGetSecurityZonesListener {
 
 
         // Stroke colors
-        imageViewProfile.setStrokeColor(
+        mImageViewProfile.setStrokeColor(
             Application.color(
                 R.color.mountainsColor
             )
         )
-        imageViewProfile.setStrokeOffsetColor(
+        mImageViewProfile.setStrokeOffsetColor(
             Application.color(
                 R.color.background
             )
         )
-        imageViewLike.setStrokeColor(
+        mImageViewLike.setStrokeColor(
             Application.color(
                 R.color.titleColor
             )
@@ -277,13 +278,13 @@ OnGetSecurityZonesListener {
 
 
         // Alpha
-        imageViewLike.setStrokeAlpha(
+        mImageViewLike.setStrokeAlpha(
             0.1f
         )
 
 
         // Scale
-        imageViewLike.setImageScale(
+        mImageViewLike.setImageScale(
             x = 0.55f,
             y = 0.55f
         )
@@ -291,7 +292,7 @@ OnGetSecurityZonesListener {
 
 
         // Layout params
-        imageViewProfile.boundsFrame(
+        mImageViewProfile.boundsFrame(
             Gravity.START,
             width = btnProfileWidth.toInt(),
             height = btnProfileWidth.toInt(),
@@ -300,13 +301,13 @@ OnGetSecurityZonesListener {
         )
         textViewAppName.boundsFrame(
             Gravity.CENTER_HORIZONTAL,
-            top = imageViewProfile.top() + textViewAppName.textSize * 0.3f
+            top = mImageViewProfile.top() + textViewAppName.textSize * 0.3f
         )
-        imageViewLike.boundsFrameRight(
+        mImageViewLike.boundsFrameRight(
             Gravity.END,
             width = btnProfileWidth.toInt(),
             height = btnProfileWidth.toInt(),
-            top = imageViewProfile.top(),
+            top = mImageViewProfile.top(),
             right = measureUnit * 0.0700f
         )
         imageViewKamchatka.boundsFrame(
@@ -347,13 +348,13 @@ OnGetSecurityZonesListener {
 
         // Adding views
         layout.addView(
-            imageViewProfile
+            mImageViewProfile
         )
         layout.addView(
             textViewAppName
         )
         layout.addView(
-            imageViewLike
+            mImageViewLike
         )
         layout.addView(
             imageViewKamchatka
@@ -396,10 +397,10 @@ OnGetSecurityZonesListener {
 
 
         // Setup listeners
-        imageViewProfile.setOnClickListener(
+        mImageViewProfile.setOnClickListener(
             this::onClickImageViewProfile
         )
-        imageViewLike.setOnClickListener(
+        mImageViewLike.setOnClickListener(
             this::onClickBtnLike
         )
         imageViewKamchatka.setOnClickListener(
@@ -443,6 +444,9 @@ OnGetSecurityZonesListener {
         ).let {
             it.onSelectOOPTListener = this
             mRecyclerViewOOPT.adapter = it
+
+            mImageViewLike.requestLayout()
+            mImageViewProfile.requestLayout()
         }
     }
 

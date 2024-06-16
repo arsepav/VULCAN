@@ -50,7 +50,7 @@ class CardItemName(
         )
 
 
-        imageViewMap.setImageDrawableId(
+        imageViewMap.setImageDrawable(
             R.drawable.details_map
         )
 

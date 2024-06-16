@@ -38,11 +38,11 @@ class CardHeader(
             )
         }
 
-        imageViewBack.setImageDrawableId(
+        imageViewBack.setImageDrawable(
             R.drawable.ic_arrow
         )
 
-        imageViewLike.setImageDrawableId(
+        imageViewLike.setImageDrawable(
             R.drawable.ic_like
         )
 

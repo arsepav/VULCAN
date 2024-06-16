@@ -1,6 +1,7 @@
 package good.damn.kamchatka.fragments.ui.main_content.details
 
 import android.content.Context
+import android.graphics.drawable.BitmapDrawable
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -40,15 +41,21 @@ class BaseDetailsFragment
 
         mZone.oopt.apply {
             cardName.name = name
-            cardName.type = "Природный парк"
-            cardDesc.desc = desc
+            cardDesc.desc = "$desc"
             cardDesc.about = "О парке"
         }
 
-        // Set background image
-        cardHeader.setBackgroundResource(
-            R.drawable.temp_image
-        )
+        mZone.apply {
+            cardName.type = type
+            if (image == null) {
+                return@apply
+            }
+            cardHeader.background = BitmapDrawable(
+                resources,
+                image
+            )
+        }
+
 
 
 
