@@ -72,6 +72,7 @@ pip install -r requirements.txt
 
 
 структура директорий:
+```
 vulcan
     android
     back
@@ -88,6 +89,7 @@ vulcan
     files
     front
     static
+```
 
 шаблон файла config.json:
 
