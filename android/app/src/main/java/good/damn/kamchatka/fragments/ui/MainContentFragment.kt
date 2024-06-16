@@ -28,6 +28,7 @@ import good.damn.kamchatka.fragments.ui.main_content.profile.ProfileFragment
 import good.damn.kamchatka.item_decorations.MarginItemDecoration
 import good.damn.kamchatka.layout_managers.ZoomCenterLayoutManager
 import good.damn.kamchatka.models.SecurityZone
+import good.damn.kamchatka.models.ShortOOPT
 import good.damn.kamchatka.models.view.Park
 import good.damn.kamchatka.services.GeoService
 import good.damn.kamchatka.services.interfaces.OnGetSecurityZonesListener
@@ -412,20 +413,37 @@ OnGetSecurityZonesListener {
     }
 
     override fun onSelectOOPT(
-        zone: SecurityZone
+        zone: ShortOOPT
     ) {
         pushFragment(
-            BaseDetailsFragment()
+            BaseDetailsFragment.create(
+                zone
+            )
         )
     }
 
     override fun onGetSecurityZones(
         zones: Array<SecurityZone?>
     ) {
-        mRecyclerViewOOPT.adapter = OOPTAdapter(
-            mRecyclerViewOOPT.height().toFloat(),
-            zones
+        val type = getString(
+            R.string.park
         )
+
+        val oopts: Array<ShortOOPT?> = Array(zones.size) {
+            val zone = zones[it] ?: return@Array null
+            ShortOOPT(
+                zone.oopt,
+                type
+            )
+        }
+
+        OOPTAdapter(
+            mRecyclerViewOOPT.height().toFloat(),
+            oopts
+        ).let {
+            it.onSelectOOPTListener = this
+            mRecyclerViewOOPT.adapter = it
+        }
     }
 
 }

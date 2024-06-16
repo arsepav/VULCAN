@@ -65,21 +65,25 @@ open class NetworkService(
         process: ((JSONArray) -> Unit)
     ) {
         Thread {
-            val response = client.newCall(
-                request
-            ).execute()
+            try {
+                val response = client.newCall(
+                    request
+                ).execute()
+                val body = response
+                    .body?.string()
+                    ?: return@Thread
 
-            val body = response
-                .body?.string()
-                ?: return@Thread
+                Log.d(TAG, "queueRequest: ${response.code} $body")
 
-            Log.d(TAG, "queueRequest: ${response.code} $body")
-
-            process(
-                JSONArray(
-                    body
+                process(
+                    JSONArray(
+                        body
+                    )
                 )
-            )
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return@Thread
+            }
         }.start()
     }
 

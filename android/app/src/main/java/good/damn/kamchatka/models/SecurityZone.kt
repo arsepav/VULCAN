@@ -7,6 +7,5 @@ import good.damn.kamchatka.models.remote.json.OOPT
 data class SecurityZone(
     val polygon: PolygonOptions,
     val oopt: OOPT,
-    val marker: MarkerOptions,
-    val dangerRate: Float
+    val marker: MarkerOptions
 )

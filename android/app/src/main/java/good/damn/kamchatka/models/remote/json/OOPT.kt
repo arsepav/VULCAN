@@ -10,6 +10,7 @@ data class OOPT(
     val id: Int?,
     val name: String?,
     val desc: String?,
+    val dangerRate: Float,
     val coords: Array<LatLng>?,
     val image_url: String?
 ) {
@@ -43,6 +44,8 @@ data class OOPT(
                 0
             )
 
+            val dangerRate = 0.2f
+
             Log.d(TAG, "createFromJSON: ${geom.length()}")
 
             val coords = Array(geom.length()) {
@@ -57,6 +60,7 @@ data class OOPT(
                 id,
                 name,
                 desc,
+                dangerRate,
                 coords,
                 image_url
             )

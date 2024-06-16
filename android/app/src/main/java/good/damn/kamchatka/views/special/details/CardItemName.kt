@@ -18,8 +18,8 @@ class CardItemName(
     context
 ) {
 
-    var name = "Южно-Камчатский"
-    var type = "Природный парк"
+    var name: String? = null
+    var type: String? = null
 
     override fun onCreateLinearLayout(
         layout: LinearLayout,

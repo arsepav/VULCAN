@@ -12,8 +12,8 @@ class CardItemDescription(
     context
 ) {
 
-    var about = "ABOUTSDSADASD"
-    var desc = "DESCIsadsadsadasdas"
+    var about: String? = null
+    var desc: String? = null
 
     override fun onCreateLinearLayout(
         layout: LinearLayout,

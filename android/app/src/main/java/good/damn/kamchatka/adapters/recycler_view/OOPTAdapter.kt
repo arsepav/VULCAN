@@ -3,13 +3,14 @@ package good.damn.kamchatka.adapters.recycler_view
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import good.damn.kamchatka.models.SecurityZone
+import good.damn.kamchatka.models.ShortOOPT
 import good.damn.kamchatka.utils.HTTPUtils
 import good.damn.kamchatka.views.holders.ViewHolderPark
 import good.damn.kamchatka.views.special.details.listeners.OnSelectOOPTListener
 
 class OOPTAdapter(
     private val mRecyclerViewHeight: Float,
-    private val mZones: Array<SecurityZone?>
+    private val mZones: Array<ShortOOPT?>
 ): RecyclerView.Adapter<ViewHolderPark>() {
 
     var onSelectOOPTListener: OnSelectOOPTListener? = null
@@ -39,16 +40,8 @@ class OOPTAdapter(
         )
 
         holder.setType(
-            oopt.desc
+            zone.type
         )
-
-        oopt.image_url?.let {
-            HTTPUtils.loadImage(
-                it
-            ) { bitmap ->
-                holder.setPreview(bitmap)
-            }
-        }
 
         holder.itemView.setOnClickListener {
             onSelectOOPTListener?.onSelectOOPT(
@@ -56,5 +49,20 @@ class OOPTAdapter(
             )
         }
 
+        if (zone.image != null) {
+            holder.setPreview(
+                zone.image!!
+            )
+            return
+        }
+
+        oopt.image_url?.let {
+            HTTPUtils.loadImage(
+                it
+            ) { bitmap ->
+                zone.image = bitmap
+                holder.setPreview(bitmap)
+            }
+        }
     }
 }

@@ -116,7 +116,9 @@ OnGetRoutesListener {
                 )
             ].color
 
-            val dangerRate = zone.dangerRate.toInt()
+            val oopt = zone.oopt
+
+            val dangerRate = oopt.dangerRate.toInt()
 
             zone.oopt.id?.let {
                 mOOPTColors[it] = fillColor

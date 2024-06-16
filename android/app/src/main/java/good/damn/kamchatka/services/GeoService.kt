@@ -147,8 +147,7 @@ class GeoService(
             SecurityZone(
                 polyOptions,
                 oopt,
-                markerOptions,
-                0.2f
+                markerOptions
             )
         }
 
