@@ -165,6 +165,7 @@ async def add_path(path_data: schemas.GeoPathAdd, db: Session = Depends(database
         raise HTTPException(status_code=400, detail=f"Invalid path data: {str(e)}")
 
     db_path = models.GeoPaths(name=path_data.name,
+                              description=path_data.description,
                               geom=from_shape(path, srid=4326),
                               category_id=path_data.category_id,
                               oopt_id=path_data.oopt_id)

@@ -66,6 +66,7 @@ class GeoPaths(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
+    description = Column(String)
     geom = Column(Geometry(geometry_type='LINESTRING', srid=4326))
     oopt_id = Column(Integer, ForeignKey('geo_polygons.id'))
     category_id = Column(Integer, ForeignKey('geo_paths_category.id'))

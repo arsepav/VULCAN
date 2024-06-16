@@ -66,6 +66,7 @@ class GeoPolygonResponse(BaseModel):
 
 class GeoPathAdd(BaseModel):
     name: str
+    description: str
     geom: List[Tuple[float, float]]
     points: List[int]
     oopt_id: int
@@ -110,6 +111,7 @@ class VisitPermissionIndividualCreate(BaseModel):
 class GeoPathResponse(BaseModel):
     id: int
     name: str
+    description: str
     geom: dict
     oopt_id: int
     category_id: int
