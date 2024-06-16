@@ -715,7 +715,7 @@ class CreatePermissionFragment
             lastname = nameData[keyLastName]!!,
             birthday = passportData[keyBirth]!!,
             citizenship = passportData[keyCitizenship]!!.toInt(),
-            isMale = passportData[keyGender]!!.contains("M".toRegex()),
+            isMale = true,
             passport = passportData[keyPassport]!!,
             email = contactData[keyEmail]!!,
             phoneNumber = contactData[keyNumber]!!,

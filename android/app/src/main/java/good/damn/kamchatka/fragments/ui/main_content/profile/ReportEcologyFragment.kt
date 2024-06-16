@@ -6,12 +6,15 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
+import good.damn.kamchatka.Application
+import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsFrame
 import good.damn.kamchatka.fragments.StackFragment
 import good.damn.kamchatka.services.ReportEcologyService
 import good.damn.kamchatka.services.UploadService
 import good.damn.kamchatka.utils.ViewUtils
 import good.damn.kamchatka.views.layout.GroupCheckBox
+import good.damn.kamchatka.views.layout.models.GroupField
 import java.io.File
 import java.io.FileOutputStream
 
@@ -37,6 +40,35 @@ class ReportEcologyFragment
         mGroupCheckProb = GroupCheckBox(
             context
         )
+
+        mGroupCheckProb.apply {
+            checkBoxSize = measureUnit * 0.0603f
+            checkBoxColor = Application.color(
+                R.color.titleColor
+            )
+            checkBoxRadius = checkBoxSize * 0.55f
+            checkBoxStrokeWidth = checkBoxSize * 0.03f
+            checkBoxTextPadding = measureUnit * 0.2f
+        }
+
+        mGroupCheckProb.fields = arrayOf(
+            GroupField(
+                map[3]!!
+            ),
+            GroupField(
+                map[4]!!
+            ),
+            GroupField(
+                map[5]!!
+            ),
+            GroupField(
+                map[6]!!
+            ),
+            GroupField(
+                map[7]!!
+            )
+        )
+
         val viewAttachPhoto = AppCompatImageView(
             context
         )
@@ -62,6 +94,8 @@ class ReportEcologyFragment
         layout.addView(
             viewAttachPhoto
         )
+
+        mGroupCheckProb.layoutFields()
 
 
         viewAttachPhoto.setOnClickListener(

@@ -8,9 +8,13 @@ import androidx.appcompat.widget.AppCompatTextView
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsLinear
+import good.damn.kamchatka.extensions.height
+import good.damn.kamchatka.extensions.left
 import good.damn.kamchatka.extensions.setTextPx
+import good.damn.kamchatka.extensions.textSizeBounds
 import good.damn.kamchatka.models.Color
 import good.damn.kamchatka.models.map.AntroColors
+import good.damn.kamchatka.views.LabelView
 import good.damn.kamchatka.views.RoundedImageView
 
 class CardItemName(
@@ -25,14 +29,16 @@ class CardItemName(
         set(v) {
             field = v
 
-            mTextViewDangerRate?.text = "%.1f".format(v)
-            mTextViewDangerRate?.setBackgroundColor(
+            mTextViewDangerRate.text = v.toInt().toString()
+            mTextViewDangerRate.setBackgroundColor(
                 AntroColors.colors[
                     if (v > 10.0f)
                         9
                     else v.toInt()
                 ]
             )
+
+            mTextViewDangerRate.requestLayout()
 
             val arr = resources.getStringArray(
                 R.array.rates
@@ -49,7 +55,7 @@ class CardItemName(
             mTextViewRateText?.text = "$t  "
         }
 
-    private var mTextViewDangerRate: AppCompatTextView? = null
+    private lateinit var mTextViewDangerRate: LabelView
     private var mTextViewRateText: AppCompatTextView? = null
     private var mImageViewMap: RoundedImageView? = null
 
@@ -72,7 +78,7 @@ class CardItemName(
         val layoutRate = LinearLayout(
             context
         )
-        mTextViewDangerRate = AppCompatTextView(
+        mTextViewDangerRate = LabelView(
             context
         )
         mTextViewRateText = AppCompatTextView(
@@ -128,7 +134,6 @@ class CardItemName(
         }
 
 
-
         Application.font(
             R.font.open_sans_bold,
             context
@@ -156,29 +161,43 @@ class CardItemName(
         (width * 0.0483f).let { left ->
             textViewName.boundsLinear(
                 Gravity.START,
+                top = (height * 0.0888f),
                 left = left
             )
             textViewType.boundsLinear(
                 Gravity.START,
-                left = left
+                left = textViewName.left(),
+                top = height * 0.001f
             )
             mImageViewMap?.boundsLinear(
                 Gravity.CENTER_HORIZONTAL,
                 width = (width * 0.913f).toInt(),
-                height = (height * 0.311f).toInt()
+                height = (height * 0.311f).toInt(),
+                top = (height * 0.0888f)
             )
-            layout.boundsLinear(
+            layoutRate.boundsLinear(
                 Gravity.START,
-                left = left
+                left = left,
+                top = (height * 0.0888f)
             )
         }
 
-        mTextViewDangerRate?.boundsLinear(
-            Gravity.START
+        mTextViewDangerRate.boundsLinear(
+            Gravity.START,
+            height = (height * 0.0777f).toInt(),
+            width = (width * 0.06521f).toInt()
         )
         mTextViewRateText?.boundsLinear(
             Gravity.START
         )
+
+
+        mTextViewDangerRate.apply {
+            cornerRadius = this.height() * 0.25f
+            textColor = 0xffffffff.toInt()
+        }
+
+
 
         layoutRate.addView(
             mTextViewDangerRate
