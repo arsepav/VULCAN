@@ -11,10 +11,11 @@ import good.damn.kamchatka.adapters.fragment_adapters.FragmentAdapter
 import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.fragments.StackFragment
-import good.damn.kamchatka.fragments.ui.main_content.profile.RequestFragment
+import good.damn.kamchatka.fragments.ui.main_content.profile.CreatePermissionFragment
 import good.damn.kamchatka.fragments.ui.main_content.visit_permission.pager.TypePermissionFragment
 import good.damn.kamchatka.models.Color
 import good.damn.kamchatka.models.ShortOOPT
+import good.damn.kamchatka.models.remote.json.Route
 import good.damn.kamchatka.utils.ViewUtils
 import good.damn.kamchatka.views.button.ButtonBack
 
@@ -22,6 +23,7 @@ class PermissionFragment
 : StackFragment() {
 
     private var oopt: ShortOOPT? = null
+    private var routes: Array<Route?>? = null
 
     override fun onCreateView(
         context: Context,
@@ -119,7 +121,9 @@ class PermissionFragment
         )
 
         val typePerm = TypePermissionFragment()
-        val req = RequestFragment()
+        val req = CreatePermissionFragment()
+
+        req.routes = routes
 
         typePerm.onSelectService = {
             viewPager.currentItem = 1
@@ -149,10 +153,12 @@ class PermissionFragment
 
     companion object {
         fun create(
-            oopt: ShortOOPT
+            oopt: ShortOOPT,
+            routes: Array<Route?>?,
         ): PermissionFragment {
             PermissionFragment().let {
                 it.oopt = oopt
+                it.routes = routes
                 return it
             }
         }

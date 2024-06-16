@@ -178,9 +178,7 @@ class GroupCheckBox(
                 textSize
             )
 
-            checkBox.text = context.getString(
-                info.hintId
-            )
+            checkBox.text = info.text
 
             checkBox.radius = checkBoxRadius
 

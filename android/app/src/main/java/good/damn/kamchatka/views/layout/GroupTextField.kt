@@ -162,7 +162,7 @@ class GroupTextField(
             )
 
             textField.setHint(
-                info.hintId
+                info.text
             )
 
             textField.boundsLinear(

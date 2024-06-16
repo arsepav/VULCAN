@@ -5,6 +5,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import good.damn.kamchatka.R
+import good.damn.kamchatka.adapters.recycler_view.RoutesAdapter
 import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.fragments.ui.main_content.maps.MapsFragment
 import good.damn.kamchatka.models.RouteMap
@@ -109,12 +110,13 @@ OnGetRoutesListener, OnSelectModelListener<Route> {
         }
 
         var rate = 0f
-        mCardItemRoutes.routes = Array(routes.size) {
+        this.routes = Array(routes.size) {
             routes[it]?.route?.let {
                 rate += it.dangerRate
                 it
             }
         }
+        mCardItemRoutes.routes = this.routes
         mCardName.dangerRate = rate / routes.size
     }
 

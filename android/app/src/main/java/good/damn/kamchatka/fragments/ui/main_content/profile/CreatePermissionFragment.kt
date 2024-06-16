@@ -1,14 +1,11 @@
 package good.damn.kamchatka.fragments.ui.main_content.profile
 
-import android.content.Context
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ScrollView
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
@@ -16,17 +13,17 @@ import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.extensions.height
 import good.damn.kamchatka.extensions.setTextColorId
 import good.damn.kamchatka.extensions.setTextPx
-import good.damn.kamchatka.fragments.ui.ScrollableFragment
-import good.damn.kamchatka.models.Color
+import good.damn.kamchatka.models.remote.json.Route
 import good.damn.kamchatka.utils.ViewUtils
-import good.damn.kamchatka.views.button.ButtonBack
 import good.damn.kamchatka.views.button.ButtonRound
 import good.damn.kamchatka.views.layout.GroupCheckBox
 import good.damn.kamchatka.views.layout.GroupTextField
 import good.damn.kamchatka.views.layout.models.GroupField
 
-class RequestFragment
+class CreatePermissionFragment
 : Fragment() {
+
+    var routes: Array<Route?>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -76,19 +73,19 @@ class RequestFragment
 
 
         // Group typeface
-        val font = Application.font(
+        Application.font(
             R.font.open_sans_regular,
             context
-        )
-        groupFieldName.typeface = font
-        groupFieldPassport.typeface = font
-        groupFieldContact.typeface = font
-        groupCheckRoute.typeface = font
-        groupCheckTransport.typeface = font
-        groupCheckVisiting.typeface = font
-        groupCheckVisitingTargets.typeface = font
-        groupCheckCamera.typeface = font
-
+        ).let {
+            groupFieldName.typeface = it
+            groupFieldPassport.typeface = it
+            groupFieldContact.typeface = it
+            groupCheckRoute.typeface = it
+            groupCheckTransport.typeface = it
+            groupCheckVisiting.typeface = it
+            groupCheckVisitingTargets.typeface = it
+            groupCheckCamera.typeface = it
+        }
 
         // Typeface
 
@@ -110,15 +107,15 @@ class RequestFragment
 
 
         // Text colors
-
-        groupCheckRoute.textColor = Application.color(
+        Application.color(
             R.color.titleColor
-        )
-        groupCheckRoute.textColor = groupCheckRoute.textColor
-        groupCheckTransport.textColor = groupCheckRoute.textColor
-        groupCheckVisiting.textColor = groupCheckRoute.textColor
-        groupCheckVisitingTargets.textColor = groupCheckRoute.textColor
-        groupCheckCamera.textColor = groupCheckRoute.textColor
+        ).let {
+            groupCheckRoute.textColor = it
+            groupCheckTransport.textColor = it
+            groupCheckVisiting.textColor = it
+            groupCheckVisitingTargets.textColor = it
+            groupCheckCamera.textColor = it
+        }
         btnNext.setTextColorId(
             R.color.textColorBtn
         )
@@ -137,45 +134,43 @@ class RequestFragment
 
 
         // Check box size
-        val checkBoxSize = measureUnit * 0.0603f
-        groupCheckRoute.checkBoxSize = checkBoxSize
-        groupCheckTransport.checkBoxSize = checkBoxSize
-        groupCheckVisiting.checkBoxSize = checkBoxSize
-        groupCheckVisitingTargets.checkBoxSize = checkBoxSize
-        groupCheckCamera.checkBoxSize = checkBoxSize
-
+        (measureUnit * 0.0603f).let {
+            groupCheckRoute.checkBoxSize = it
+            groupCheckTransport.checkBoxSize = it
+            groupCheckVisiting.checkBoxSize = it
+            groupCheckVisitingTargets.checkBoxSize = it
+            groupCheckCamera.checkBoxSize = it
+        }
 
         // Check box radius
-        val checkBoxRadius = groupCheckRoute
-            .checkBoxSize * 0.25f
-        groupCheckRoute.checkBoxRadius = checkBoxRadius
-        groupCheckTransport.checkBoxRadius = checkBoxRadius
-        groupCheckVisiting.checkBoxRadius = checkBoxRadius * 2f
-        groupCheckVisitingTargets.checkBoxRadius = checkBoxRadius
-        groupCheckCamera.checkBoxRadius = checkBoxRadius
-
+        (groupCheckRoute.checkBoxSize * 0.25f).let {
+            groupCheckRoute.checkBoxRadius = it
+            groupCheckTransport.checkBoxRadius = it
+            groupCheckVisiting.checkBoxRadius = it * 2f
+            groupCheckVisitingTargets.checkBoxRadius = it
+            groupCheckCamera.checkBoxRadius = it
+        }
 
         // Check box stroke width
-        val checkBoxStrokeWidth = groupCheckRoute
-            .checkBoxSize * 0.06f
-        groupCheckRoute.checkBoxStrokeWidth = checkBoxStrokeWidth
-        groupCheckTransport.checkBoxStrokeWidth = checkBoxStrokeWidth
-        groupCheckVisiting.checkBoxStrokeWidth = checkBoxStrokeWidth
-        groupCheckVisitingTargets.checkBoxStrokeWidth = checkBoxStrokeWidth
-        groupCheckCamera.checkBoxStrokeWidth = checkBoxStrokeWidth
-
+        (groupCheckRoute.checkBoxSize * 0.06f).let {
+            groupCheckRoute.checkBoxStrokeWidth = it
+            groupCheckTransport.checkBoxStrokeWidth = it
+            groupCheckVisiting.checkBoxStrokeWidth = it
+            groupCheckVisitingTargets.checkBoxStrokeWidth = it
+            groupCheckCamera.checkBoxStrokeWidth = it
+        }
 
 
         // Check colors
-        val checkBoxColor = Application.color(
+        Application.color(
             R.color.titleColor
-        )
-        groupCheckRoute.checkBoxColor = checkBoxColor
-        groupCheckTransport.checkBoxColor = checkBoxColor
-        groupCheckVisiting.checkBoxColor = checkBoxColor
-        groupCheckVisitingTargets.checkBoxColor = checkBoxColor
-        groupCheckCamera.checkBoxColor = checkBoxColor
-
+        ).let {
+            groupCheckRoute.checkBoxColor = it
+            groupCheckTransport.checkBoxColor = it
+            groupCheckVisiting.checkBoxColor = it
+            groupCheckVisitingTargets.checkBoxColor = it
+            groupCheckCamera.checkBoxColor = it
+        }
 
 
         // Check box drawable
@@ -220,108 +215,135 @@ class RequestFragment
         // Fields
         groupFieldName.fields = arrayOf(
             GroupField(
+                context,
                 R.string.surname,
                 R.drawable.ic_profile
             ),
             GroupField(
+                context,
                 R.string.firstName,
                 R.drawable.ic_profile_out
             ),
             GroupField(
+                context,
                 R.string.lastName,
                 R.drawable.ic_profile_out
             )
         )
         groupFieldPassport.fields = arrayOf(
             GroupField(
+                context,
                 R.string.birthDate,
                 R.drawable.ic_calendar
             ),
             GroupField(
+                context,
                 R.string.country_passport,
                 R.drawable.ic_identity_card
             ),
             GroupField(
+                context,
                 R.string.region_register,
                 R.drawable.ic_globe
             ),
             GroupField(
+                context,
                 R.string.gender,
                 R.drawable.ic_profile_out
             ),
             GroupField(
+                context,
                 R.string.passport_id,
                 R.drawable.ic_passport
             )
         )
         groupFieldContact.fields = arrayOf(
             GroupField(
+                context,
                 R.string.email,
                 R.drawable.ic_email
             ),
             GroupField(
+                context,
                 R.string.telephone,
                 R.drawable.ic_call
             )
         )
-        groupCheckRoute.fields = arrayOf(
-            GroupField(
-                R.string.email
-            ),
-            GroupField(
-                R.string.kamchatka
-            ),
-            GroupField(
-                R.string.snl
-            )
-        )
+
+        routes?.let {
+            val routeFields = Array(it.size) { i ->
+                GroupField(
+                    it[i]?.name ?: "???"
+                )
+            }
+            groupCheckRoute.fields = routeFields
+        }
+
+
+
+
+
         groupCheckTransport.fields = arrayOf(
             GroupField(
+                context,
                 R.string.passenger
             )
         )
         groupCheckVisiting.fields = arrayOf(
             GroupField(
+                context,
                 R.string.adventure
             ),
             GroupField(
+                context,
                 R.string.one_day_adventure
             )
         )
         groupCheckVisitingTargets.fields = arrayOf(
             GroupField(
+                context,
                 R.string.target_visit1
             ),
             GroupField(
+                context,
                 R.string.target_visit2
             ),
             GroupField(
+                context,
                 R.string.target_visit3
             ),
             GroupField(
+                context,
                 R.string.target_visit4
             ),
             GroupField(
+                context,
                 R.string.target_visit5
             ),
             GroupField(
+                context,
                 R.string.target_visit6
             ),
             GroupField(
+                context,
                 R.string.target_visit7
             ),
             GroupField(
+                context,
                 R.string.target_visit8
             )
         )
         groupCheckCamera.fields = arrayOf(
             GroupField(
+                context,
                 R.string.req_film_1
             ),
             GroupField(
+                context,
                 R.string.req_film_2
             ),
             GroupField(
+                context,
                 R.string.req_film_3
             )
         )
@@ -336,38 +358,40 @@ class RequestFragment
 
         // Title Size
         groupFieldName.titleTextSize = measureUnit * 0.04835f
-        groupFieldPassport.titleTextSize = groupFieldName.titleTextSize
-        groupFieldContact.titleTextSize = groupFieldName.titleTextSize
-        groupCheckRoute.titleTextSize = groupFieldName.titleTextSize
-        groupCheckTransport.titleTextSize = groupFieldName.titleTextSize
-        groupCheckVisiting.titleTextSize = groupFieldName.titleTextSize
-        groupCheckVisitingTargets.titleTextSize = groupFieldName.titleTextSize
-        groupCheckCamera.titleTextSize = groupFieldName.titleTextSize
-
+        groupFieldName.titleTextSize.let {
+            groupFieldPassport.titleTextSize = it
+            groupFieldContact.titleTextSize = it
+            groupCheckRoute.titleTextSize = it
+            groupCheckTransport.titleTextSize = it
+            groupCheckVisiting.titleTextSize = it
+            groupCheckVisitingTargets.titleTextSize = it
+            groupCheckCamera.titleTextSize = it
+        }
 
         // Title bottom margin
         groupFieldName.titleBottomMargin = measureUnit * 0.04589f
-        groupFieldPassport.titleBottomMargin = groupFieldName.titleBottomMargin
-        groupFieldContact.titleBottomMargin = groupFieldName.titleBottomMargin
-        groupCheckRoute.titleBottomMargin = groupFieldName.titleBottomMargin
-        groupCheckTransport.titleBottomMargin = groupFieldName.titleBottomMargin
-        groupCheckVisiting.titleBottomMargin = groupFieldName.titleBottomMargin
-        groupCheckVisitingTargets.titleBottomMargin = groupFieldName.titleBottomMargin
-        groupCheckCamera.titleBottomMargin = groupFieldName.titleBottomMargin
-
+        groupFieldName.titleBottomMargin.let {
+            groupFieldPassport.titleBottomMargin = it
+            groupFieldContact.titleBottomMargin = it
+            groupCheckRoute.titleBottomMargin = it
+            groupCheckTransport.titleBottomMargin = it
+            groupCheckVisiting.titleBottomMargin = it
+            groupCheckVisitingTargets.titleBottomMargin = it
+            groupCheckCamera.titleBottomMargin = it
+        }
 
 
         // Intervals
-        val interval = measureUnit * 0.0193f
-        groupFieldName.interval = interval
-        groupFieldPassport.interval = interval
-        groupFieldContact.interval = interval
-        groupCheckRoute.interval = interval
-        groupCheckTransport.interval = interval
-        groupCheckVisiting.interval = interval
-        groupCheckVisitingTargets.interval = interval
-        groupCheckCamera.interval = interval
-
+        (measureUnit * 0.0193f).let {
+            groupFieldName.interval = it
+            groupFieldPassport.interval = it
+            groupFieldContact.interval = it
+            groupCheckRoute.interval = it
+            groupCheckTransport.interval = it
+            groupCheckVisiting.interval = it
+            groupCheckVisitingTargets.interval = it
+            groupCheckCamera.interval = it
+        }
 
 
 
@@ -375,7 +399,6 @@ class RequestFragment
         val widthGroup = (measureUnit * 0.8961f).toInt()
         val topMargin = measureUnit * 0.09782f
         val marginStart = (measureUnit - widthGroup) * 0.5f
-
         groupFieldName.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             width = widthGroup,
@@ -504,6 +527,17 @@ class RequestFragment
             layout
         )
 
+        btnNext.setOnClickListener(
+            this::onClickBtnNext
+        )
+
         return scrollView
     }
+
+    private fun onClickBtnNext(
+        view: View
+    ) {
+
+    }
+
 }

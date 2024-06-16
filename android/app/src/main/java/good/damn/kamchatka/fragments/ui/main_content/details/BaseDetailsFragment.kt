@@ -1,7 +1,6 @@
 package good.damn.kamchatka.fragments.ui.main_content.details
 
 import android.content.Context
-import android.graphics.drawable.BitmapDrawable
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
@@ -14,11 +13,10 @@ import good.damn.kamchatka.extensions.height
 import good.damn.kamchatka.extensions.setTextColorId
 import good.damn.kamchatka.fragments.ui.ScrollableFragment
 import good.damn.kamchatka.fragments.ui.main_content.AnthropInfoFragment
-import good.damn.kamchatka.fragments.ui.main_content.maps.MapsFragment
-import good.damn.kamchatka.fragments.ui.main_content.profile.RequestFragment
 import good.damn.kamchatka.fragments.ui.main_content.visit_permission.PermissionFragment
 import good.damn.kamchatka.models.Color
 import good.damn.kamchatka.models.ShortOOPT
+import good.damn.kamchatka.models.remote.json.Route
 import good.damn.kamchatka.utils.ViewUtils
 import good.damn.kamchatka.views.button.ButtonRound
 import good.damn.kamchatka.views.special.details.CardHeader
@@ -33,6 +31,7 @@ abstract class BaseDetailsFragment
     protected lateinit var mCardDesc: CardItemDescription
 
     protected var model: ShortOOPT? = null
+    protected var routes: Array<Route?>? = null
 
     final override fun onCreateContentView(
         context: Context,
@@ -197,7 +196,8 @@ abstract class BaseDetailsFragment
         model?.let {
             pushFragment(
                 PermissionFragment.create(
-                    it
+                    it,
+                    routes
                 )
             )
         }
@@ -206,7 +206,6 @@ abstract class BaseDetailsFragment
     private fun onClickDangerText(
         view: View
     ) {
-
         pushFragment(
             AnthropInfoFragment()
         )
