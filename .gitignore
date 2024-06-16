@@ -9,3 +9,37 @@ back/segmentation/temp_files/*
 back/temp_files/*
 output_image_temp.png
 back/models/*
+
+# Gradle files
+android/.gradle/
+android/build/
+
+# Local configuration file (sdk path, etc)
+android/local.properties
+
+# Log/OS Files
+android/*.log
+
+# Android Studio generated files and folders
+android/captures/
+android/.externalNativeBuild/
+android/.cxx/
+android/*.apk
+android/output.json
+
+# IntelliJ
+*.iml
+.idea/
+misc.xml
+deploymentTargetDropDown.xml
+render.experimental.xml
+
+# Keystore files
+*.jks
+*.keystore
+
+# Google Services (e.g. APIs or Firebase)
+android/google-services.json
+
+# Android Profiling
+*.hprof
