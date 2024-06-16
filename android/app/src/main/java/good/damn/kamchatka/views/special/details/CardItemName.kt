@@ -103,6 +103,10 @@ class CardItemName(
             height * 0.05925f
         )
 
+        mTextViewRateText?.setTextPx(
+            height * 0.0574f
+        )
+
         mImageViewMap?.animation = {
             mImageViewMap?.alpha = 0.75f + (1.0f-it) * 0.25f
         }
@@ -142,6 +146,13 @@ class CardItemName(
             textViewType.typeface = it
         }
 
+        Application.font(
+            R.font.open_sans_regular,
+            context
+        ).let {
+            mTextViewRateText?.typeface = it
+        }
+
         Application.color(
             R.color.titleColor
         ).let {
@@ -154,6 +165,9 @@ class CardItemName(
                     it,
                     0.3f
                 )
+            )
+            mTextViewRateText?.setTextColor(
+                it
             )
         }
 
@@ -188,9 +202,9 @@ class CardItemName(
             width = (width * 0.06521f).toInt()
         )
         mTextViewRateText?.boundsLinear(
-            Gravity.START
+            Gravity.START,
+            left = width * 0.02657f
         )
-
 
         mTextViewDangerRate.apply {
             cornerRadius = this.height() * 0.25f
