@@ -3,6 +3,7 @@ package good.damn.kamchatka
 import android.animation.ValueAnimator
 import android.content.Context
 import android.content.SharedPreferences
+import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -50,6 +51,8 @@ ActivityResultCallback<Uri?> {
             ActivityResultContracts.GetContent(),
             this
         )
+
+
 
         setNavigationBarColor(
             Application.color(

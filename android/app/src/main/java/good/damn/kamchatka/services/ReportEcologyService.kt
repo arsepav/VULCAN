@@ -6,6 +6,7 @@ import good.damn.kamchatka.Application
 import good.damn.kamchatka.services.network.NetworkService
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.coroutines.coroutineContext
@@ -26,7 +27,9 @@ class ReportEcologyService(
         description: String,
         fileId: Int,
         categoryId: Int,
-        completion: (()->Unit)
+        lat: Double,
+        lng: Double,
+        completion: ((Response)->Unit)
     ) {
         val json = JSONObject()
         json.put(
@@ -49,9 +52,10 @@ class ReportEcologyService(
             categoryId
         )
 
+        Log.d(TAG, "report: LAT_LNG: $lat $lng")
         val coords = JSONArray()
-        coords.put(55.756215)
-        coords.put(153.5632)
+        coords.put(lng)
+        coords.put(lat)
 
         val geom = JSONObject()
         geom.put(
@@ -87,7 +91,7 @@ class ReportEcologyService(
                 Log.d(TAG, "report: $response $body")
 
                 Application.ui {
-                    completion()
+                    completion(response)
                 }
             }.start()
         }

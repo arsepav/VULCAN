@@ -52,7 +52,7 @@ class ProfileFragment
         val textViewHello = AppCompatTextView(
             context
         )
-        val cardViewRequest = CardViewRequest(
+        val cardViewRequest = AppCompatButton(
             context
         )
         val btnReport = AppCompatButton(
@@ -74,8 +74,12 @@ class ProfileFragment
         textViewHello.text = "${getString(R.string.hello)} ${Application.TOKEN?.name}"
 
 
+        cardViewRequest.setText(
+            "Посмотреть все заявки"
+        )
+
         btnReport.setText(
-            "Report"
+            "Сообщить о проблеме"
         )
 
         // Drawable
@@ -128,11 +132,6 @@ class ProfileFragment
                 R.color.background
             )
         )
-        cardViewRequest.setCardBackgroundColor(
-            Application.color(
-                R.color.background
-            )
-        )
 
 
 
@@ -172,11 +171,7 @@ class ProfileFragment
 
         // Corner radius
         imageViewAvatar.radius = imageViewAvatar.height() * 0.5f
-        cardViewRequest.radius = cardViewRequest.height() * 0.1386f
 
-
-        // Shadow
-        cardViewRequest.cardElevation = cardViewRequest.height() * 0.05f
 
 
 

@@ -5,6 +5,9 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import good.damn.kamchatka.Application
+import good.damn.kamchatka.R
+import good.damn.kamchatka.extensions.size
 import good.damn.kamchatka.utils.ViewUtils
 
 class ViewHolderPermission(
@@ -45,7 +48,39 @@ class ViewHolderPermission(
             )
 
 
+            Application.color(
+                R.color.titleColor
+            ).let {
+                textViewName.setTextColor(
+                    it
+                )
+                textViewState.setTextColor(
+                    it
+                )
+            }
 
+            Application.font(
+                R.font.open_sans_bold,
+                context
+            ).let {
+                textViewName.typeface = it
+            }
+
+            Application.font(
+                R.font.open_sans_semi_bold,
+                context
+            ).let {
+                textViewState.typeface = it
+            }
+
+            val height = Application.WIDTH * 0.31884f
+            val width = Application.WIDTH * 0.8937f
+
+
+            card.size(
+                width = width.toInt(),
+                height = height.toInt()
+            )
 
 
             layout.addView(
@@ -60,7 +95,7 @@ class ViewHolderPermission(
             )
 
             return ViewHolderPermission(
-                layout,
+                card,
                 textViewName,
                 textViewState
             )
