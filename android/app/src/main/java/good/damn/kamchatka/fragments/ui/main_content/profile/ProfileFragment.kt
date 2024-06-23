@@ -11,6 +11,7 @@ import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.bottom
 import good.damn.kamchatka.extensions.boundsFrame
+import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.extensions.height
 import good.damn.kamchatka.extensions.left
 import good.damn.kamchatka.extensions.setImageDrawableId
@@ -35,10 +36,10 @@ class ProfileFragment
 
 
         // Allocating views
-        val layout = FrameLayout(
+        val layout = ViewUtils.verticalLinearLayout(
             context
         )
-        val btnBack = ButtonBack.createDefaultFrame(
+        val btnBack = ButtonBack.createDefaultLinear(
             measureUnit,
             Application.color(
                 R.color.btnBackArrow
@@ -160,38 +161,36 @@ class ProfileFragment
 
 
         // LayoutParams
-        textViewAppName.boundsFrame(
+        textViewAppName.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
-            top = btnBack.bottom() + measureUnit * 0.08454f
+            top = measureUnit * 0.08454f
         )
-        imageViewAvatar.boundsFrame(
+        imageViewAvatar.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             size = (measureUnit * 0.2028f).toInt(),
-            top = textViewAppName.top() + textViewAppName.textSizeBounds() + (measureUnit * 0.0483f)
+            top = measureUnit * 0.0483f
         )
-        textViewHello.boundsFrame(
+        textViewHello.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
-            top = imageViewAvatar.bottom() + (measureUnit * 0.0483f)
+            top = measureUnit * 0.0483f
         )
-        cardViewRequest.boundsFrame(
+        cardViewRequest.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             width = (measureUnit * 0.88164f).toInt(),
             height = (measureUnit * 0.3913f).toInt(),
-            top = textViewHello.textSizeBounds() + textViewHello.top() + measureUnit * 0.0724f
+            top = measureUnit * 0.0724f
         )
-        btnReport.boundsFrame(
+        btnReport.boundsLinear(
             Gravity.START,
-            width = -1,
-            top = cardViewRequest.bottom().toFloat()
+            width = -1
         )
-        notification.boundsFrame(
+        notification.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             width = (measureUnit * 0.8357f).toInt(),
-            top = btnReport.bottom().toFloat() * 1.1f
+            top = measureUnit * 0.1f
         )
-        vulcanMsg.boundsFrame(
+        vulcanMsg.boundsLinear(
             Gravity.START,
-            top = Application.HEIGHT * 0.671f,
             left = btnBack.left() * 1.3f
         )
 

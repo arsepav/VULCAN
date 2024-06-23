@@ -18,11 +18,19 @@ import androidx.core.content.ContextCompat
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsFrame
+import good.damn.kamchatka.extensions.boundsLinear
+import good.damn.kamchatka.extensions.height
+import good.damn.kamchatka.extensions.left
+import good.damn.kamchatka.extensions.setTextColorId
+import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.fragments.StackFragment
 import good.damn.kamchatka.fragments.ui.ScrollableFragment
 import good.damn.kamchatka.services.ReportEcologyService
 import good.damn.kamchatka.services.UploadService
 import good.damn.kamchatka.utils.ViewUtils
+import good.damn.kamchatka.views.RoundedImageView
+import good.damn.kamchatka.views.button.ButtonBack
+import good.damn.kamchatka.views.button.ButtonRound
 import good.damn.kamchatka.views.layout.GroupCheckBox
 import good.damn.kamchatka.views.layout.models.GroupField
 import good.damn.kamchatka.views.text_fields.TextField
@@ -105,6 +113,18 @@ LocationListener {
         val layout = ViewUtils.verticalLinearLayout(
             context
         )
+        val btnClose = ButtonBack.createDefaultLinear(
+            measureUnit,
+            Application.color(
+                R.color.btnBackArrow
+            ),
+            context
+        )
+        val textViewTitle = ViewUtils.titleNav(
+            measureUnit,
+            R.string.ecology_problem,
+            context
+        )
         mGroupCheckProb = GroupCheckBox(
             context
         )
@@ -121,7 +141,7 @@ LocationListener {
             titleTextSize = measureUnit * 0.0483f
             titleBottomMargin = measureUnit * 0.0483f
             textColor = checkBoxColor
-            checkBoxRadius = checkBoxSize * 0.55f
+            checkBoxRadius = checkBoxSize * 0.5f
             checkBoxStrokeWidth = checkBoxSize * 0.03f
             checkBoxTextPadding = measureUnit * 0.05f
 
@@ -147,25 +167,63 @@ LocationListener {
             )
         )
 
-        val btnAttachPhoto = Button(
+        val btnAttachPhoto = ButtonRound(
             context
         )
 
         btnAttachPhoto.setText(
-            "Прикрепить фото и отправить"
+            R.string.send
         )
 
+        btnAttachPhoto.setTextColorId(
+            R.color.textColorBtn
+        )
 
-        btnAttachPhoto.boundsFrame(
+        btnAttachPhoto.typeface = Application.font(
+            R.font.open_sans_semi_bold,
+            context
+        )
+
+        btnAttachPhoto.setBackgroundColor(
+            Application.color(
+                R.color.titleColor
+            )
+        )
+
+        textViewTitle.boundsLinear(
             Gravity.START,
-            width = -1,
+            left = measureUnit * 0.0483f,
+            top = measureUnit * 0.0842f
         )
-        mGroupCheckProb.boundsFrame(
+        mGroupCheckProb.boundsLinear(
             Gravity.START,
             width = measureUnit,
-            height = (measureUnit * 0.615f).toInt()
+            height = (measureUnit * 0.615f).toInt(),
+            top = measureUnit * 0.111f,
+            left = textViewTitle.left()
         )
 
+        btnAttachPhoto.boundsLinear(
+            Gravity.CENTER_HORIZONTAL,
+            width = (measureUnit - 2 * textViewTitle.left()).toInt(),
+            height = (measureUnit * 0.1352f).toInt(),
+            top = measureUnit * 0.1316f
+        )
+
+
+        btnAttachPhoto.cornerRadius = btnAttachPhoto.height() * 0.3f
+
+        btnAttachPhoto.setTextPx(
+            btnAttachPhoto.height() * 0.3214f
+        )
+
+
+        layout.addView(
+            btnClose
+        )
+        layout.addView(
+            textViewTitle
+        )
         layout.addView(
             mGroupCheckProb
         )
@@ -182,6 +240,10 @@ LocationListener {
 
         btnAttachPhoto.setOnClickListener(
             this::onPickPhoto
+        )
+
+        btnClose.setOnClickListener(
+            this::onClickBtnBack
         )
 
         return layout
@@ -295,4 +357,10 @@ LocationListener {
         }
     }
 
+}
+
+private fun ReportEcologyFragment.onClickBtnBack(
+    view: View
+) {
+    popFragment()
 }
