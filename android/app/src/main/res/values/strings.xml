@@ -52,7 +52,7 @@
     <string name="birthDate">Дата рождения</string>
     <string name="country_passport">Гражданство</string>
     <string name="region_register">Регион регистрации</string>
-    <string name="gender">Пол</string>
+    <string name="gender">Пол (М,Ж)</string>
     <string name="passport_id">Серия и номер паспорта</string>
     <string name="snl">ФИО</string>
     <string name="passport_data">Паспортные данные</string>
@@ -65,17 +65,15 @@
     <string name="passenger">Я пассажир</string>
     <string name="adventure">Многодненвый тур</string>
     <string name="one_day_adventure">Дневная экскурсия</string>
-    <string name="target_visit1">Однодневная поездка/экскурсия</string>
-    <string name="target_visit2">Многодневный пешеходный туризм</string>
-    <string name="target_visit3">Лыжный туризм</string>
-    <string name="target_visit4">Спортивные мероприятия</string>
-    <string name="target_visit5">Научные исследования</string>
-    <string name="target_visit6">Видео/фотосъемка</string>
-    <string name="target_visit7">Альпинизм</string>
-    <string name="target_visit8">Другое</string>
-    <string name="req_film_1">Без профессиональной съемки</string>
-    <string name="req_film_2">Проведение профессиональной видеосъёмки</string>
-    <string name="req_film_3">Съемка с использование БПЛА</string>
+    <string name="target_ski">Лыжный туризм</string>
+    <string name="target_sport">Спортивные мероприятия</string>
+    <string name="target_science">Научные исследования</string>
+    <string name="target_photo">Видео/фотосъемка</string>
+    <string name="target_mountaineering">Альпинизм</string>
+    <string name="target_other">Другое</string>
+    <string name="req_without">Без профессиональной съемки</string>
+    <string name="req_profi">Проведение профессиональной видеосъёмки</string>
+    <string name="req_drone">Съемка с использование БПЛА</string>
     <string name="next">Далее</string>
     <string name="enter_your_email">Введите свой Email</string>
     <string name="msg_email">"Это тестовый экран.\nВ рамках кейса функция\nвосстановления пароля не реализована.</string>
@@ -91,6 +89,18 @@
     <string name="perm_group_hu">Групповое - физ. лица</string>
     <string name="perm_group_com">Групповое - юр. лица / ИП</string>
     <string name="error">Произошла ошибка</string>
+    <string name="not_all_data">Не все поля заполнены</string>
+    <string name="need_to_select_one">Нужно отметить хотя бы один пункт</string>
+    <string name="success">Успешно</string>
+    <string name="permission_requests_list">Заявки</string>
+    <string name="need_gender">Нужно выбрать пол: М и Ж</string>
+    <string name="zakazniki_title">13 природных\nзаказников</string>
+    <string name="zakazniki_desc">Здесь будут отражаться природные\nзаказники и информация о них по аналогии\nс другими маршрутам/ООПТ</string>
+    <string name="zakazniki_msg">Это тестовый экран.\nВ рамках кейса экран \n”13 природных заказников” не реализован.</string>
+    <string name="monuments_msg">Это тестовый экран.\nВ рамках кейса экран\n”63 памятника природы” не реализован.</string>
+    <string name="monuments_title">63 памятника\nприроды</string>
+    <string name="monuments_desc">Здесь будут отражаться\nприродные памятники и информация о них по\nаналогии с другими маршрутам/ООПТ</string>
+    <string name="select_problem">Выберите вид проблемы</string>
     <string-array name="rates">
         <item>Низкий уровень нагрузки</item>
         <item>Средний уровень нагрузки</item>
