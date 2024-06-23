@@ -91,6 +91,8 @@
     <string name="error">Произошла ошибка</string>
     <string name="not_all_data">Не все поля заполнены</string>
     <string name="need_to_select_one">Нужно отметить хотя бы один пункт</string>
+    <string name="need_to_select_problem">Выберите тип проблемы</string>
+    <string name="need_to_select_coords">Выберите способ передачи координат</string>
     <string name="success">Успешно</string>
     <string name="permission_requests_list">Заявки</string>
     <string name="need_gender">Нужно выбрать пол: М и Ж</string>

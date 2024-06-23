@@ -17,12 +17,15 @@ import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.bottom
 import good.damn.kamchatka.extensions.boundsLinear
+import good.damn.kamchatka.extensions.getKey
 import good.damn.kamchatka.extensions.height
 import good.damn.kamchatka.extensions.left
 import good.damn.kamchatka.extensions.setTextColorId
 import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.extensions.width
 import good.damn.kamchatka.fragments.ui.ScrollableFragment
+import good.damn.kamchatka.fragments.ui.main_content.maps.DefinePointMapFragment
+import good.damn.kamchatka.fragments.ui.main_content.maps.MapsFragment
 import good.damn.kamchatka.models.Color
 import good.damn.kamchatka.services.ReportEcologyService
 import good.damn.kamchatka.services.UploadService
@@ -53,8 +56,8 @@ LocationListener {
     private val map = HashMap<Int,String>()
     private val mapCoords = HashMap<Int, String>()
 
-    private var lat = 0.0
-    private var long = 0.0
+    private var mLat = 0.0
+    private var mLong = 0.0
 
     private var mFileImage: File? = null
 
@@ -64,8 +67,8 @@ LocationListener {
         location: Location
     ) {
         // Lat lng
-        lat = location.latitude
-        long = location.longitude
+        mLat = location.latitude
+        mLong = location.longitude
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -464,58 +467,52 @@ LocationListener {
     ) {
         val context = context ?: return
 
-        val rep = ReportEcologyService(
-            context
-        )
-
-        val a = mGroupCheckProb.whoIsChecked()
-        if (a == null) {
+        val problemType = mGroupCheckProb.whoIsChecked()
+        if (problemType == null) {
             Application.toast(
-                R.string.need_to_select_one,
+                R.string.need_to_select_problem,
                 context
             )
             return
         }
 
-        var id = 3
+        val idProblem = map.getKey(
+            problemType
+        ) ?: return
 
-        map.forEach {
-            if (it.value == a) {
-                id = it.key
-                return@forEach
-            }
+        val coordType = mGroupCheckCoords.whoIsChecked()
+        if (coordType == null) {
+            Application.toast(
+                R.string.need_to_select_coords,
+                context
+            )
+            return
         }
 
-        UploadService(
-            context
-        ).upload(
-            file
-        ) { fileId ->
-            rep.report(
-                a,
-                mTextComment.text.toString(),
-                fileId,
-                id,
-                lat,
-                long
-            ) {
-                Application.ui {
-                    if (it.code == 200) {
-                        Application.toast(
-                            R.string.success,
-                            context
-                        )
-                        popFragment()
-                        return@ui
-                    }
+        (mapCoords.getKey(coordType) == 1).let {
+            if (!it) { // Auto send coords from geo position
+                val defMap = DefinePointMapFragment()
+                defMap.onAcceptPosition = {
 
-                    Application.toast(
-                        "${context.getString(R.string.error)}: ${it.code} ${it.body}",
-                        context
-                    )
                 }
+
+                pushFragment(
+                    MapsFragment.create(
+                        defMap
+                    )
+                )
+                return
             }
         }
+
+        reportNow(
+            problemType,
+            idProblem,
+            file,
+            mLat,
+            mLong,
+            context
+        )
     }
 
     private fun onPickPhoto(
@@ -575,6 +572,50 @@ LocationListener {
                     R.drawable.ic_done
                 )
                 mImageViewAttach.requestLayout()
+            }
+        }
+    }
+
+    private fun reportNow(
+        name: String,
+        idProblem: Int,
+        file: File,
+        lat: Double,
+        long: Double,
+        context: Context
+    ) {
+        val rep = ReportEcologyService(
+            context
+        )
+
+        UploadService(
+            context
+        ).upload(
+            file
+        ) { fileId ->
+            rep.report(
+                name,
+                mTextComment.text.toString(),
+                fileId,
+                idProblem,
+                lat,
+                long
+            ) {
+                Application.ui {
+                    if (it.code == 200) {
+                        Application.toast(
+                            R.string.success,
+                            context
+                        )
+                        popFragment()
+                        return@ui
+                    }
+
+                    Application.toast(
+                        "${context.getString(R.string.error)}: ${it.code} ${it.body}",
+                        context
+                    )
+                }
             }
         }
     }
