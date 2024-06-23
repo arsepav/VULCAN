@@ -101,14 +101,22 @@
     <string name="monuments_title">63 памятника\nприроды</string>
     <string name="monuments_desc">Здесь будут отражаться\nприродные памятники и информация о них по\nаналогии с другими маршрутам/ООПТ</string>
     <string name="select_problem">Выберите вид проблемы</string>
-    <string name="notify_people">"Внимание!\n В случае обнаружения на одобреном вам маршруте мусора, кострищ и прочих проблемах, воспользуйтесь функцией “Сообщить об экологической проблеме” "</string>
+    <string name="notify_people">"Внимание!\nВ случае обнаружения на одобреном вам маршруте мусора, кострищ и прочих проблемах, воспользуйтесь функцией “Сообщить об экологической проблеме”</string>
     <string name="ecology_problem">Экологическая\nпроблема</string>
+    <string name="problem3">Мусор / свалка</string>
+    <string name="problem4">Кострище</string>
+    <string name="problem5">Нелегальная вырубка леса</string>
+    <string name="problem6">Загрязнение воды</string>
+    <string name="problem7">Другое</string>
     <string name="send">Отправить</string>
     <string name="attach_photo">Приложите фото</string>
     <string name="comment">Комментарий</string>
     <string name="pick_image_please">Нужна фотография</string>
     <string name="text_comment">Текст комментария</string>
     <string name="optional">При необходимости</string>
+    <string name="coords">Координаты</string>
+    <string name="coords1">На месте проблемы (авто. отправка)</string>
+    <string name="coords2">Указать место на карте</string>
     <string-array name="rates">
         <item>Низкий уровень нагрузки</item>
         <item>Средний уровень нагрузки</item>

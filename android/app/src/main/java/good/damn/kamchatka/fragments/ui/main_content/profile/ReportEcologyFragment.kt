@@ -5,6 +5,7 @@ import android.content.Context
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.os.Bundle
 import android.os.Environment
 import android.text.InputType
 import android.util.Log
@@ -20,7 +21,6 @@ import good.damn.kamchatka.extensions.height
 import good.damn.kamchatka.extensions.left
 import good.damn.kamchatka.extensions.setTextColorId
 import good.damn.kamchatka.extensions.setTextPx
-import good.damn.kamchatka.extensions.top
 import good.damn.kamchatka.extensions.width
 import good.damn.kamchatka.fragments.ui.ScrollableFragment
 import good.damn.kamchatka.models.Color
@@ -46,16 +46,12 @@ LocationListener {
     }
 
     private lateinit var mGroupCheckProb: GroupCheckBox
-    private lateinit var mEditTextDescription: TextFieldRound
+    private lateinit var mGroupCheckCoords: GroupCheckBox
+    private lateinit var mTextComment: TextFieldRound
     private lateinit var mImageViewAttach: RoundedImageView
 
-    private val map = hashMapOf(
-        3 to "Мусор / свалка",
-        4 to "Кострище",
-        5 to "Нелегальная вырубка леса",
-        6 to "Загрязнение воды",
-        7 to "Другое",
-    )
+    private val map = HashMap<Int,String>()
+    private val mapCoords = HashMap<Int, String>()
 
     private var lat = 0.0
     private var long = 0.0
@@ -70,6 +66,19 @@ LocationListener {
         // Lat lng
         lat = location.latitude
         long = location.longitude
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        map[3] = getString(R.string.problem3)
+        map[4] = getString(R.string.problem4)
+        map[5] = getString(R.string.problem5)
+        map[6] = getString(R.string.problem6)
+        map[7] = getString(R.string.problem7)
+
+        mapCoords[1] = getString(R.string.coords1)
+        mapCoords[2] = getString(R.string.coords2)
     }
 
     override fun onCreateContentView(
@@ -144,6 +153,9 @@ LocationListener {
             R.string.ecology_problem,
             context
         )
+        mGroupCheckProb = GroupCheckBox(
+            context
+        )
         val textViewOptionAttach = ViewUtils.titleOption(
             measureUnit,
             R.string.attach_photo,
@@ -160,13 +172,13 @@ LocationListener {
         val textViewOptional = TextView(
             context
         )
+        mTextComment = TextFieldRound(
+            context
+        )
         val btnSendReport = ButtonRound(
             context
         )
-        mGroupCheckProb = GroupCheckBox(
-            context
-        )
-        mEditTextDescription = TextFieldRound(
+        mGroupCheckCoords = GroupCheckBox(
             context
         )
 
@@ -184,12 +196,31 @@ LocationListener {
 
 
 
+        mGroupCheckCoords.apply {
+            checkBoxSize = measureUnit * 0.0603f
+            checkBoxColor = Application.color(
+                R.color.titleColor
+            )
+            interval = measureUnit * 0.04106f
+            title = R.string.coords
+            titleTextSize = measureUnit * 0.0483f
+            titleBottomMargin = measureUnit * 0.0483f
+            textColor = checkBoxColor
+            checkBoxRadius = checkBoxSize * 0.5f
+            checkBoxStrokeWidth = checkBoxSize * 0.03f
+            checkBoxTextPadding = measureUnit * 0.05f
+            typeface = Application.font(
+                R.font.open_sans_regular,
+                context
+            )
+        }
 
         mGroupCheckProb.apply {
             checkBoxSize = measureUnit * 0.0603f
             checkBoxColor = Application.color(
                 R.color.titleColor
             )
+            interval = measureUnit * 0.04106f
             title = R.string.select_problem
             titleTextSize = measureUnit * 0.0483f
             titleBottomMargin = measureUnit * 0.0483f
@@ -223,6 +254,15 @@ LocationListener {
             ),
             GroupField(
                 map[7]!!
+            )
+        )
+
+        mGroupCheckCoords.fields = arrayOf(
+            GroupField(
+                mapCoords[1]!!
+            ),
+            GroupField(
+                mapCoords[2]!!
             )
         )
 
@@ -261,7 +301,7 @@ LocationListener {
             left = textViewTitle.left()
         )
 
-        mEditTextDescription.boundsLinear(
+        mTextComment.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             width = (measureUnit * 0.888f).toInt(),
             height = (measureUnit * 0.1932f).toInt(),
@@ -273,6 +313,13 @@ LocationListener {
             width = (measureUnit - 2 * textViewTitle.left()).toInt(),
             height = (measureUnit * 0.1352f).toInt(),
             top = measureUnit * 0.1316f
+        )
+
+        mGroupCheckCoords.boundsLinear(
+            Gravity.START,
+            width = measureUnit,
+            top = measureUnit * 0.099f,
+            left = textViewTitle.left()
         )
 
         textViewOptional.setTextPx(
@@ -296,7 +343,7 @@ LocationListener {
             )
         }
 
-        mEditTextDescription.apply {
+        mTextComment.apply {
             height().let { h ->
                 cornerRadius = h * 0.1625f
                 setTextPx(
@@ -358,12 +405,14 @@ LocationListener {
             addView(mImageViewAttach)
             addView(textViewOptionComment)
             addView(textViewOptional)
-            addView(mEditTextDescription)
+            addView(mTextComment)
+            addView(mGroupCheckCoords)
             addView(btnSendReport)
         }
 
-        mGroupCheckProb.layoutFields()
 
+        mGroupCheckProb.layoutFields()
+        mGroupCheckCoords.layoutFields()
 
         mImageViewAttach.setOnClickListener(
             this::onPickPhoto
@@ -444,7 +493,7 @@ LocationListener {
         ) { fileId ->
             rep.report(
                 a,
-                mEditTextDescription.text.toString(),
+                mTextComment.text.toString(),
                 fileId,
                 id,
                 lat,
