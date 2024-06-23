@@ -17,6 +17,7 @@ import good.damn.kamchatka.extensions.height
 import good.damn.kamchatka.extensions.setTextColorId
 import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.extensions.size
+import good.damn.kamchatka.extensions.width
 
 class ViewHolderOOPT(
     layout: LinearLayout,
@@ -26,6 +27,9 @@ class ViewHolderOOPT(
 ): RecyclerView.ViewHolder(
     layout
 ) {
+
+    var imageSize = mImageView.width()
+        private set
 
     fun setPreview(
         d: Bitmap?
@@ -149,7 +153,11 @@ class ViewHolderOOPT(
 
             cardView.apply {
                 radius = height() * 0.15f
-                addView(imageView)
+                addView(
+                    imageView,
+                    imageViewWidth,
+                    imageViewWidth
+                )
             }
 
 

@@ -1,5 +1,6 @@
 package good.damn.kamchatka.adapters.recycler_view
 
+import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import good.damn.kamchatka.models.ShortOOPT
@@ -57,7 +58,9 @@ class OOPTAdapter(
 
         oopt.image_url?.let {
             HTTPUtils.loadImage(
-                it
+                it,
+                holder.imageSize,
+                holder.imageSize,
             ) { bitmap ->
                 zone.image = bitmap
                 holder.setPreview(bitmap)

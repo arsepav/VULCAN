@@ -23,7 +23,6 @@ class HTTPUtils {
             CoroutineScope(
                 Dispatchers.IO
             ).launch {
-                Log.d(TAG, "loadImage: $url")
                 val stream = try {
                     URL(
                         url
@@ -37,11 +36,55 @@ class HTTPUtils {
                 val b = BitmapFactory.decodeStream(
                     stream
                 )
+
                 stream.close()
 
                 Application.ui {
                     completion(b)
                 }
+            }
+        }
+
+        fun loadImage(
+            url: String,
+            inWidth: Int,
+            inHeight: Int,
+            completion: (Bitmap?) -> Unit
+        ) {
+            CoroutineScope(
+                Dispatchers.IO
+            ).launch {
+                val stream = try {
+                    URL(
+                        url
+                    ).openStream()
+                } catch (e: Exception) {
+                    Application.ui {
+                        completion(null)
+                    }
+                    return@launch
+                }
+
+                BitmapFactory.decodeStream(
+                    stream
+                ).let {
+                    stream.close()
+                    val scaled = Bitmap.createScaledBitmap(
+                        it,
+                        inWidth,
+                        inHeight,
+                        false
+                    )
+                    
+                    if (!it.isRecycled) {
+                        it.recycle()
+                    }
+
+                    Application.ui {
+                        completion(scaled)
+                    }
+                }
+
             }
         }
     }
