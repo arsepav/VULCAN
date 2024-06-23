@@ -3,6 +3,9 @@ package good.damn.kamchatka.utils
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import good.damn.kamchatka.Application
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.net.URL
 
 class HTTPUtils {
@@ -11,7 +14,9 @@ class HTTPUtils {
             url: String,
             completion: ((Bitmap)->Unit)
         ) {
-            Thread {
+            CoroutineScope(
+                Dispatchers.IO
+            ).launch {
                 val stream = URL(url).openStream()
                 val b = BitmapFactory.decodeStream(
                     stream
@@ -21,7 +26,7 @@ class HTTPUtils {
                 Application.ui {
                     completion(b)
                 }
-            }.start()
+            }
         }
     }
 }

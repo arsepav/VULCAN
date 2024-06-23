@@ -29,6 +29,7 @@ import good.damn.kamchatka.services.GeoService
 import good.damn.kamchatka.services.interfaces.OnGetObjectsListener
 import good.damn.kamchatka.services.interfaces.OnGetRoutesListener
 import good.damn.kamchatka.services.interfaces.OnGetSecurityZonesListener
+import good.damn.kamchatka.utils.HTTPUtils
 import good.damn.kamchatka.views.bottom_sheets.BottomSheetInfo
 import kotlin.random.Random
 
@@ -96,7 +97,7 @@ GoogleMap.OnMarkerClickListener {
                     .position(it)
                     .icon(
                         BitmapDescriptorFactory.defaultMarker(
-                            BitmapDescriptorFactory.HUE_CYAN
+                            BitmapDescriptorFactory.HUE_RED
                         )
                     ).zIndex(
                         1.0f
@@ -164,6 +165,7 @@ GoogleMap.OnMarkerClickListener {
 
         sheet.title = ooptObj.name
         sheet.desc = ooptObj.desc
+        sheet.imageUrl = ooptObj.image_url
 
         sheet.show(
             childFragmentManager,
@@ -272,11 +274,11 @@ GoogleMap.OnMarkerClickListener {
             ).zIndex(
                 1.0f
             ).let { options ->
-                map.addMarker(
+                val marker = map.addMarker(
                     options
-                )?.let { marker ->
-                    marker.tag = obj
-                }
+                ) ?: return@let
+
+                marker.tag = obj
             }
         }
     }
