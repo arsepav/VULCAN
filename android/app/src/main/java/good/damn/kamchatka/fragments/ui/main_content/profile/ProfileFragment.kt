@@ -3,28 +3,20 @@ package good.damn.kamchatka.fragments.ui.main_content.profile
 import android.content.Context
 import android.view.Gravity
 import android.view.View
-import android.widget.FrameLayout
-import androidx.appcompat.widget.AppCompatButton
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
-import good.damn.kamchatka.extensions.bottom
-import good.damn.kamchatka.extensions.boundsFrame
 import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.extensions.height
 import good.damn.kamchatka.extensions.left
-import good.damn.kamchatka.extensions.setImageDrawableId
 import good.damn.kamchatka.extensions.setTextPx
-import good.damn.kamchatka.extensions.textSizeBounds
-import good.damn.kamchatka.extensions.top
-import good.damn.kamchatka.fragments.StackFragment
 import good.damn.kamchatka.fragments.ui.ScrollableFragment
 import good.damn.kamchatka.models.Color
 import good.damn.kamchatka.utils.ViewUtils
 import good.damn.kamchatka.views.RoundedImageView
 import good.damn.kamchatka.views.button.ButtonBack
-import good.damn.kamchatka.views.special.profile.CardViewRequest
+import good.damn.kamchatka.views.button.ButtonCard
+import good.damn.kamchatka.views.button.CardState
 
 class ProfileFragment
 : ScrollableFragment() {
@@ -55,10 +47,15 @@ class ProfileFragment
         val textViewHello = AppCompatTextView(
             context
         )
-        val cardViewRequest = AppCompatButton(
+        val textViewPermissions = ViewUtils.titleOption(
+            measureUnit,
+            R.string.permission_list,
             context
         )
-        val btnReport = AppCompatButton(
+        val textViewRequest = AppCompatTextView(
+            context
+        )
+        val cardReport = ButtonCard(
             context
         )
         val notification = AppCompatTextView(
@@ -83,13 +80,19 @@ class ProfileFragment
             R.string.notify_people
         )
 
-        cardViewRequest.setText(
-            "Посмотреть все заявки"
+        textViewRequest.setText(
+            R.string.see_all_perm
         )
 
-        btnReport.setText(
-            "Сообщить о проблеме"
-        )
+        cardReport.apply {
+            title = getString(
+                R.string.report_ecology
+            )
+            drawableEnd = Application.drawable(
+                R.drawable.ic_info_red
+            )
+        }
+
 
         // Drawable
         imageViewAvatar.setImageDrawable(
@@ -100,7 +103,7 @@ class ProfileFragment
         // Text Color
         textViewAppName.setTextColor(
             Application.color(
-                R.color.accentColor
+                R.color.accentColor30
             )
         )
         textViewHello.setTextColor(
@@ -174,24 +177,31 @@ class ProfileFragment
             Gravity.CENTER_HORIZONTAL,
             top = measureUnit * 0.0483f
         )
-        cardViewRequest.boundsLinear(
+        textViewPermissions.boundsLinear(
+            Gravity.START,
+            left = btnBack.left(),
+            top = measureUnit * 0.1207f
+        )
+        textViewRequest.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             width = (measureUnit * 0.88164f).toInt(),
             height = (measureUnit * 0.3913f).toInt(),
-            top = measureUnit * 0.0724f
-        )
-        btnReport.boundsLinear(
-            Gravity.START,
-            width = -1
+            top = measureUnit * 0.05193f
         )
         notification.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             width = (measureUnit * 0.8357f).toInt(),
-            top = measureUnit * 0.1f
+            top = measureUnit * 0.07125f
+        )
+        cardReport.boundsLinear(
+            Gravity.CENTER_HORIZONTAL,
+            width = (measureUnit * 0.9082f).toInt(),
+            height = (measureUnit * 0.215f).toInt(),
+            top = measureUnit * 0.0483f
         )
         vulcanMsg.boundsLinear(
             Gravity.START,
-            top = measureUnit * 0.2f,
+            top = measureUnit * 0.1135f,
             left = btnBack.left() * 1.3f
         )
 
@@ -206,45 +216,32 @@ class ProfileFragment
         notification.gravity = Gravity
             .CENTER_HORIZONTAL
 
+        cardReport.apply {
+            radius = height() * 0.191f
+            layoutIt()
+        }
 
-
-
-        // Adding views
-        layout.addView(
-            btnBack
-        )
-        layout.addView(
-            textViewAppName
-        )
-        layout.addView(
-            imageViewAvatar
-        )
-        layout.addView(
-            textViewHello
-        )
-        layout.addView(
-            cardViewRequest
-        )
-        layout.addView(
-            btnReport
-        )
-        layout.addView(
-            notification
-        )
-        layout.addView(
-            vulcanMsg
-        )
-
+        layout.apply {
+            addView(btnBack)
+            addView(textViewAppName)
+            addView(imageViewAvatar)
+            addView(textViewHello)
+            addView(textViewPermissions)
+            addView(textViewRequest)
+            addView(notification)
+            addView(cardReport)
+            addView(vulcanMsg)
+        }
 
 
         // Listeners
         btnBack.setOnClickListener(
             this::onClickBtnBack
         )
-        cardViewRequest.setOnClickListener(
+        textViewRequest.setOnClickListener(
             this::onClickCardViewRequest
         )
-        btnReport.setOnClickListener(
+        cardReport.setOnClickListener(
             this::onClickBtnReport
         )
 

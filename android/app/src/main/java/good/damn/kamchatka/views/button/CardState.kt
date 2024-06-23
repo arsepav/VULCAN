@@ -39,7 +39,7 @@ class CardState(
 
     var state = ""
         set(v) {
-            mTextViewState.text = v
+            mTextViewState.text = "${context.getString(R.string.state)}: $v"
             field = v
         }
 
@@ -92,6 +92,8 @@ class CardState(
                 context
             )
         }
+
+        mTextViewState.isAllCaps = true
 
         addView(
             mTextViewTitle
