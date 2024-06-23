@@ -539,7 +539,7 @@ LocationListener, ActivityResultCallback<Map<String,Boolean>> {
 
 
                 val fileOut = File(
-                    "${context.cacheDir}/temp}"
+                    "${context.cacheDir}/temp"
                 )
 
                 if (fileOut.exists()) {

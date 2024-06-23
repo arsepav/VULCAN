@@ -5,7 +5,8 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
 class MarginItemDecoration(
-    private val margin: Int
+    private val margin: Int = 0,
+    private val marginVertical: Int = 0
 ): RecyclerView.ItemDecoration() {
 
     //
@@ -17,5 +18,8 @@ class MarginItemDecoration(
     ) {
         outRect.left = margin
         outRect.right = margin
+
+        outRect.top = marginVertical
+        outRect.right = marginVertical
     }
 }

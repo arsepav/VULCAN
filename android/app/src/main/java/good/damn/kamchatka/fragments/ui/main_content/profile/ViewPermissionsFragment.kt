@@ -1,18 +1,28 @@
 package good.damn.kamchatka.fragments.ui.main_content.profile
 
 import android.content.Context
+import android.view.Gravity
 import android.view.View
-import android.widget.LinearLayout
+import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.adapters.fragment_adapters.PermissionRequestAdapter
+import good.damn.kamchatka.extensions.bottom
+import good.damn.kamchatka.extensions.boundsFrame
+import good.damn.kamchatka.extensions.boundsLinear
+import good.damn.kamchatka.extensions.left
+import good.damn.kamchatka.extensions.size
+import good.damn.kamchatka.extensions.textSizeBounds
+import good.damn.kamchatka.extensions.top
 import good.damn.kamchatka.fragments.StackFragment
 import good.damn.kamchatka.item_decorations.MarginItemDecoration
+import good.damn.kamchatka.models.Color
 import good.damn.kamchatka.services.PermissionService
 import good.damn.kamchatka.utils.ViewUtils
+import good.damn.kamchatka.views.button.ButtonBack
 
 class ViewPermissionsFragment
 : StackFragment() {
@@ -21,11 +31,25 @@ class ViewPermissionsFragment
         context: Context,
         measureUnit: Int
     ): View {
-        val layout = ViewUtils.verticalLinearLayout(
+        val layout = FrameLayout(
             context
         )
 
-        val titleTextView = AppCompatTextView(
+        val layoutTitle = ViewUtils.verticalLinearLayout(
+            context
+        )
+
+        val btnBack = ButtonBack.createDefaultLinear(
+            measureUnit,
+            Application.color(
+                R.color.btnBackArrow
+            ),
+            context
+        )
+
+        val titleTextView = ViewUtils.titleNav(
+            measureUnit,
+            R.string.permission_requests_list,
             context
         )
 
@@ -33,32 +57,80 @@ class ViewPermissionsFragment
             context
         )
 
-        titleTextView.setText(
-            R.string.permission_requests_list
+        layoutTitle.setBackgroundColor(
+            Color.parseFromHexId(
+                R.color.background,
+                0.9f
+            )
         )
 
-        layout.addView(
-            titleTextView
+        layout.setBackgroundColor(
+            Application.color(
+                R.color.background
+            )
         )
-        layout.addView(
-            recyclerView
+
+        val margin = measureUnit * 0.0917f
+
+        titleTextView.boundsFrame(
+            Gravity.START,
+            left = btnBack.left(),
+            top = margin
+        )
+
+        layoutTitle.size(
+            width = -1,
+            height = -2
+        )
+
+        layoutTitle.apply {
+            addView(btnBack)
+            addView(titleTextView)
+        }
+
+        layout.apply {
+            addView(recyclerView)
+            addView(layoutTitle)
+        }
+
+        titleTextView.setPadding(
+            0,
+            0,
+            0,
+            margin.toInt()
         )
 
         recyclerView.layoutManager = LinearLayoutManager(
             context
         )
 
-        recyclerView.addItemDecoration(
-            MarginItemDecoration(
-                50
+
+        (measureUnit * 0.0483f).toInt().let {
+            recyclerView.addItemDecoration(
+                MarginItemDecoration(
+                    margin = it,
+                    marginVertical = it
+                )
             )
-        )
+        }
+
+
+        layoutTitle.post {
+            recyclerView.clipToPadding = false
+
+            recyclerView.setPadding(
+                0,
+                layoutTitle.height,
+                0,
+                (Application.HEIGHT * 0.09f).toInt()
+            )
+        }
+
 
         PermissionService(
             context
         ).getPermissions {
             Application.ui {
-
                 recyclerView.adapter = PermissionRequestAdapter(
                     it
                 )
@@ -66,7 +138,17 @@ class ViewPermissionsFragment
             }
         }
 
+        btnBack.setOnClickListener(
+            this::onClickBtnBack
+        )
+
         return layout
     }
 
+}
+
+private fun ViewPermissionsFragment.onClickBtnBack(
+    view: View
+) {
+    popFragment()
 }
