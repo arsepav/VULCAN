@@ -13,12 +13,16 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
+import good.damn.kamchatka.extensions.bottom
 import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.extensions.height
 import good.damn.kamchatka.extensions.left
 import good.damn.kamchatka.extensions.setTextColorId
 import good.damn.kamchatka.extensions.setTextPx
+import good.damn.kamchatka.extensions.top
+import good.damn.kamchatka.extensions.width
 import good.damn.kamchatka.fragments.ui.ScrollableFragment
+import good.damn.kamchatka.models.Color
 import good.damn.kamchatka.services.ReportEcologyService
 import good.damn.kamchatka.services.UploadService
 import good.damn.kamchatka.utils.ViewUtils
@@ -161,6 +165,19 @@ LocationListener {
         mEditTextDescription.setHint(
             R.string.text_comment
         )
+        mEditTextDescription.setTextColorId(
+            R.color.accentColor
+        )
+        mEditTextDescription.setHintTextColor(
+            Color.parseFromHexId(
+                R.color.accentColor,
+                0.3f
+            )
+        )
+        mEditTextDescription.typeface = Application.font(
+            R.font.open_sans_regular,
+            context
+        )
         mEditTextDescription.gravity = Gravity.START or Gravity.TOP
         mEditTextDescription.maxLines = 15
         mEditTextDescription.inputType =
@@ -178,6 +195,10 @@ LocationListener {
             checkBoxRadius = checkBoxSize * 0.5f
             checkBoxStrokeWidth = checkBoxSize * 0.03f
             checkBoxTextPadding = measureUnit * 0.05f
+            typeface = Application.font(
+                R.font.open_sans_regular,
+                context
+            )
         }
 
 
@@ -273,39 +294,47 @@ LocationListener {
             btnSendReport.height() * 0.3214f
         )
 
-        mEditTextDescription.cornerRadius = mEditTextDescription
-            .height() * 0.1625f
 
-        mEditTextDescription.setStrokeWidth(
-            mEditTextDescription.height() * 0.0125f
-        )
+        mEditTextDescription.apply {
+            height().let { h ->
+                cornerRadius = h * 0.1625f
+                setTextPx(
+                    h * 0.1875f
+                )
+                setStrokeWidth(
+                    h * 0.0125f
+                )
+            }
+            (width() * 0.03f).toInt().let { pad ->
+                setPadding(
+                    pad,
+                    pad,
+                    pad,
+                    pad
+                )
+            }
+        }
 
+        btnClose.bottom().let { pad ->
+            layout.setPadding(
+                0,
+                0,
+                0,
+                pad
+            )
+        }
 
-        layout.addView(
-            btnClose
-        )
-        layout.addView(
-            textViewTitle
-        )
-        layout.addView(
-            mGroupCheckProb
-        )
-        layout.addView(
-            textViewOptionAttach
-        )
-        layout.addView(
-            mImageViewAttach
-        )
-        layout.addView(
-            textViewOptionComment
-        )
+        layout.apply {
+            addView(btnClose)
+            addView(textViewTitle)
+            addView(mGroupCheckProb)
+            addView(textViewOptionAttach)
+            addView(mImageViewAttach)
+            addView(textViewOptionComment)
+            addView(mEditTextDescription)
+            addView(btnSendReport)
+        }
 
-        layout.addView(
-            mEditTextDescription
-        )
-        layout.addView(
-            btnSendReport
-        )
         mGroupCheckProb.layoutFields()
 
 
