@@ -489,11 +489,18 @@ LocationListener {
             return
         }
 
-        (mapCoords.getKey(coordType) == 1).let {
-            if (!it) { // Auto send coords from geo position
+        (mapCoords.getKey(coordType) == 1).let { isAuto ->
+            if (!isAuto) { // Auto send coords from geo position
                 val defMap = DefinePointMapFragment()
-                defMap.onAcceptPosition = {
-
+                defMap.onAcceptPosition = { pos ->
+                    reportNow(
+                        problemType,
+                        idProblem,
+                        file,
+                        pos.latitude,
+                        pos.longitude,
+                        context
+                    )
                 }
 
                 pushFragment(
