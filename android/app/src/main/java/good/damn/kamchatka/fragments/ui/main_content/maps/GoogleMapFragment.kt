@@ -13,6 +13,7 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.Polygon
 import com.google.android.gms.maps.model.RoundCap
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.MainActivity
 import good.damn.kamchatka.R
@@ -28,6 +29,7 @@ import good.damn.kamchatka.services.GeoService
 import good.damn.kamchatka.services.interfaces.OnGetObjectsListener
 import good.damn.kamchatka.services.interfaces.OnGetRoutesListener
 import good.damn.kamchatka.services.interfaces.OnGetSecurityZonesListener
+import good.damn.kamchatka.views.bottom_sheets.BottomSheetInfo
 import kotlin.random.Random
 
 class GoogleMapFragment
@@ -156,6 +158,18 @@ GoogleMap.OnMarkerClickListener {
     override fun onMarkerClick(
         marker: Marker
     ): Boolean {
+        val ooptObj = marker.tag as? OOPTObject ?: return false
+
+        val sheet = BottomSheetInfo()
+
+        sheet.title = ooptObj.name
+        sheet.desc = ooptObj.desc
+
+        sheet.show(
+            childFragmentManager,
+            "bottomSheet"
+        )
+
         return true
     }
 
@@ -244,27 +258,25 @@ GoogleMap.OnMarkerClickListener {
     override fun onGetObjects(
         objects: Array<OOPTObject?>
     ) {
-        objects.forEach {
-            if (it == null) {
+        objects.forEach { obj ->
+            if (obj == null) {
                 return@forEach
             }
 
             MarkerOptions().position(
-                it.coords
+                obj.coords
             ).icon(
                 BitmapDescriptorFactory.defaultMarker(
                     BitmapDescriptorFactory.HUE_GREEN
                 )
             ).zIndex(
                 1.0f
-            ).title(
-                it.name
-            ).snippet(
-                it.desc
             ).let { options ->
                 map.addMarker(
                     options
-                )
+                )?.let { marker ->
+                    marker.tag = obj
+                }
             }
         }
     }
