@@ -13,6 +13,7 @@ import androidx.annotation.ColorInt
 import androidx.fragment.app.Fragment
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.MainActivity
+import good.damn.kamchatka.extensions.mainActivity
 
 abstract class StackFragment
 : Fragment(),
@@ -147,9 +148,4 @@ ValueAnimator.AnimatorUpdateListener {
         context: Context,
         measureUnit: Int
     ): View
-}
-
-private fun StackFragment
-    .mainActivity(): MainActivity {
-    return activity as MainActivity
 }

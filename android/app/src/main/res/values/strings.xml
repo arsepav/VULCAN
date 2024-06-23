@@ -119,6 +119,7 @@
     <string name="coords">Координаты</string>
     <string name="coords1">На месте проблемы (авто. отправка)</string>
     <string name="coords2">Указать место на карте</string>
+    <string name="select_position">Выберите позицию</string>
     <string-array name="rates">
         <item>Низкий уровень нагрузки</item>
         <item>Средний уровень нагрузки</item>
