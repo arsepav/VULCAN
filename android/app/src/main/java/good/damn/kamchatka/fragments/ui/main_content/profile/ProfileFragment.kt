@@ -419,6 +419,15 @@ class ProfileFragment
                     R.drawable.ic_reviewing
                 )
             }
+
+            View.VISIBLE.let {
+                if (perms.size != 1) {
+                    mTextViewSeeAll.visibility = it
+                }
+                mCardState.visibility = it
+            }
+
+            mLayoutNoPerms.visibility = View.INVISIBLE
         }
     }
 }
