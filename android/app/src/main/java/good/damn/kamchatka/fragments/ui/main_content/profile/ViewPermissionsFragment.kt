@@ -20,12 +20,15 @@ import good.damn.kamchatka.extensions.top
 import good.damn.kamchatka.fragments.StackFragment
 import good.damn.kamchatka.item_decorations.MarginItemDecoration
 import good.damn.kamchatka.models.Color
+import good.damn.kamchatka.models.permission.PermissionRequest
 import good.damn.kamchatka.services.PermissionService
 import good.damn.kamchatka.utils.ViewUtils
 import good.damn.kamchatka.views.button.ButtonBack
 
 class ViewPermissionsFragment
 : StackFragment() {
+
+    var permissions: Array<PermissionRequest>? = null
 
     override fun onCreateView(
         context: Context,
@@ -127,15 +130,10 @@ class ViewPermissionsFragment
         }
 
 
-        PermissionService(
-            context
-        ).getPermissions {
-            Application.ui {
-                recyclerView.adapter = PermissionRequestAdapter(
-                    it
-                )
-
-            }
+        permissions?.let {
+            recyclerView.adapter = PermissionRequestAdapter(
+                it
+            )
         }
 
         btnBack.setOnClickListener(
@@ -145,6 +143,16 @@ class ViewPermissionsFragment
         return layout
     }
 
+
+    companion object {
+        fun create(
+            perms: Array<PermissionRequest>
+        ): ViewPermissionsFragment {
+            val f = ViewPermissionsFragment()
+            f.permissions = perms
+            return f
+        }
+    }
 }
 
 private fun ViewPermissionsFragment.onClickBtnBack(

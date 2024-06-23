@@ -3,6 +3,7 @@ package good.damn.kamchatka.views.button
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.Gravity
+import androidx.annotation.DrawableRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.cardview.widget.CardView
@@ -109,6 +110,14 @@ class CardState(
 
         addView(
             mImageView
+        )
+    }
+
+    fun setDrawableEndId(
+        @DrawableRes id: Int
+    ) {
+        drawableEnd = Application.drawable(
+            id
         )
     }
 

@@ -3,17 +3,27 @@ package good.damn.kamchatka.fragments.ui.main_content.profile
 import android.content.Context
 import android.view.Gravity
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.LinearLayout
+import androidx.annotation.WorkerThread
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
+import good.damn.kamchatka.adapters.fragment_adapters.PermissionRequestAdapter
+import good.damn.kamchatka.extensions.boundsFrame
 import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.extensions.height
 import good.damn.kamchatka.extensions.left
+import good.damn.kamchatka.extensions.setImageDrawableId
 import good.damn.kamchatka.extensions.setTextColorId
 import good.damn.kamchatka.extensions.setTextPx
+import good.damn.kamchatka.extensions.size
+import good.damn.kamchatka.extensions.width
 import good.damn.kamchatka.fragments.ui.ScrollableFragment
 import good.damn.kamchatka.models.Color
+import good.damn.kamchatka.models.permission.PermissionRequest
+import good.damn.kamchatka.services.PermissionService
 import good.damn.kamchatka.utils.ViewUtils
 import good.damn.kamchatka.views.RoundedImageView
 import good.damn.kamchatka.views.button.ButtonBack
@@ -22,6 +32,8 @@ import good.damn.kamchatka.views.button.CardState
 
 class ProfileFragment
 : ScrollableFragment() {
+
+    private var mPermissions: Array<PermissionRequest>? = null
 
     private lateinit var mCardState: CardState
     private lateinit var mTextViewSeeAll: AppCompatTextView
@@ -35,6 +47,12 @@ class ProfileFragment
 
         // Allocating views
         val layout = ViewUtils.verticalLinearLayout(
+            context
+        )
+        mLayoutNoPerms = ViewUtils.verticalLinearLayout(
+            context
+        )
+        val layoutPerm = FrameLayout(
             context
         )
         val btnBack = ButtonBack.createDefaultLinear(
@@ -59,6 +77,12 @@ class ProfileFragment
             context
         )
         mCardState = CardState(
+            context
+        )
+        val imageViewNoPerm = AppCompatImageView(
+            context
+        )
+        val textViewNoPerm = AppCompatTextView(
             context
         )
         mTextViewSeeAll = AppCompatTextView(
@@ -90,6 +114,9 @@ class ProfileFragment
         mTextViewSeeAll.setText(
             R.string.see_all_perm
         )
+        textViewNoPerm.setText(
+            R.string.no_perms
+        )
         mCardState.apply {
             title = "Загрузка..."
             state = title
@@ -97,6 +124,8 @@ class ProfileFragment
             drawableEnd = Application.drawable(
                 R.drawable.ic_reviewing
             )
+            visibility = View.INVISIBLE
+            mTextViewSeeAll.visibility = visibility
         }
 
 
@@ -115,9 +144,15 @@ class ProfileFragment
         imageViewAvatar.setImageDrawable(
             R.drawable.icon
         )
+        imageViewNoPerm.setImageDrawableId(
+            R.drawable.ic_info
+        )
 
 
         // Text Color
+        textViewNoPerm.setTextColorId(
+            R.color.accentColor30
+        )
         textViewAppName.setTextColor(
             Application.color(
                 R.color.accentColor30
@@ -145,6 +180,7 @@ class ProfileFragment
         )?.let {
             textViewHello.typeface = it
             mTextViewSeeAll.typeface = it
+            textViewNoPerm.typeface = it
         }
 
         Application.font(
@@ -208,11 +244,15 @@ class ProfileFragment
             left = btnBack.left(),
             top = measureUnit * 0.1207f
         )
-        mCardState.boundsLinear(
+        layoutPerm.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             width = (measureUnit * 0.9033f).toInt(),
             height = (measureUnit * 0.3188f).toInt(),
             top = measureUnit * 0.05917f
+        )
+        mCardState.size(
+            width = layoutPerm.width(),
+            height = layoutPerm.height()
         )
         mTextViewSeeAll.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
@@ -237,7 +277,6 @@ class ProfileFragment
         )
 
 
-
         // Corner radius
         imageViewAvatar.radius = imageViewAvatar.height() * 0.5f
 
@@ -257,13 +296,36 @@ class ProfileFragment
             layoutIt()
         }
 
+        layoutPerm.apply {
+            imageViewNoPerm.boundsLinear(
+                Gravity.CENTER_HORIZONTAL,
+                size = (height() * 0.37878f).toInt()
+            )
+            textViewNoPerm.setTextPx(
+                height() * 0.13113f
+            )
+            textViewNoPerm.boundsLinear(
+                Gravity.CENTER_HORIZONTAL
+            )
+        }
+
+        mLayoutNoPerms.apply {
+            addView(imageViewNoPerm)
+            addView(textViewNoPerm)
+        }
+
+        layoutPerm.apply {
+            addView(mLayoutNoPerms)
+            addView(mCardState)
+        }
+
         layout.apply {
             addView(btnBack)
             addView(textViewAppName)
             addView(imageViewAvatar)
             addView(textViewHello)
             addView(textViewPermissions)
-            addView(mCardState)
+            addView(layoutPerm)
             addView(mTextViewSeeAll)
             addView(notification)
             addView(cardReport)
@@ -283,6 +345,11 @@ class ProfileFragment
         )
 
 
+        PermissionService(
+            context
+        ).getPermissions(
+            this::onGetPermissions
+        )
 
 
         return layout
@@ -299,11 +366,61 @@ class ProfileFragment
     private fun onClickCardViewRequest(
         view: View
     ) {
-        pushFragment(
-            ViewPermissionsFragment()
-        )
+        mPermissions?.let {
+            pushFragment(
+                ViewPermissionsFragment.create(
+                    it
+                )
+            )
+        }
     }
 
+
+    @WorkerThread
+    private fun onGetPermissions(
+        perms: Array<PermissionRequest>
+    ) {
+        mPermissions = perms
+        if (perms.isEmpty()) {
+            return
+        }
+        Application.ui {
+            mCardState.apply {
+                val p = perms.last()
+                title = p.name
+                subtitle = getString(
+                    R.string.park
+                )
+
+                if (p.approved) {
+                    state = getString(
+                        R.string.approved
+                    )
+                    setDrawableEndId(
+                        R.drawable.ic_approved
+                    )
+                    return@apply
+                }
+
+                if (p.reviewed) {
+                    state = getString(
+                        R.string.rejected
+                    )
+                    setDrawableEndId(
+                        R.drawable.ic_x_mark
+                    )
+                    return@apply
+                }
+
+                state = getString(
+                    R.string.reviewing
+                )
+                setDrawableEndId(
+                    R.drawable.ic_reviewing
+                )
+            }
+        }
+    }
 }
 
 private fun ProfileFragment.onClickBtnBack(

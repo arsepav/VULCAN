@@ -49,7 +49,7 @@
     <string name="like_msg">"Это тестовый экран.\nВ рамках кейса функция\n”Избранное” не реализована.</string>
     <string name="hello">Здравствуйте,</string>
     <string name="profile_msg">"В данный раздел можно добавить\nлюбые функции на усмотрение\nзаказчика.\n\nНапример: настройки, связь с\nразработчиком,\nгорячую линию и др.</string>
-    <string name="birthDate">Дата рождения</string>
+    <string name="birthDate">Дата рождения (ГГГГ-ММ-ДД)</string>
     <string name="country_passport">Гражданство</string>
     <string name="region_register">Регион регистрации</string>
     <string name="gender">Пол (М,Ж)</string>
@@ -127,6 +127,10 @@
     <string name="see_all_perm">ПОСМОТРЕТЬ ВСЕ ЗАЯВКИ</string>
     <string name="report_ecology">Сообщите об\nэкологической проблеме</string>
     <string name="permission_list">Заявки на посещение</string>
+    <string name="reviewing">РАССМАТРИВАЕТСЯ</string>
+    <string name="rejected">ОТКЛОНЕНО</string>
+    <string name="approved">ОДОБРЕНО</string>
+    <string name="no_perms">Активных заявок нет</string>
     <string-array name="rates">
         <item>Низкий уровень нагрузки</item>
         <item>Средний уровень нагрузки</item>
