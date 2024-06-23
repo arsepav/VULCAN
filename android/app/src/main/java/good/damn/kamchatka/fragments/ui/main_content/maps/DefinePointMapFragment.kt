@@ -122,8 +122,6 @@ GoogleMap.OnMapClickListener {
         onAcceptPosition?.invoke(
             markerPos!!.position
         )
-
-        mainActivity().popFragment()
     }
 
 }

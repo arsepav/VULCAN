@@ -6,12 +6,15 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
-import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.text.InputType
 import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.TextView
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
@@ -42,7 +45,7 @@ import java.io.FileOutputStream
 
 class ReportEcologyFragment
 : ScrollableFragment(),
-LocationListener {
+LocationListener, ActivityResultCallback<Map<String,Boolean>> {
 
     companion object {
         private const val TAG = "ReportEcologyFragment"
@@ -60,8 +63,12 @@ LocationListener {
     private var mLong = 0.0
 
     private var mFileImage: File? = null
+    private var mProblemId: Int? = null
+    private var mProblemName: String? = null
 
-    private var locationManager: LocationManager? = null
+    private var mLocationManager: LocationManager? = null
+
+    private var mLocationLauncher: ActivityResultLauncher<Array<String>>? = null
 
     override fun onLocationChanged(
         location: Location
@@ -69,6 +76,17 @@ LocationListener {
         // Lat lng
         mLat = location.latitude
         mLong = location.longitude
+
+        context?.let {
+            mLocationManager?.removeUpdates(
+                this
+            )
+            reportNow(
+                mLat,
+                mLong,
+                it
+            )
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,53 +107,14 @@ LocationListener {
         measureUnit: Int
     ): View {
 
-        locationManager = context.getSystemService(
+        mLocationManager = context.getSystemService(
             Context.LOCATION_SERVICE
         ) as LocationManager?
 
-        fun requestLocation() {
-            try {
-                locationManager?.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER,
-                    0L,
-                    0f,
-                    this
-                )
-            } catch(ex: SecurityException) {
-                Log.d(TAG, "Security Exception, no location available")
-            }
-        }
-
-        val locationPermissionRequest = registerForActivityResult(
-            ActivityResultContracts.RequestMultiplePermissions()
-        ) { permissions ->
-            when {
-                permissions.getOrDefault(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    false
-                ) -> {
-                    requestLocation()
-                }
-
-                permissions.getOrDefault(
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    false
-                ) -> {
-                    requestLocation()
-                }
-
-                else -> {
-                // No location access granted.
-                }
-            }
-        }
-
-        locationPermissionRequest.launch(arrayOf(
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION))
-
-
-
+        mLocationLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions(),
+            this
+        )
 
 
 
@@ -433,6 +412,28 @@ LocationListener {
     }
 
 
+    private fun requestLocation() {
+        val context = context ?: return
+        try {
+            mLocationManager?.requestLocationUpdates(
+                LocationManager.GPS_PROVIDER,
+                0L,
+                0f,
+                this
+            )
+            Application.toast(
+                R.string.preparing,
+                context
+            )
+        } catch(ex: SecurityException) {
+            Log.d(TAG, "Security Exception, no location available")
+            Application.toast(
+                "Error: Security GPS",
+                context
+            )
+        }
+    }
+
     private fun onSendReport(
         view: View
     ) {
@@ -454,21 +455,17 @@ LocationListener {
                 return@let
             }
 
-            uploadFile(
-                file
-            )
+            uploadFile()
         }
     }
 
 
 
-    private fun uploadFile(
-        file: File
-    ) {
+    private fun uploadFile() {
         val context = context ?: return
 
-        val problemType = mGroupCheckProb.whoIsChecked()
-        if (problemType == null) {
+        mProblemName = mGroupCheckProb.whoIsChecked()
+        if (mProblemName == null) {
             Application.toast(
                 R.string.need_to_select_problem,
                 context
@@ -476,9 +473,10 @@ LocationListener {
             return
         }
 
-        val idProblem = map.getKey(
-            problemType
+        mProblemId = map.getKey(
+            mProblemName!!
         ) ?: return
+
 
         val coordType = mGroupCheckCoords.whoIsChecked()
         if (coordType == null) {
@@ -492,34 +490,28 @@ LocationListener {
         (mapCoords.getKey(coordType) == 1).let { isAuto ->
             if (!isAuto) { // Auto send coords from geo position
                 val defMap = DefinePointMapFragment()
+                val map = MapsFragment.create(
+                    defMap
+                )
                 defMap.onAcceptPosition = { pos ->
                     reportNow(
-                        problemType,
-                        idProblem,
-                        file,
                         pos.latitude,
                         pos.longitude,
                         context
                     )
+                    map.popFragment()
                 }
 
                 pushFragment(
-                    MapsFragment.create(
-                        defMap
-                    )
+                    map
                 )
                 return
             }
         }
 
-        reportNow(
-            problemType,
-            idProblem,
-            file,
-            mLat,
-            mLong,
-            context
-        )
+        mLocationLauncher?.launch(arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION))
     }
 
     private fun onPickPhoto(
@@ -535,16 +527,15 @@ LocationListener {
                 return@pickImage
             }
 
-            context?.contentResolver?.let {
+            val context = view.context
+
+            context.contentResolver?.let {
                 val stream = it.openInputStream(
                     uri
                 ) ?: return@let
 
-                val publ = Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DOCUMENTS
-                )
                 val fileOut = File(
-                    "$publ/${System.currentTimeMillis()}.png"
+                    "${context.cacheDir}/${System.currentTimeMillis()}.png"
                 )
 
                 if (fileOut.exists()) {
@@ -584,13 +575,14 @@ LocationListener {
     }
 
     private fun reportNow(
-        name: String,
-        idProblem: Int,
-        file: File,
         lat: Double,
         long: Double,
         context: Context
     ) {
+        val file = mFileImage ?: return
+        val name = mProblemName ?: return
+        val idProblem = mProblemId ?: return
+
         val rep = ReportEcologyService(
             context
         )
@@ -621,6 +613,36 @@ LocationListener {
                     Application.toast(
                         "${context.getString(R.string.error)}: ${it.code} ${it.body}",
                         context
+                    )
+                }
+            }
+        }
+    }
+
+
+    override fun onActivityResult(
+        result: Map<String, Boolean>
+    ) {
+        when {
+            result.getOrDefault(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                false
+            ) -> {
+                requestLocation()
+            }
+
+            result.getOrDefault(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                false
+            ) -> {
+                requestLocation()
+            }
+
+            else -> {
+                context?.let {
+                    Application.toast(
+                        R.string.need_location_to_report,
+                        it
                     )
                 }
             }

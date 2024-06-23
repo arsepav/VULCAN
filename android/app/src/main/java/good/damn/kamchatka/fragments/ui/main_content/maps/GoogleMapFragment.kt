@@ -17,6 +17,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.MainActivity
 import good.damn.kamchatka.R
+import good.damn.kamchatka.extensions.mainActivity
 import good.damn.kamchatka.fragments.StackFragment
 import good.damn.kamchatka.fragments.ui.main_content.details.ParkDetailsFragment
 import good.damn.kamchatka.models.RouteMap
@@ -43,7 +44,7 @@ OnGetObjectsListener,
 GoogleMap.OnMarkerClickListener {
 
     companion object {
-        private const val TAG = "MapsFragment"
+        private const val TAG = "GoogleMapFragment"
     }
 
     var markerLatLng: LatLng? = null
@@ -287,7 +288,7 @@ GoogleMap.OnMarkerClickListener {
     fun pushFragment(
         frag: StackFragment
     ) {
-        (activity as? MainActivity)?.pushFragment(
+        mainActivity().pushFragment(
             frag
         )
     }
