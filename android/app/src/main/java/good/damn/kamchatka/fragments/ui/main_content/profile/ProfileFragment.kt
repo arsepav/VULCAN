@@ -18,15 +18,17 @@ import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.extensions.textSizeBounds
 import good.damn.kamchatka.extensions.top
 import good.damn.kamchatka.fragments.StackFragment
+import good.damn.kamchatka.fragments.ui.ScrollableFragment
+import good.damn.kamchatka.models.Color
 import good.damn.kamchatka.utils.ViewUtils
 import good.damn.kamchatka.views.RoundedImageView
 import good.damn.kamchatka.views.button.ButtonBack
 import good.damn.kamchatka.views.special.profile.CardViewRequest
 
 class ProfileFragment
-: StackFragment() {
+: ScrollableFragment() {
 
-    override fun onCreateView(
+    override fun onCreateContentView(
         context: Context,
         measureUnit: Int
     ): View {
@@ -58,6 +60,9 @@ class ProfileFragment
         val btnReport = AppCompatButton(
             context
         )
+        val notification = AppCompatTextView(
+            context
+        )
         val vulcanMsg = ViewUtils.vulcanTextView(
             R.string.profile_msg,
             context,
@@ -73,6 +78,9 @@ class ProfileFragment
         )
         textViewHello.text = "${getString(R.string.hello)} ${Application.TOKEN?.name}"
 
+        notification.setText(
+            R.string.notify_people
+        )
 
         cardViewRequest.setText(
             "Посмотреть все заявки"
@@ -99,18 +107,30 @@ class ProfileFragment
                 R.color.titleColor
             )
         )
-
-
+        notification.setTextColor(
+            Color.parseFromHexId(
+                R.color.titleColor,
+                0.3f
+            )
+        )
 
         // Font
-        textViewAppName.typeface = Application.font(
-            R.font.open_sans_bold,
-            context
-        )
         textViewHello.typeface = Application.font(
             R.font.open_sans_semi_bold,
             context
         )
+
+        Application.font(
+            R.font.open_sans_bold,
+            context
+        )?.let {
+           notification.typeface = it
+            textViewAppName.typeface = it
+        }
+
+
+
+
 
 
         // Text Size
@@ -119,6 +139,9 @@ class ProfileFragment
         )
         textViewHello.setTextPx(
             measureUnit * 0.04685f
+        )
+        notification.setTextPx(
+            measureUnit * 0.02946f
         )
 
 
@@ -161,6 +184,11 @@ class ProfileFragment
             width = -1,
             top = cardViewRequest.bottom().toFloat()
         )
+        notification.boundsFrame(
+            Gravity.CENTER_HORIZONTAL,
+            width = (measureUnit * 0.8357f).toInt(),
+            top = btnReport.bottom().toFloat() * 1.1f
+        )
         vulcanMsg.boundsFrame(
             Gravity.START,
             top = Application.HEIGHT * 0.671f,
@@ -196,10 +224,16 @@ class ProfileFragment
             btnReport
         )
         layout.addView(
+            notification
+        )
+        layout.addView(
             vulcanMsg
         )
 
 
+        notification.post {
+
+        }
 
 
 

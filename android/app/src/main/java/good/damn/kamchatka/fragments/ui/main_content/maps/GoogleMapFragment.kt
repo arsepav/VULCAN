@@ -23,7 +23,9 @@ import good.damn.kamchatka.models.SecurityZone
 import good.damn.kamchatka.models.ShortOOPT
 import good.damn.kamchatka.models.map.AntroColors
 import good.damn.kamchatka.models.map.OOPTColors
+import good.damn.kamchatka.models.remote.json.OOPTObject
 import good.damn.kamchatka.services.GeoService
+import good.damn.kamchatka.services.interfaces.OnGetObjectsListener
 import good.damn.kamchatka.services.interfaces.OnGetRoutesListener
 import good.damn.kamchatka.services.interfaces.OnGetSecurityZonesListener
 import kotlin.random.Random
@@ -33,7 +35,9 @@ class GoogleMapFragment
 OnMapReadyCallback,
 GoogleMap.OnPolygonClickListener,
 OnGetSecurityZonesListener,
-OnGetRoutesListener {
+OnGetRoutesListener,
+OnGetObjectsListener,
+GoogleMap.OnMarkerClickListener {
 
     companion object {
         private const val TAG = "MapsFragment"
@@ -114,10 +118,17 @@ OnGetRoutesListener {
         mGeoService?.setOnGetRoutesListener(
             this
         )
+        mGeoService?.setOnGetObjectsListener(
+            this
+        )
 
         mGeoService?.requestSecurityZones()
 
         map.setOnPolygonClickListener(
+            this
+        )
+
+        map.setOnMarkerClickListener(
             this
         )
 
@@ -140,6 +151,12 @@ OnGetRoutesListener {
                 )
             )
         }
+    }
+
+    override fun onMarkerClick(
+        marker: Marker
+    ): Boolean {
+        return true
     }
 
     override fun onGetSecurityZones(
@@ -176,6 +193,7 @@ OnGetRoutesListener {
             }
         }
         mGeoService?.requestRoutes()
+        mGeoService?.requestObjects()
     }
 
     override fun onGetRoutes(
@@ -222,6 +240,35 @@ OnGetRoutesListener {
             }
         }
     }
+
+    override fun onGetObjects(
+        objects: Array<OOPTObject?>
+    ) {
+        objects.forEach {
+            if (it == null) {
+                return@forEach
+            }
+
+            MarkerOptions().position(
+                it.coords
+            ).icon(
+                BitmapDescriptorFactory.defaultMarker(
+                    BitmapDescriptorFactory.HUE_GREEN
+                )
+            ).zIndex(
+                1.0f
+            ).title(
+                it.name
+            ).snippet(
+                it.desc
+            ).let { options ->
+                map.addMarker(
+                    options
+                )
+            }
+        }
+    }
+
 
     fun pushFragment(
         frag: StackFragment

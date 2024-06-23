@@ -7,6 +7,11 @@ import androidx.annotation.WorkerThread
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.isAvailable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import okhttp3.Authenticator
 import okhttp3.Credentials
 import okhttp3.OkHttpClient
@@ -66,14 +71,14 @@ open class NetworkService(
         request: Request,
         process: ((JSONArray) -> Unit)
     ) {
-        Thread {
+        CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = client.newCall(
                     request
                 ).execute()
                 val body = response
                     .body?.string()
-                    ?: return@Thread
+                    ?: return@launch
 
                 Log.d(TAG, "queueRequest: ${response.code} $body")
 
@@ -84,9 +89,9 @@ open class NetworkService(
                 )
             } catch (e: Exception) {
                 e.printStackTrace()
-                return@Thread
+                return@launch
             }
-        }.start()
+        }
     }
 
 }
