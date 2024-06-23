@@ -122,6 +122,7 @@
     <string name="select_position">Выберите позицию</string>
     <string name="need_location_to_report">Нужны геоданные для отправки</string>
     <string name="preparing">Подготовка...</string>
+    <string name="success_report">Спасибо! Сообщение об экологической проблеме будет передано</string>
     <string-array name="rates">
         <item>Низкий уровень нагрузки</item>
         <item>Средний уровень нагрузки</item>

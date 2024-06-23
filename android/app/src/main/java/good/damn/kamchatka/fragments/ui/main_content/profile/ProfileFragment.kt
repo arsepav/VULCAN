@@ -125,7 +125,7 @@ class ProfileFragment
             R.font.open_sans_bold,
             context
         )?.let {
-           notification.typeface = it
+            notification.typeface = it
             textViewAppName.typeface = it
         }
 
@@ -191,6 +191,7 @@ class ProfileFragment
         )
         vulcanMsg.boundsLinear(
             Gravity.START,
+            top = measureUnit * 0.2f,
             left = btnBack.left() * 1.3f
         )
 
@@ -199,6 +200,11 @@ class ProfileFragment
         // Corner radius
         imageViewAvatar.radius = imageViewAvatar.height() * 0.5f
 
+
+
+        // Gravity
+        notification.gravity = Gravity
+            .CENTER_HORIZONTAL
 
 
 
@@ -228,11 +234,6 @@ class ProfileFragment
         layout.addView(
             vulcanMsg
         )
-
-
-        notification.post {
-
-        }
 
 
 

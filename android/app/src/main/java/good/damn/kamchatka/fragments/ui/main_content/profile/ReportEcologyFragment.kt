@@ -603,7 +603,7 @@ LocationListener, ActivityResultCallback<Map<String,Boolean>> {
                 Application.ui {
                     if (it.code == 200) {
                         Application.toast(
-                            R.string.success,
+                            R.string.success_report,
                             context
                         )
                         popFragment()
