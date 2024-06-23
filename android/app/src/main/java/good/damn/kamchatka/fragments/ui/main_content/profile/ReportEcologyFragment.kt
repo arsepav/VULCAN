@@ -2,6 +2,8 @@ package good.damn.kamchatka.fragments.ui.main_content.profile
 
 import android.Manifest
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -49,6 +51,7 @@ LocationListener, ActivityResultCallback<Map<String,Boolean>> {
 
     companion object {
         private const val TAG = "ReportEcologyFragment"
+        private const val MB = 1024 * 1024
     }
 
     private lateinit var mGroupCheckProb: GroupCheckBox
@@ -534,8 +537,9 @@ LocationListener, ActivityResultCallback<Map<String,Boolean>> {
                     uri
                 ) ?: return@let
 
+
                 val fileOut = File(
-                    "${context.cacheDir}/${System.currentTimeMillis()}"
+                    "${context.cacheDir}/temp}"
                 )
 
                 if (fileOut.exists()) {
@@ -546,23 +550,41 @@ LocationListener, ActivityResultCallback<Map<String,Boolean>> {
                     Log.d("ReportEcologyProblem",
                         "onPickPhoto: CREATED TEMP FILE")
                 }
+                
+                val bitmapSize = stream.available()
+
+                Log.d(TAG, "onPickPhoto: BITMAP_SIZE: $bitmapSize")
+                
+                val bitmap = BitmapFactory.decodeStream(
+                    stream
+                )
+                stream.close()
 
                 val out = FileOutputStream(
                     fileOut
                 )
 
-                val b = ByteArray(1024*1024)
-                var n: Int
-                while (true) {
-                    n = stream.read(b)
-                    if (n == -1) {
-                        break
+                val quality = when (bitmapSize) {
+                    in 0..MB -> {
+                        100
                     }
-                    out.write(b, 0, n)
+                    in MB..(2 * MB) -> {
+                        75
+                    }
+                    in (2*MB)..(3*MB) -> {
+                        50
+                    }
+                    else -> 25
                 }
 
-                stream.close()
+                bitmap.compress(
+                    Bitmap.CompressFormat.JPEG,
+                    quality,
+                    out
+                )
+                
                 out.close()
+
 
                 mFileImage = fileOut
 
