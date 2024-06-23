@@ -23,6 +23,35 @@ import good.damn.kamchatka.views.text_fields.TextFieldRound
 class ViewUtils {
    companion object {
 
+       fun titleOption(
+           measureUnit: Int,
+           @StringRes textId: Int,
+           context: Context
+       ): TextView {
+           val textView = TextView(
+               context
+           )
+
+           textView.typeface = Application.font(
+               R.font.open_sans_bold,
+               context
+           )
+
+           textView.setTextColorId(
+               R.color.titleColor
+           )
+
+           textView.setTextPx(
+               measureUnit * 0.0483f
+           )
+
+           textView.setText(
+               textId
+           )
+
+           return textView
+       }
+
        fun titleNav(
            measureUnit: Int,
            @StringRes textId: Int,

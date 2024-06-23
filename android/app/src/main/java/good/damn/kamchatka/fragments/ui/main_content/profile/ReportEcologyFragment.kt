@@ -2,28 +2,22 @@ package good.damn.kamchatka.fragments.ui.main_content.profile
 
 import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Environment
+import android.text.InputType
 import android.util.Log
 import android.view.Gravity
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
-import good.damn.kamchatka.extensions.boundsFrame
 import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.extensions.height
 import good.damn.kamchatka.extensions.left
 import good.damn.kamchatka.extensions.setTextColorId
 import good.damn.kamchatka.extensions.setTextPx
-import good.damn.kamchatka.fragments.StackFragment
 import good.damn.kamchatka.fragments.ui.ScrollableFragment
 import good.damn.kamchatka.services.ReportEcologyService
 import good.damn.kamchatka.services.UploadService
@@ -33,9 +27,10 @@ import good.damn.kamchatka.views.button.ButtonBack
 import good.damn.kamchatka.views.button.ButtonRound
 import good.damn.kamchatka.views.layout.GroupCheckBox
 import good.damn.kamchatka.views.layout.models.GroupField
-import good.damn.kamchatka.views.text_fields.TextField
+import good.damn.kamchatka.views.text_fields.TextFieldRound
 import java.io.File
 import java.io.FileOutputStream
+
 
 class ReportEcologyFragment
 : ScrollableFragment(),
@@ -46,7 +41,8 @@ LocationListener {
     }
 
     private lateinit var mGroupCheckProb: GroupCheckBox
-    private lateinit var mEditTextDescription: EditText
+    private lateinit var mEditTextDescription: TextFieldRound
+    private lateinit var mImageViewAttach: RoundedImageView
 
     private val map = hashMapOf(
         3 to "Мусор / свалка",
@@ -58,6 +54,8 @@ LocationListener {
 
     private var lat = 0.0
     private var long = 0.0
+
+    private var mFileImage: File? = null
 
     private var locationManager: LocationManager? = null
 
@@ -110,6 +108,13 @@ LocationListener {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION))
 
+
+
+
+
+
+
+
         val layout = ViewUtils.verticalLinearLayout(
             context
         )
@@ -125,12 +130,41 @@ LocationListener {
             R.string.ecology_problem,
             context
         )
+        val textViewOptionAttach = ViewUtils.titleOption(
+            measureUnit,
+            R.string.attach_photo,
+            context
+        )
+        mImageViewAttach = RoundedImageView(
+            context
+        )
+        val textViewOptionComment = ViewUtils.titleOption(
+            measureUnit,
+            R.string.comment,
+            context
+        )
+        val btnSendReport = ButtonRound(
+            context
+        )
         mGroupCheckProb = GroupCheckBox(
             context
         )
-        mEditTextDescription = EditText(
+        mEditTextDescription = TextFieldRound(
             context
         )
+
+        mEditTextDescription.setStrokeColor(
+            Application.color(
+                R.color.signInStrokeColor3
+            )
+        )
+        mEditTextDescription.setHint(
+            R.string.text_comment
+        )
+        mEditTextDescription.gravity = Gravity.START or Gravity.TOP
+        mEditTextDescription.maxLines = 15
+        mEditTextDescription.inputType =
+            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
 
         mGroupCheckProb.apply {
             checkBoxSize = measureUnit * 0.0603f
@@ -144,10 +178,12 @@ LocationListener {
             checkBoxRadius = checkBoxSize * 0.5f
             checkBoxStrokeWidth = checkBoxSize * 0.03f
             checkBoxTextPadding = measureUnit * 0.05f
-
         }
 
-        mEditTextDescription.hint = "Комментарий"
+
+        mImageViewAttach.setImageDrawable(
+            R.drawable.ic_pick_image
+        )
 
         mGroupCheckProb.fields = arrayOf(
             GroupField(
@@ -167,24 +203,20 @@ LocationListener {
             )
         )
 
-        val btnAttachPhoto = ButtonRound(
-            context
-        )
-
-        btnAttachPhoto.setText(
+        btnSendReport.setText(
             R.string.send
         )
 
-        btnAttachPhoto.setTextColorId(
+        btnSendReport.setTextColorId(
             R.color.textColorBtn
         )
 
-        btnAttachPhoto.typeface = Application.font(
+        btnSendReport.typeface = Application.font(
             R.font.open_sans_semi_bold,
             context
         )
 
-        btnAttachPhoto.setBackgroundColor(
+        btnSendReport.setBackgroundColor(
             Application.color(
                 R.color.titleColor
             )
@@ -198,12 +230,36 @@ LocationListener {
         mGroupCheckProb.boundsLinear(
             Gravity.START,
             width = measureUnit,
-            height = (measureUnit * 0.615f).toInt(),
             top = measureUnit * 0.111f,
             left = textViewTitle.left()
         )
 
-        btnAttachPhoto.boundsLinear(
+        textViewOptionAttach.boundsLinear(
+            Gravity.START,
+            left = textViewTitle.left(),
+            top = measureUnit * 0.0833f
+        )
+
+        mImageViewAttach.boundsLinear(
+            Gravity.CENTER_HORIZONTAL,
+            size = (measureUnit * 0.169f).toInt(),
+            top = measureUnit * 0.0724f
+        )
+
+        textViewOptionComment.boundsLinear(
+            Gravity.START,
+            left = textViewTitle.left(),
+            top = measureUnit * 0.07f
+        )
+
+        mEditTextDescription.boundsLinear(
+            Gravity.CENTER_HORIZONTAL,
+            width = (measureUnit * 0.888f).toInt(),
+            height = (measureUnit * 0.1932f).toInt(),
+            top = measureUnit * 0.0507f
+        )
+
+        btnSendReport.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             width = (measureUnit - 2 * textViewTitle.left()).toInt(),
             height = (measureUnit * 0.1352f).toInt(),
@@ -211,10 +267,17 @@ LocationListener {
         )
 
 
-        btnAttachPhoto.cornerRadius = btnAttachPhoto.height() * 0.3f
+        btnSendReport.cornerRadius = btnSendReport.height() * 0.3f
 
-        btnAttachPhoto.setTextPx(
-            btnAttachPhoto.height() * 0.3214f
+        btnSendReport.setTextPx(
+            btnSendReport.height() * 0.3214f
+        )
+
+        mEditTextDescription.cornerRadius = mEditTextDescription
+            .height() * 0.1625f
+
+        mEditTextDescription.setStrokeWidth(
+            mEditTextDescription.height() * 0.0125f
         )
 
 
@@ -227,19 +290,31 @@ LocationListener {
         layout.addView(
             mGroupCheckProb
         )
+        layout.addView(
+            textViewOptionAttach
+        )
+        layout.addView(
+            mImageViewAttach
+        )
+        layout.addView(
+            textViewOptionComment
+        )
 
         layout.addView(
             mEditTextDescription
         )
         layout.addView(
-            btnAttachPhoto
+            btnSendReport
         )
-
         mGroupCheckProb.layoutFields()
 
 
-        btnAttachPhoto.setOnClickListener(
+        mImageViewAttach.setOnClickListener(
             this::onPickPhoto
+        )
+
+        btnSendReport.setOnClickListener(
+            this::onSendReport
         )
 
         btnClose.setOnClickListener(
@@ -248,6 +323,36 @@ LocationListener {
 
         return layout
     }
+
+
+    private fun onSendReport(
+        view: View
+    ) {
+        val context = view.context
+        if (mFileImage == null) {
+            Application.toast(
+                R.string.pick_image_please,
+                context
+            )
+            return
+        }
+
+        mFileImage?.let { file ->
+            if (!file.exists()) {
+                Application.toast(
+                    R.string.pick_image_please,
+                    context
+                )
+                return@let
+            }
+
+            uploadFile(
+                file
+            )
+        }
+    }
+
+
 
     private fun uploadFile(
         file: File
@@ -312,6 +417,15 @@ LocationListener {
         view: View
     ) {
         pickImage { uri ->
+            if (uri == null) {
+                mFileImage = null
+                mImageViewAttach.setImageDrawable(
+                    R.drawable.ic_pick_image
+                )
+                mImageViewAttach.requestLayout()
+                return@pickImage
+            }
+
             context?.contentResolver?.let {
                 val stream = it.openInputStream(
                     uri
@@ -350,9 +464,12 @@ LocationListener {
                 stream.close()
                 out.close()
 
-                uploadFile(
-                    fileOut
+                mFileImage = fileOut
+
+                mImageViewAttach.setImageDrawable(
+                    R.drawable.ic_done
                 )
+                mImageViewAttach.requestLayout()
             }
         }
     }

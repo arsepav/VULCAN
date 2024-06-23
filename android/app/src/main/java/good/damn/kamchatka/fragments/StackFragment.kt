@@ -120,7 +120,7 @@ ValueAnimator.AnimatorUpdateListener {
     }
 
     fun pickImage(
-        completion: ((Uri)->Unit)
+        completion: ((Uri?)->Unit)
     ) {
         mainActivity().pickImage(
             completion

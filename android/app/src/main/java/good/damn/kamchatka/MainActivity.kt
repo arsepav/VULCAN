@@ -34,7 +34,7 @@ ActivityResultCallback<Uri?> {
     private lateinit var mContainer: FrameLayout
     private lateinit var mContentLauncher: ActivityResultLauncher<String>
 
-    private var mCompletionPickImage: ((Uri)->Unit)? = null
+    private var mCompletionPickImage: ((Uri?)->Unit)? = null
 
     companion object {
         private const val TAG = "MainActivity"
@@ -153,17 +153,13 @@ ActivityResultCallback<Uri?> {
     override fun onActivityResult(
         result: Uri?
     ) {
-        if (result == null) {
-            return
-
-        }
         mCompletionPickImage?.invoke(
             result
         )
     }
 
     fun pickImage(
-        completion: (Uri) -> Unit
+        completion: (Uri?) -> Unit
     ) {
         mCompletionPickImage = completion
         mContentLauncher.launch(
