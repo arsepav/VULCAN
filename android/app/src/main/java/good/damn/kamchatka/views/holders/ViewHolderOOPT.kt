@@ -6,26 +6,29 @@ import android.view.Gravity
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsLinear
+import good.damn.kamchatka.extensions.height
 import good.damn.kamchatka.extensions.setTextColorId
 import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.extensions.size
 
 class ViewHolderOOPT(
     layout: LinearLayout,
-    private val mImageView: ImageView,
-    private val mTextViewName: TextView,
-    private val mTextViewType: TextView
+    private val mImageView: AppCompatImageView,
+    private val mTextViewName: AppCompatTextView,
+    private val mTextViewType: AppCompatTextView
 ): RecyclerView.ViewHolder(
     layout
 ) {
 
     fun setPreview(
-        d: Bitmap
+        d: Bitmap?
     ) {
         mImageView.setImageBitmap(
             d
@@ -56,7 +59,10 @@ class ViewHolderOOPT(
             val layout = LinearLayout(
                 context
             )
-            val imageView = ImageView(
+            val cardView = CardView(
+                context
+            )
+            val imageView = AppCompatImageView(
                 context
             )
             val textViewName = AppCompatTextView(
@@ -75,6 +81,10 @@ class ViewHolderOOPT(
             textViewType.gravity = Gravity
                 .CENTER_HORIZONTAL
 
+
+            imageView.adjustViewBounds = true
+            imageView.scaleType = ImageView.ScaleType
+                .CENTER_CROP
 
 
             // Font
@@ -115,13 +125,15 @@ class ViewHolderOOPT(
             textViewType.alpha = 0.5f
 
 
+            cardView.cardElevation = 0.0f
 
 
             // Layout params
             layout.size(
                 height = recyclerViewHeight.toInt()
             )
-            imageView.boundsLinear(
+            cardView.boundsLinear(
+                Gravity.CENTER_HORIZONTAL,
                 width = imageViewWidth,
                 height = imageViewWidth
             )
@@ -135,13 +147,15 @@ class ViewHolderOOPT(
             )
 
 
-
-
+            cardView.apply {
+                radius = height() * 0.15f
+                addView(imageView)
+            }
 
 
             // Adding views
             layout.addView(
-                imageView
+                cardView
             )
             layout.addView(
                 textViewName
