@@ -317,7 +317,6 @@ async def download_file(file_id: int, db: Session = Depends(database.get_db)):
 @app.post("/oopts", response_model=List[schemas.OOPT])
 def read_oopts(oopt_info: schemas.GetOOPTs, db: Session = Depends(database.get_db)):
     oopts = (db.query(models.GeoPolygons, models.GeoPolygonsCategory.image_url)
-             .filter(models.GeoPolygons.category_id == 1)
              .filter(models.GeoPolygons.name.ilike(f"%{oopt_info.OOPT_name}%"))
              .join(models.GeoPolygonsCategory)
              .all())
