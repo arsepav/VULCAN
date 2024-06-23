@@ -163,7 +163,7 @@ ActivityResultCallback<Uri?> {
     ) {
         mCompletionPickImage = completion
         mContentLauncher.launch(
-            "*/*"
+            "image/*"
         )
     }
 

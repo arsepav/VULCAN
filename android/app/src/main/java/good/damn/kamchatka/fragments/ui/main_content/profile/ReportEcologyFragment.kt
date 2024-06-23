@@ -535,7 +535,7 @@ LocationListener, ActivityResultCallback<Map<String,Boolean>> {
                 ) ?: return@let
 
                 val fileOut = File(
-                    "${context.cacheDir}/${System.currentTimeMillis()}.png"
+                    "${context.cacheDir}/${System.currentTimeMillis()}"
                 )
 
                 if (fileOut.exists()) {
