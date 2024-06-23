@@ -108,6 +108,7 @@
     <string name="comment">Комментарий</string>
     <string name="pick_image_please">Нужна фотография</string>
     <string name="text_comment">Текст комментария</string>
+    <string name="optional">При необходимости</string>
     <string-array name="rates">
         <item>Низкий уровень нагрузки</item>
         <item>Средний уровень нагрузки</item>

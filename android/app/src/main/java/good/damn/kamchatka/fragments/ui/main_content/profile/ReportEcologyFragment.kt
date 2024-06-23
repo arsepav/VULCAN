@@ -10,6 +10,7 @@ import android.text.InputType
 import android.util.Log
 import android.view.Gravity
 import android.view.View
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
@@ -97,14 +98,23 @@ LocationListener {
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permissions ->
             when {
-                permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
+                permissions.getOrDefault(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    false
+                ) -> {
                     requestLocation()
                 }
-                permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
+
+                permissions.getOrDefault(
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    false
+                ) -> {
                     requestLocation()
-                } else -> {
+                }
+
+                else -> {
                 // No location access granted.
-            }
+                }
             }
         }
 
@@ -147,6 +157,9 @@ LocationListener {
             R.string.comment,
             context
         )
+        val textViewOptional = TextView(
+            context
+        )
         val btnSendReport = ButtonRound(
             context
         )
@@ -157,31 +170,20 @@ LocationListener {
             context
         )
 
-        mEditTextDescription.setStrokeColor(
-            Application.color(
-                R.color.signInStrokeColor3
+
+
+
+        textViewOptional.apply {
+            setText(R.string.optional)
+            setTextColorId(R.color.accentColor30)
+            typeface = Application.font(
+                R.font.open_sans_bold,
+                context
             )
-        )
-        mEditTextDescription.setHint(
-            R.string.text_comment
-        )
-        mEditTextDescription.setTextColorId(
-            R.color.accentColor
-        )
-        mEditTextDescription.setHintTextColor(
-            Color.parseFromHexId(
-                R.color.accentColor,
-                0.3f
-            )
-        )
-        mEditTextDescription.typeface = Application.font(
-            R.font.open_sans_regular,
-            context
-        )
-        mEditTextDescription.gravity = Gravity.START or Gravity.TOP
-        mEditTextDescription.maxLines = 15
-        mEditTextDescription.inputType =
-            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+        }
+
+
+
 
         mGroupCheckProb.apply {
             checkBoxSize = measureUnit * 0.0603f
@@ -224,25 +226,6 @@ LocationListener {
             )
         )
 
-        btnSendReport.setText(
-            R.string.send
-        )
-
-        btnSendReport.setTextColorId(
-            R.color.textColorBtn
-        )
-
-        btnSendReport.typeface = Application.font(
-            R.font.open_sans_semi_bold,
-            context
-        )
-
-        btnSendReport.setBackgroundColor(
-            Application.color(
-                R.color.titleColor
-            )
-        )
-
         textViewTitle.boundsLinear(
             Gravity.START,
             left = measureUnit * 0.0483f,
@@ -273,6 +256,11 @@ LocationListener {
             top = measureUnit * 0.07f
         )
 
+        textViewOptional.boundsLinear(
+            Gravity.START,
+            left = textViewTitle.left()
+        )
+
         mEditTextDescription.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             width = (measureUnit * 0.888f).toInt(),
@@ -287,13 +275,26 @@ LocationListener {
             top = measureUnit * 0.1316f
         )
 
-
-        btnSendReport.cornerRadius = btnSendReport.height() * 0.3f
-
-        btnSendReport.setTextPx(
-            btnSendReport.height() * 0.3214f
+        textViewOptional.setTextPx(
+            textViewOptionComment.textSize * 0.4885f
         )
 
+
+        btnSendReport.apply {
+            cornerRadius = height() * 0.3f
+            setTextPx(height() * 0.3214f)
+            setTextColorId(R.color.textColorBtn)
+            typeface = Application.font(
+                R.font.open_sans_semi_bold,
+                context
+            )
+            setText(R.string.send)
+            setBackgroundColor(
+                Application.color(
+                    R.color.titleColor
+                )
+            )
+        }
 
         mEditTextDescription.apply {
             height().let { h ->
@@ -313,6 +314,31 @@ LocationListener {
                     pad
                 )
             }
+            setHint(R.string.text_comment)
+            setStrokeColor(
+                Application.color(
+                    R.color.signInStrokeColor3
+                )
+            )
+            setTextColorId(
+                R.color.accentColor
+            )
+            setHintTextColor(
+                Color.parseFromHexId(
+                    R.color.accentColor,
+                    0.3f
+                )
+            )
+            typeface = Application.font(
+                R.font.open_sans_regular,
+                context
+            )
+            gravity = Gravity.START or Gravity.TOP
+            maxLines = 15
+            inputType = InputType.TYPE_CLASS_TEXT or(
+                InputType.TYPE_TEXT_FLAG_MULTI_LINE
+            )
+
         }
 
         btnClose.bottom().let { pad ->
@@ -331,6 +357,7 @@ LocationListener {
             addView(textViewOptionAttach)
             addView(mImageViewAttach)
             addView(textViewOptionComment)
+            addView(textViewOptional)
             addView(mEditTextDescription)
             addView(btnSendReport)
         }
