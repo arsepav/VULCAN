@@ -124,7 +124,7 @@
     <string name="preparing">Подготовка...</string>
     <string name="success_report">Спасибо! Сообщение об экологической проблеме будет передано</string>
     <string name="state">Статус</string>
-    <string name="see_all_perm">Посмотреть все заявки</string>
+    <string name="see_all_perm">ПОСМОТРЕТЬ ВСЕ ЗАЯВКИ</string>
     <string name="report_ecology">Сообщите об\nэкологической проблеме</string>
     <string name="permission_list">Заявки на посещение</string>
     <string-array name="rates">

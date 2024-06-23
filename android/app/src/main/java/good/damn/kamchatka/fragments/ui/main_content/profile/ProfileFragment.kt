@@ -3,12 +3,14 @@ package good.damn.kamchatka.fragments.ui.main_content.profile
 import android.content.Context
 import android.view.Gravity
 import android.view.View
+import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatTextView
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.extensions.height
 import good.damn.kamchatka.extensions.left
+import good.damn.kamchatka.extensions.setTextColorId
 import good.damn.kamchatka.extensions.setTextPx
 import good.damn.kamchatka.fragments.ui.ScrollableFragment
 import good.damn.kamchatka.models.Color
@@ -20,6 +22,10 @@ import good.damn.kamchatka.views.button.CardState
 
 class ProfileFragment
 : ScrollableFragment() {
+
+    private lateinit var mCardState: CardState
+    private lateinit var mTextViewSeeAll: AppCompatTextView
+    private lateinit var mLayoutNoPerms: LinearLayout
 
     override fun onCreateContentView(
         context: Context,
@@ -52,13 +58,16 @@ class ProfileFragment
             R.string.permission_list,
             context
         )
-        val textViewRequest = AppCompatTextView(
+        mCardState = CardState(
             context
         )
-        val cardReport = ButtonCard(
+        mTextViewSeeAll = AppCompatTextView(
             context
         )
         val notification = AppCompatTextView(
+            context
+        )
+        val cardReport = ButtonCard(
             context
         )
         val vulcanMsg = ViewUtils.vulcanTextView(
@@ -70,19 +79,27 @@ class ProfileFragment
 
 
         // Text
-        textViewAppName.isAllCaps = true
-        textViewAppName.setText(
-            R.string.app_name
-        )
+        textViewAppName.apply {
+            isAllCaps = true
+            setText(R.string.app_name)
+        }
         textViewHello.text = "${getString(R.string.hello)} ${Application.TOKEN?.name}"
-
         notification.setText(
             R.string.notify_people
         )
-
-        textViewRequest.setText(
+        mTextViewSeeAll.setText(
             R.string.see_all_perm
         )
+        mCardState.apply {
+            title = "Загрузка..."
+            state = title
+            subtitle = title
+            drawableEnd = Application.drawable(
+                R.drawable.ic_reviewing
+            )
+        }
+
+
 
         cardReport.apply {
             title = getString(
@@ -111,6 +128,9 @@ class ProfileFragment
                 R.color.titleColor
             )
         )
+        mTextViewSeeAll.setTextColorId(
+            R.color.accentColor
+        )
         notification.setTextColor(
             Color.parseFromHexId(
                 R.color.titleColor,
@@ -119,10 +139,13 @@ class ProfileFragment
         )
 
         // Font
-        textViewHello.typeface = Application.font(
+        Application.font(
             R.font.open_sans_semi_bold,
             context
-        )
+        )?.let {
+            textViewHello.typeface = it
+            mTextViewSeeAll.typeface = it
+        }
 
         Application.font(
             R.font.open_sans_bold,
@@ -143,6 +166,9 @@ class ProfileFragment
         )
         textViewHello.setTextPx(
             measureUnit * 0.04685f
+        )
+        mTextViewSeeAll.setTextPx(
+            measureUnit * 0.02681f
         )
         notification.setTextPx(
             measureUnit * 0.02946f
@@ -182,10 +208,15 @@ class ProfileFragment
             left = btnBack.left(),
             top = measureUnit * 0.1207f
         )
-        textViewRequest.boundsLinear(
+        mCardState.boundsLinear(
+            Gravity.CENTER_HORIZONTAL,
+            width = (measureUnit * 0.9033f).toInt(),
+            height = (measureUnit * 0.3188f).toInt(),
+            top = measureUnit * 0.05917f
+        )
+        mTextViewSeeAll.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             width = (measureUnit * 0.88164f).toInt(),
-            height = (measureUnit * 0.3913f).toInt(),
             top = measureUnit * 0.05193f
         )
         notification.boundsLinear(
@@ -221,13 +252,19 @@ class ProfileFragment
             layoutIt()
         }
 
+        mCardState.apply {
+            radius = height() * 0.191f
+            layoutIt()
+        }
+
         layout.apply {
             addView(btnBack)
             addView(textViewAppName)
             addView(imageViewAvatar)
             addView(textViewHello)
             addView(textViewPermissions)
-            addView(textViewRequest)
+            addView(mCardState)
+            addView(mTextViewSeeAll)
             addView(notification)
             addView(cardReport)
             addView(vulcanMsg)
@@ -238,7 +275,7 @@ class ProfileFragment
         btnBack.setOnClickListener(
             this::onClickBtnBack
         )
-        textViewRequest.setOnClickListener(
+        mTextViewSeeAll.setOnClickListener(
             this::onClickCardViewRequest
         )
         cardReport.setOnClickListener(
