@@ -128,6 +128,9 @@ class ViewHolderOOPT(
             // Alpha
             textViewType.alpha = 0.5f
 
+            cardView.setCardBackgroundColor(
+                0xffc5c5c5.toInt()
+            )
 
             cardView.cardElevation = 0.0f
 

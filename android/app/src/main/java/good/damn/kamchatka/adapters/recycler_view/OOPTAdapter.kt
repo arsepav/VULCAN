@@ -1,10 +1,9 @@
 package good.damn.kamchatka.adapters.recycler_view
 
-import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import good.damn.kamchatka.models.ShortOOPT
-import good.damn.kamchatka.utils.HTTPUtils
+import good.damn.kamchatka.utils.URLUtils
 import good.damn.kamchatka.views.holders.ViewHolderOOPT
 import good.damn.kamchatka.views.special.details.listeners.OnSelectModelListener
 
@@ -57,7 +56,7 @@ class OOPTAdapter(
         }
 
         oopt.image_url?.let {
-            HTTPUtils.loadImage(
+            URLUtils.loadImage(
                 it,
                 holder.imageSize,
                 holder.imageSize,

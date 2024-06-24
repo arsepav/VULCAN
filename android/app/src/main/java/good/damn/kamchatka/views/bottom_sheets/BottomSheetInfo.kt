@@ -1,6 +1,5 @@
 package good.damn.kamchatka.views.bottom_sheets
 
-import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -8,17 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.ScrollView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.widget.NestedScrollView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.extensions.boundsFrame
 import good.damn.kamchatka.extensions.boundsLinear
-import good.damn.kamchatka.extensions.size
-import good.damn.kamchatka.utils.HTTPUtils
+import good.damn.kamchatka.utils.URLUtils
 import good.damn.kamchatka.utils.ViewUtils
-import good.damn.kamchatka.views.RoundedImageView
 import good.damn.kamchatka.views.special.details.CardItemDescription
 
 class BottomSheetInfo
@@ -49,7 +45,7 @@ class BottomSheetInfo
         )
 
         imageUrl?.let { url ->
-            HTTPUtils.loadImage(
+            URLUtils.loadImage(
                 url
             ) { bitmap ->
                 Log.d(TAG, "onCreateView: LOADED_IMAGE: $url ${bitmap?.height}")

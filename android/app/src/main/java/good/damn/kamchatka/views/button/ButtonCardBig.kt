@@ -3,6 +3,9 @@ package good.damn.kamchatka.views.button
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.Gravity
+import android.view.MotionEvent
+import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.annotation.DrawableRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
@@ -20,12 +23,15 @@ import good.damn.kamchatka.extensions.textSizeBounds
 import good.damn.kamchatka.extensions.top
 import good.damn.kamchatka.extensions.width
 import good.damn.kamchatka.models.Color
+import good.damn.kamchatka.views.interactions.AnimatedTouchInteraction
+import good.damn.kamchatka.views.interactions.interfaces.OnActionListener
+import good.damn.kamchatka.views.interactions.interfaces.OnUpdateAnimationListener
 
 class ButtonCardBig(
     context: Context
 ): CardView(
     context
-) {
+), OnUpdateAnimationListener, OnActionListener {
     var title = ""
         set(v) {
             mTextViewTitle.text = v
@@ -56,7 +62,32 @@ class ButtonCardBig(
         context
     )
 
+    private val mTouchInteraction = AnimatedTouchInteraction()
+
+    private var mOnClickListener: View.OnClickListener? = null
+
     init {
+
+        mTouchInteraction.setOnUpdateAnimationListener(
+            this
+        )
+
+        mTouchInteraction.setOnActionListener(
+            this
+        )
+
+        mTouchInteraction.setDuration(
+            350
+        )
+
+        mTouchInteraction.setInterpolator(
+            AccelerateDecelerateInterpolator()
+        )
+
+        setOnTouchListener(
+            mTouchInteraction
+        )
+
         mTextViewTitle.apply {
             setTextColorId(R.color.titleColor)
             typeface = Application.font(
@@ -89,6 +120,35 @@ class ButtonCardBig(
         addView(
             mImageView
         )
+    }
+
+    override fun onUpdateAnimation(
+        animatedValue: Float
+    ) {
+        val scale = 1.0f - 0.25f * animatedValue
+        scaleX = scale
+        scaleY = scale
+    }
+
+    override fun onDown(
+        v: View,
+        event: MotionEvent
+    ) = Unit
+
+    override fun onUp(
+        v: View,
+        event: MotionEvent
+    ) {
+        mOnClickListener?.onClick(
+            v
+        )
+    }
+
+    override fun setOnClickListener(
+        l: OnClickListener?
+    ) {
+        mOnClickListener = l
+        super.setOnClickListener(null)
     }
 
     fun setDrawableEndId(

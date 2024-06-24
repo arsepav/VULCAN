@@ -404,12 +404,6 @@ OnGetSecurityZonesListener {
         )
 
 
-        mRecyclerViewOOPT.post {
-            mRecyclerViewOOPT.scrollBy(12,0)
-        }
-
-
-
         // Setup listeners
         mImageViewProfile.setOnClickListener(
             this::onClickImageViewProfile
@@ -465,6 +459,9 @@ OnGetSecurityZonesListener {
         ).let {
             it.onSelectOOPTListener = this
             mRecyclerViewOOPT.adapter = it
+            mRecyclerViewOOPT.post {
+                mRecyclerViewOOPT.scrollBy(12,0)
+            }
         }
     }
 

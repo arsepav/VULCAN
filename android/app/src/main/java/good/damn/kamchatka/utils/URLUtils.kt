@@ -7,15 +7,11 @@ import good.damn.kamchatka.Application
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.net.IDN
 import java.net.URL
-import java.net.URLEncoder
-import java.nio.charset.Charset
-import java.nio.charset.StandardCharsets
 
-class HTTPUtils {
+class URLUtils {
     companion object {
-        private const val TAG = "HTTPUtils"
+        private const val TAG = "URLUtils"
         fun loadImage(
             url: String,
             completion: ((Bitmap?)->Unit)
@@ -23,24 +19,13 @@ class HTTPUtils {
             CoroutineScope(
                 Dispatchers.IO
             ).launch {
-                val stream = try {
-                    URL(
-                        url
-                    ).openStream()
-                } catch (e: Exception) {
-                    Application.ui {
-                        completion(null)
-                    }
-                    return@launch
-                }
-                val b = BitmapFactory.decodeStream(
-                    stream
+
+                val bitmap = urlBitmap(
+                    url
                 )
-
-                stream.close()
-
+                
                 Application.ui {
-                    completion(b)
+                    completion(bitmap)
                 }
             }
         }
@@ -54,21 +39,9 @@ class HTTPUtils {
             CoroutineScope(
                 Dispatchers.IO
             ).launch {
-                val stream = try {
-                    URL(
-                        url
-                    ).openStream()
-                } catch (e: Exception) {
-                    Application.ui {
-                        completion(null)
-                    }
-                    return@launch
-                }
-
-                BitmapFactory.decodeStream(
-                    stream
-                ).let {
-                    stream.close()
+                urlBitmap(
+                    url
+                )?.let {
                     val scaled = Bitmap.createScaledBitmap(
                         it,
                         inWidth,
@@ -86,6 +59,27 @@ class HTTPUtils {
                 }
 
             }
+        }
+        
+        private fun urlBitmap(
+            url: String
+        ): Bitmap? {
+            Log.d(TAG, "urlBitmap: $url")
+            val stream = try {
+                URL(
+                    url
+                ).openStream()
+            } catch (e: Exception) {
+                Log.d(TAG, "urlBitmap: ERROR: ${e.message}")
+                return null
+            }
+            
+            val b = BitmapFactory.decodeStream(
+                stream
+            )
+            stream.close()
+            
+            return b
         }
     }
 }

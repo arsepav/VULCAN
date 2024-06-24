@@ -13,9 +13,6 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.Polygon
 import com.google.android.gms.maps.model.RoundCap
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import good.damn.kamchatka.Application
-import good.damn.kamchatka.MainActivity
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.mainActivity
 import good.damn.kamchatka.fragments.StackFragment
@@ -30,7 +27,6 @@ import good.damn.kamchatka.services.GeoService
 import good.damn.kamchatka.services.interfaces.OnGetObjectsListener
 import good.damn.kamchatka.services.interfaces.OnGetRoutesListener
 import good.damn.kamchatka.services.interfaces.OnGetSecurityZonesListener
-import good.damn.kamchatka.utils.HTTPUtils
 import good.damn.kamchatka.views.bottom_sheets.BottomSheetInfo
 import kotlin.random.Random
 
