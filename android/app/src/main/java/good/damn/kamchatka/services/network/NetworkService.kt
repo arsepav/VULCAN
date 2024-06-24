@@ -29,7 +29,7 @@ open class NetworkService(
         private const val TAG = "NetworkService"
     }
 
-    private val mConnectivity = mContext.getSystemService(
+    val mConnectivity = mContext.getSystemService(
         Context.CONNECTIVITY_SERVICE
     ) as ConnectivityManager
 

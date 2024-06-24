@@ -4,6 +4,9 @@ import android.content.Context
 import android.util.Log
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.services.network.NetworkService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
@@ -117,13 +120,15 @@ class AuthService(
                     Application.JSON
                 ))
         ) { client, request ->
-            Thread {
+            CoroutineScope(
+                Dispatchers.IO
+            ).launch {
                 val response = client.newCall(
                     request
                 ).execute()
 
                 completion(response)
-            }.start()
+            }
         }
 
 

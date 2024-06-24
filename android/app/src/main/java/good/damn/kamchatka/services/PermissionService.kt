@@ -5,6 +5,9 @@ import android.net.Network
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.models.permission.PermissionRequest
 import good.damn.kamchatka.services.network.NetworkService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
@@ -30,11 +33,13 @@ class PermissionService(
                 .url(URL_GET)
                 .get()
         ) { client, request ->
-            Thread {
+            CoroutineScope(
+                Dispatchers.IO
+            ).launch {
                 val response = client.newCall(
                     request
                 ).execute()
-                val body = response.body?.string() ?: return@Thread
+                val body = response.body?.string() ?: return@launch
 
                 val json = JSONArray(
                     body
@@ -49,8 +54,7 @@ class PermissionService(
                 completionBackground(
                     permissions
                 )
-
-            }.start()
+            }
         }
     }
 
@@ -113,7 +117,9 @@ class PermissionService(
                     )
                 )
         ) { client, request ->
-            Thread {
+            CoroutineScope(
+                Dispatchers.IO
+            ).launch {
                 val response = client
                     .newCall(request)
                     .execute()
@@ -121,7 +127,7 @@ class PermissionService(
                 completionBackground(
                     response
                 )
-            }.start()
+            }
         }
     }
 

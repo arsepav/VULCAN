@@ -3,6 +3,9 @@ package good.damn.kamchatka.services
 import android.content.Context
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.services.network.NetworkService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.Request
@@ -38,13 +41,14 @@ class UploadService(
                 .url(URL_FILE)
                 .post(mbody)
         ) { client, request ->
-            Thread {
-
+            CoroutineScope(
+                Dispatchers.IO
+            ).launch {
                 val response = client.newCall(
                     request
                 ).execute()
 
-                val body = response.body?.string() ?: return@Thread
+                val body = response.body?.string() ?: return@launch
 
                 val json = JSONObject(
                     body
@@ -57,10 +61,7 @@ class UploadService(
                 Application.ui {
                     completion(fileId)
                 }
-
-                Thread.currentThread()
-                    .interrupt()
-            }.start()
+            }
         }
     }
 

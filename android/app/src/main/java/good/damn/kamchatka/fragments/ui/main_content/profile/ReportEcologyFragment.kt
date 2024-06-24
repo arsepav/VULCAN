@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -24,6 +25,7 @@ import good.damn.kamchatka.extensions.bottom
 import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.extensions.getKey
 import good.damn.kamchatka.extensions.height
+import good.damn.kamchatka.extensions.isAvailable
 import good.damn.kamchatka.extensions.left
 import good.damn.kamchatka.extensions.setTextColorId
 import good.damn.kamchatka.extensions.setTextPx
@@ -73,6 +75,8 @@ LocationListener, ActivityResultCallback<Map<String,Boolean>> {
 
     private var mLocationLauncher: ActivityResultLauncher<Array<String>>? = null
 
+    private var mConnectivityManager: ConnectivityManager? = null
+
     override fun onLocationChanged(
         location: Location
     ) {
@@ -80,15 +84,17 @@ LocationListener, ActivityResultCallback<Map<String,Boolean>> {
         mLat = location.latitude
         mLong = location.longitude
 
-        context?.let {
-            mLocationManager?.removeUpdates(
-                this
-            )
-            reportNow(
-                mLat,
-                mLong,
-                it
-            )
+        Application.ui {
+            context?.let {
+                mLocationManager?.removeUpdates(
+                    this
+                )
+                reportNow(
+                    mLat,
+                    mLong,
+                    it
+                )
+            }
         }
     }
 
@@ -109,6 +115,10 @@ LocationListener, ActivityResultCallback<Map<String,Boolean>> {
         context: Context,
         measureUnit: Int
     ): View {
+
+        mConnectivityManager = context.getSystemService(
+            Context.CONNECTIVITY_SERVICE
+        ) as? ConnectivityManager
 
         mLocationManager = context.getSystemService(
             Context.LOCATION_SERVICE
@@ -609,6 +619,35 @@ LocationListener, ActivityResultCallback<Map<String,Boolean>> {
         val rep = ReportEcologyService(
             context
         )
+
+        Application.toast(
+            R.string.preparingReport,
+            context
+        )
+
+        if (!(mConnectivityManager?.isAvailable() ?: true)) {
+            Application.toast(
+                R.string.report_will_be_saved,
+                context
+            )
+
+            rep.saveToCache(
+                name,
+                mTextComment.text.toString(),
+                file,
+                idProblem,
+                lat,
+                long
+            )
+
+            Handler(Looper.getMainLooper()).postDelayed(
+                {
+                    popFragment()
+                }, 1000
+            )
+
+            return
+        }
 
         UploadService(
             context
