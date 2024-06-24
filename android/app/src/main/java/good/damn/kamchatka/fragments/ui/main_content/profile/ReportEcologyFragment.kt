@@ -592,6 +592,7 @@ LocationListener, ActivityResultCallback<Map<String,Boolean>> {
                     R.drawable.ic_done
                 )
                 mImageViewAttach.requestLayout()
+                mImageViewAttach.invalidate()
             }
         }
     }

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
@@ -75,6 +76,19 @@ GoogleMap.OnMapClickListener {
         map: GoogleMap
     ) {
         this.map = map
+
+        val kamchatka = LatLng(
+            55.184952,
+            158.394596
+        )
+
+        map.moveCamera(
+            CameraUpdateFactory
+                .newLatLngZoom(
+                    kamchatka,
+                    5.0f
+                )
+        )
 
         map.setOnMapClickListener(
             this

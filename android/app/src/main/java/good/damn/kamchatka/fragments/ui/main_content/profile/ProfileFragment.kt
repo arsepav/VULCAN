@@ -3,23 +3,18 @@ package good.damn.kamchatka.fragments.ui.main_content.profile
 import android.content.Context
 import android.view.Gravity
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.annotation.WorkerThread
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
-import good.damn.kamchatka.adapters.fragment_adapters.PermissionRequestAdapter
-import good.damn.kamchatka.extensions.boundsFrame
 import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.extensions.height
 import good.damn.kamchatka.extensions.left
 import good.damn.kamchatka.extensions.setImageDrawableId
 import good.damn.kamchatka.extensions.setTextColorId
 import good.damn.kamchatka.extensions.setTextPx
-import good.damn.kamchatka.extensions.size
-import good.damn.kamchatka.extensions.width
 import good.damn.kamchatka.fragments.ui.ScrollableFragment
 import good.damn.kamchatka.models.Color
 import good.damn.kamchatka.models.permission.PermissionRequest
@@ -39,6 +34,8 @@ class ProfileFragment
     private lateinit var mTextViewSeeAll: AppCompatTextView
     private lateinit var mLayoutNoPerms: LinearLayout
 
+    private lateinit var mainLayout: LinearLayout
+
     override fun onCreateContentView(
         context: Context,
         measureUnit: Int
@@ -46,13 +43,10 @@ class ProfileFragment
 
 
         // Allocating views
-        val layout = ViewUtils.verticalLinearLayout(
+        mainLayout = ViewUtils.verticalLinearLayout(
             context
         )
         mLayoutNoPerms = ViewUtils.verticalLinearLayout(
-            context
-        )
-        val layoutPerm = FrameLayout(
             context
         )
         val btnBack = ButtonBack.createDefaultLinear(
@@ -123,8 +117,6 @@ class ProfileFragment
             drawableEnd = Application.drawable(
                 R.drawable.ic_reviewing
             )
-            visibility = View.INVISIBLE
-            mTextViewSeeAll.visibility = visibility
         }
 
 
@@ -215,7 +207,7 @@ class ProfileFragment
 
 
         // Background color
-        layout.setBackgroundColor(
+        mainLayout.setBackgroundColor(
             Application.color(
                 R.color.background
             )
@@ -243,15 +235,17 @@ class ProfileFragment
             left = btnBack.left(),
             top = measureUnit * 0.1207f
         )
-        layoutPerm.boundsLinear(
+        mCardState.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             width = (measureUnit * 0.9033f).toInt(),
             height = (measureUnit * 0.3188f).toInt(),
             top = measureUnit * 0.05917f
         )
-        mCardState.size(
-            width = layoutPerm.width(),
-            height = layoutPerm.height()
+        mLayoutNoPerms.boundsLinear(
+            Gravity.CENTER_HORIZONTAL,
+            width = (measureUnit * 0.9033f).toInt(),
+            height = (measureUnit * 0.3188f).toInt(),
+            top = measureUnit * 0.05917f
         )
         mTextViewSeeAll.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
@@ -294,7 +288,9 @@ class ProfileFragment
             layoutIt()
         }
 
-        layoutPerm.apply {
+
+        mLayoutNoPerms.apply {
+            gravity = Gravity.CENTER
             imageViewNoPerm.boundsLinear(
                 Gravity.CENTER_HORIZONTAL,
                 size = (height() * 0.37878f).toInt()
@@ -312,19 +308,13 @@ class ProfileFragment
             addView(textViewNoPerm)
         }
 
-        layoutPerm.apply {
-            addView(mLayoutNoPerms)
-            addView(mCardState)
-        }
-
-        layout.apply {
+        mainLayout.apply {
             addView(btnBack)
             addView(textViewAppName)
             addView(imageViewAvatar)
             addView(textViewHello)
             addView(textViewPermissions)
-            addView(layoutPerm)
-            addView(mTextViewSeeAll)
+            addView(mLayoutNoPerms)
             addView(notification)
             addView(cardReport)
             addView(vulcanMsg)
@@ -350,7 +340,7 @@ class ProfileFragment
         )
 
 
-        return layout
+        return mainLayout
     }
 
     private fun onClickBtnReport(
@@ -419,13 +409,21 @@ class ProfileFragment
             }
 
             View.VISIBLE.let {
+                mainLayout.addView(
+                    mCardState,
+                    5
+                )
                 if (perms.size != 1) {
-                    mTextViewSeeAll.visibility = it
+                    mainLayout.addView(
+                        mTextViewSeeAll,
+                        6
+                    )
                 }
-                mCardState.visibility = it
             }
 
-            mLayoutNoPerms.visibility = View.INVISIBLE
+            mainLayout.removeView(
+                mLayoutNoPerms
+            )
         }
     }
 }
