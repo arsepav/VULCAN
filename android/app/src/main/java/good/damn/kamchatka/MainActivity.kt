@@ -23,6 +23,7 @@ import good.damn.kamchatka.fragments.ui.MainContentFragment
 import good.damn.kamchatka.fragments.ui.auth.SignInFragment
 import good.damn.kamchatka.fragments.ui.SplashFragment
 import good.damn.kamchatka.services.AuthService
+import good.damn.kamchatka.services.ReportEcologyService
 import good.damn.kamchatka.services.TimeService
 import good.damn.kamchatka.services.TokenService
 
@@ -34,7 +35,7 @@ ActivityResultCallback<Uri?> {
     private lateinit var mContainer: FrameLayout
     private lateinit var mContentLauncher: ActivityResultLauncher<String>
 
-    private var mCompletionPickImage: ((Uri)->Unit)? = null
+    private var mCompletionPickImage: ((Uri?)->Unit)? = null
 
     companion object {
         private const val TAG = "MainActivity"
@@ -51,7 +52,6 @@ ActivityResultCallback<Uri?> {
             ActivityResultContracts.GetContent(),
             this
         )
-
 
 
         setNavigationBarColor(
@@ -153,21 +153,17 @@ ActivityResultCallback<Uri?> {
     override fun onActivityResult(
         result: Uri?
     ) {
-        if (result == null) {
-            return
-
-        }
         mCompletionPickImage?.invoke(
             result
         )
     }
 
     fun pickImage(
-        completion: (Uri) -> Unit
+        completion: (Uri?) -> Unit
     ) {
         mCompletionPickImage = completion
         mContentLauncher.launch(
-            "*/*"
+            "image/*"
         )
     }
 

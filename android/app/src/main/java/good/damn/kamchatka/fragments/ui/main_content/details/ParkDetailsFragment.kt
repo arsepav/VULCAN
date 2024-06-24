@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import good.damn.kamchatka.R
 import good.damn.kamchatka.adapters.recycler_view.RoutesAdapter
 import good.damn.kamchatka.extensions.boundsLinear
+import good.damn.kamchatka.fragments.ui.main_content.maps.GoogleMapFragment
 import good.damn.kamchatka.fragments.ui.main_content.maps.MapsFragment
 import good.damn.kamchatka.models.RouteMap
 import good.damn.kamchatka.models.ShortOOPT
@@ -95,11 +96,14 @@ OnGetRoutesListener, OnSelectModelListener<Route> {
             if (it.isEmpty()) {
                 return
             }
-            pushFragment(
-                MapsFragment.create(
-                    it[(it.size * 0.5f).toInt()]
+            GoogleMapFragment().let { googleMap ->
+                googleMap.markerLatLng = it[(it.size * 0.5f).toInt()]
+                pushFragment(
+                    MapsFragment.create(
+                        googleMap
+                    )
                 )
-            )
+            }
         }
     }
 

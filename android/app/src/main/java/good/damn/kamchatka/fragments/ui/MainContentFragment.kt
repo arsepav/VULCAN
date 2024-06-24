@@ -25,6 +25,7 @@ import good.damn.kamchatka.fragments.ui.blocks.LikeFragment
 import good.damn.kamchatka.fragments.ui.blocks.MonumentsFragment
 import good.damn.kamchatka.fragments.ui.blocks.ZakaznikiFragment
 import good.damn.kamchatka.fragments.ui.main_content.details.ParkDetailsFragment
+import good.damn.kamchatka.fragments.ui.main_content.maps.GoogleMapFragment
 import good.damn.kamchatka.fragments.ui.main_content.maps.MapsFragment
 import good.damn.kamchatka.fragments.ui.main_content.profile.ProfileFragment
 import good.damn.kamchatka.item_decorations.MarginItemDecoration
@@ -403,12 +404,6 @@ OnGetSecurityZonesListener {
         )
 
 
-        mRecyclerViewOOPT.post {
-            mRecyclerViewOOPT.scrollBy(12,0)
-        }
-
-
-
         // Setup listeners
         mImageViewProfile.setOnClickListener(
             this::onClickImageViewProfile
@@ -464,6 +459,9 @@ OnGetSecurityZonesListener {
         ).let {
             it.onSelectOOPTListener = this
             mRecyclerViewOOPT.adapter = it
+            mRecyclerViewOOPT.post {
+                mRecyclerViewOOPT.scrollBy(12,0)
+            }
         }
     }
 
@@ -481,7 +479,9 @@ private fun MainContentFragment.onClickImageViewKamchatka(
     view: View
 ) {
     pushFragment(
-        MapsFragment()
+        MapsFragment.create(
+            GoogleMapFragment()
+        )
     )
 }
 

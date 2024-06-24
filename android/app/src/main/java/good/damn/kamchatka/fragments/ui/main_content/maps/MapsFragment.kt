@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
@@ -14,13 +15,13 @@ import good.damn.kamchatka.models.ShortOOPT
 class MapsFragment
 : StackFragment() {
 
-    var markerLatLng: LatLng? = null
+    var mapFragment: SupportMapFragment? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        GoogleMapFragment().let {
-            it.markerLatLng = markerLatLng
+        Log.d(TAG, "onViewCreated: MAP: $mapFragment")
+        mapFragment?.let {
             childFragmentManager
                 .beginTransaction()
                 .replace(view.id, it)
@@ -49,13 +50,14 @@ class MapsFragment
     }
 
     companion object {
+        private const val TAG = "MapsFragment"
         fun create(
-            marker: LatLng
+            withMap: SupportMapFragment
         ): MapsFragment {
             val f = MapsFragment()
-            f.markerLatLng = marker
+            f.mapFragment = withMap
+            Log.d(TAG, "create: MAP: ${f.mapFragment}")
             return f
         }
     }
-
 }

@@ -2,6 +2,7 @@ package good.damn.kamchatka.adapters.fragment_adapters
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import good.damn.kamchatka.R
 import good.damn.kamchatka.models.permission.PermissionRequest
 import good.damn.kamchatka.views.holders.ViewHolderPermission
 
@@ -26,18 +27,28 @@ class PermissionRequestAdapter(
     ) {
         val perm = mData[position]
 
-        holder.setName(
+        holder.setTitle(
             perm.name
+        )
+        holder.setSubtitle(
+            "Природный парк"
         )
 
         var state = "Рассматривается"
+        var id = R.drawable.ic_reviewing
         if (perm.approved) {
             state = "Одобрено"
+            id = R.drawable.ic_approved
         } else {
             if (perm.reviewed) {
                 state = "Отклонено"
+                id = R.drawable.ic_x_mark
             }
         }
+
+        holder.setDrawableEnd(
+            id
+        )
 
         holder.setState(
             state

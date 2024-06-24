@@ -10,9 +10,16 @@ import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
+import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsLinear
+import good.damn.kamchatka.extensions.height
+import good.damn.kamchatka.extensions.setTextColorId
+import good.damn.kamchatka.extensions.setTextPx
+import good.damn.kamchatka.models.Color
 import good.damn.kamchatka.utils.ViewUtils
+import good.damn.kamchatka.views.button.ButtonCardBig
+import good.damn.kamchatka.views.button.CardState
 
 class TypePermissionFragment
 : Fragment() {
@@ -25,56 +32,129 @@ class TypePermissionFragment
         savedInstanceState: Bundle?
     ): View? {
         val context = context ?: return null
+        val measureUnit = Application.WIDTH
         val layout = ViewUtils.verticalLinearLayout(
             context
         )
-        val btnSingle = AppCompatButton(
+        val btnSingle = ButtonCardBig(
             context
         )
-        val btnGroupHu = AppCompatButton(
+        val btnGroupHu = ButtonCardBig(
             context
         )
-        val btnGroupCo = AppCompatButton(
+        val btnGroupCo = ButtonCardBig(
+            context
+        )
+        val textViewSelect = AppCompatTextView(
             context
         )
 
-        btnSingle.setText(
-            R.string.perm_single
-        )
-        btnGroupHu.setText(
-            R.string.perm_group_hu
-        )
-        btnGroupCo.setText(
-            R.string.perm_group_com
-        )
+        btnSingle.apply {
+            title = getString(
+                R.string.perm_single
+            )
+            subtitle = getString(
+                R.string.perm_single_s
+            )
+            setDrawableEndId(
+                R.drawable.ic_single
+            )
+        }
 
-        btnSingle.boundsLinear(
-            Gravity.CENTER_HORIZONTAL,
-            -1,
-            -2
-        )
+        btnGroupHu.apply {
+            title = getString(
+                R.string.perm_group_hu
+            )
+            subtitle = getString(
+                R.string.perm_group_hu_s
+            )
+            setDrawableEndId(
+                R.drawable.ic_group
+            )
+        }
 
-        btnGroupHu.boundsLinear(
-            Gravity.CENTER_HORIZONTAL,
-            -1,
-            -2
-        )
+        btnGroupCo.apply {
+            title = getString(
+                R.string.perm_group_com
+            )
+            subtitle = getString(
+                R.string.perm_group_com_s
+            )
+            setDrawableEndId(
+                R.drawable.ic_case
+            )
+        }
 
-        btnGroupCo.boundsLinear(
-            Gravity.CENTER_HORIZONTAL,
-            -1,
-            -2
-        )
+        textViewSelect.apply {
+            setTextColor(
+                Color.parseFromHexId(
+                    R.color.titleColor,
+                    0.3f
+                )
+            )
 
-        layout.addView(
-            btnSingle
-        )
-        layout.addView(
-            btnGroupHu
-        )
-        layout.addView(
-            btnGroupCo
-        )
+            typeface = Application.font(
+                R.font.open_sans_semi_bold,
+                context
+            )
+
+            setTextPx(
+                measureUnit * 0.03743f
+            )
+
+            setText(
+                R.string.select_type_perm
+            )
+        }
+
+        (measureUnit * 0.90821f).toInt().let { width ->
+            (measureUnit * 0.2222f).toInt().let { height ->
+                (measureUnit * 0.0169f).let { top ->
+                    btnSingle.boundsLinear(
+                        Gravity.CENTER_HORIZONTAL,
+                        width = width,
+                        height = height,
+                        top = measureUnit * 0.1014f
+                    )
+
+                    btnGroupHu.boundsLinear(
+                        Gravity.CENTER_HORIZONTAL,
+                        width = width,
+                        height = height,
+                        top = top
+                    )
+
+                    btnGroupCo.boundsLinear(
+                        Gravity.CENTER_HORIZONTAL,
+                        width = width,
+                        height = height,
+                        top = top
+                    )
+
+                    textViewSelect.boundsLinear(
+                        Gravity.CENTER_HORIZONTAL,
+                        top = measureUnit * 0.07488f
+                    )
+                }
+            }
+        }
+
+        (btnSingle.height() * 0.163f).let {
+            btnSingle.radius = it
+            btnGroupCo.radius = it
+            btnGroupHu.radius = it
+        }
+
+        btnSingle.layoutIt()
+        btnGroupHu.layoutIt()
+        btnGroupCo.layoutIt()
+
+        layout.apply {
+            addView(btnSingle)
+            addView(btnGroupHu)
+            addView(btnGroupCo)
+            addView(textViewSelect)
+        }
 
 
         btnSingle.setOnClickListener {

@@ -1,103 +1,76 @@
 package good.damn.kamchatka.views.holders
 
 import android.content.Context
-import android.view.View
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.cardview.widget.CardView
+import android.graphics.drawable.Drawable
+import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.RecyclerView
 import good.damn.kamchatka.Application
-import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.size
-import good.damn.kamchatka.utils.ViewUtils
+import good.damn.kamchatka.views.button.CardState
 
 class ViewHolderPermission(
-    layout: View,
-    private val mTextViewName: AppCompatTextView,
-    private val mTextViewState: AppCompatTextView
+    private val mCardState: CardState,
 ): RecyclerView.ViewHolder(
-    layout
+    mCardState
 ) {
+
+    fun setTitle(
+        t: String
+    ) {
+        mCardState.title = t
+    }
+
+    fun setSubtitle(
+        t: String
+    ) {
+        mCardState.subtitle = t
+    }
 
     fun setState(
         t: String
     ) {
-        mTextViewState.text = t
+        mCardState.state = t
     }
 
-    fun setName(
-        t: String
+    fun setDrawableEnd(
+        @DrawableRes id: Int
     ) {
-        mTextViewName.text = t
+        setDrawableEnd(
+            Application.drawable(
+                id
+            )
+        )
+    }
+
+    fun setDrawableEnd(
+        d: Drawable?
+    ) {
+        mCardState.drawableEnd = d
     }
 
     companion object {
         fun create(
             context: Context
         ): ViewHolderPermission {
-            val card = CardView(
+            val card = CardState(
                 context
             )
-            val layout = ViewUtils.verticalLinearLayout(
-                context
-            )
-            val textViewName = AppCompatTextView(
-                context
-            )
-            val textViewState = AppCompatTextView(
-                context
-            )
-
-
-            Application.color(
-                R.color.titleColor
-            ).let {
-                textViewName.setTextColor(
-                    it
-                )
-                textViewState.setTextColor(
-                    it
-                )
-            }
-
-            Application.font(
-                R.font.open_sans_bold,
-                context
-            ).let {
-                textViewName.typeface = it
-            }
-
-            Application.font(
-                R.font.open_sans_semi_bold,
-                context
-            ).let {
-                textViewState.typeface = it
-            }
-
             val height = Application.WIDTH * 0.31884f
             val width = Application.WIDTH * 0.8937f
 
+            card.radius = height * 0.1386f
+            card.cardElevation = height * 0.02f
 
             card.size(
                 width = width.toInt(),
                 height = height.toInt()
             )
 
+            card.layoutIt()
 
-            layout.addView(
-                textViewName
-            )
-            layout.addView(
-                textViewState
-            )
-
-            card.addView(
-                layout
-            )
 
             return ViewHolderPermission(
-                card,
-                textViewName,
-                textViewState
+                card
             )
         }
     }

@@ -3,40 +3,53 @@ package good.damn.kamchatka.fragments.ui.main_content.profile
 import android.content.Context
 import android.view.Gravity
 import android.view.View
-import android.widget.FrameLayout
-import androidx.appcompat.widget.AppCompatButton
+import android.widget.LinearLayout
+import androidx.annotation.WorkerThread
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
-import good.damn.kamchatka.extensions.bottom
-import good.damn.kamchatka.extensions.boundsFrame
+import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.extensions.height
 import good.damn.kamchatka.extensions.left
 import good.damn.kamchatka.extensions.setImageDrawableId
+import good.damn.kamchatka.extensions.setTextColorId
 import good.damn.kamchatka.extensions.setTextPx
-import good.damn.kamchatka.extensions.textSizeBounds
-import good.damn.kamchatka.extensions.top
-import good.damn.kamchatka.fragments.StackFragment
+import good.damn.kamchatka.fragments.ui.ScrollableFragment
+import good.damn.kamchatka.models.Color
+import good.damn.kamchatka.models.permission.PermissionRequest
+import good.damn.kamchatka.services.PermissionService
 import good.damn.kamchatka.utils.ViewUtils
 import good.damn.kamchatka.views.RoundedImageView
 import good.damn.kamchatka.views.button.ButtonBack
-import good.damn.kamchatka.views.special.profile.CardViewRequest
+import good.damn.kamchatka.views.button.ButtonCard
+import good.damn.kamchatka.views.button.CardState
 
 class ProfileFragment
-: StackFragment() {
+: ScrollableFragment() {
 
-    override fun onCreateView(
+    private var mPermissions: Array<PermissionRequest>? = null
+
+    private lateinit var mCardState: CardState
+    private lateinit var mTextViewSeeAll: AppCompatTextView
+    private lateinit var mLayoutNoPerms: LinearLayout
+
+    private lateinit var mainLayout: LinearLayout
+
+    override fun onCreateContentView(
         context: Context,
         measureUnit: Int
     ): View {
 
 
         // Allocating views
-        val layout = FrameLayout(
+        mainLayout = ViewUtils.verticalLinearLayout(
             context
         )
-        val btnBack = ButtonBack.createDefaultFrame(
+        mLayoutNoPerms = ViewUtils.verticalLinearLayout(
+            context
+        )
+        val btnBack = ButtonBack.createDefaultLinear(
             measureUnit,
             Application.color(
                 R.color.btnBackArrow
@@ -52,10 +65,27 @@ class ProfileFragment
         val textViewHello = AppCompatTextView(
             context
         )
-        val cardViewRequest = AppCompatButton(
+        val textViewPermissions = ViewUtils.titleOption(
+            measureUnit,
+            R.string.permission_list,
             context
         )
-        val btnReport = AppCompatButton(
+        mCardState = CardState(
+            context
+        )
+        val imageViewNoPerm = AppCompatImageView(
+            context
+        )
+        val textViewNoPerm = AppCompatTextView(
+            context
+        )
+        mTextViewSeeAll = AppCompatTextView(
+            context
+        )
+        val notification = AppCompatTextView(
+            context
+        )
+        val cardReport = ButtonCard(
             context
         )
         val vulcanMsg = ViewUtils.vulcanTextView(
@@ -65,33 +95,58 @@ class ProfileFragment
         )
 
 
-
         // Text
-        textViewAppName.isAllCaps = true
-        textViewAppName.setText(
-            R.string.app_name
-        )
+        textViewAppName.apply {
+            isAllCaps = true
+            setText(R.string.app_name)
+        }
         textViewHello.text = "${getString(R.string.hello)} ${Application.TOKEN?.name}"
-
-
-        cardViewRequest.setText(
-            "Посмотреть все заявки"
+        notification.setText(
+            R.string.notify_people
         )
-
-        btnReport.setText(
-            "Сообщить о проблеме"
+        mTextViewSeeAll.setText(
+            R.string.see_all_perm
         )
+        textViewNoPerm.setText(
+            R.string.no_perms
+        )
+        mCardState.apply {
+            title = "Загрузка..."
+            state = title
+            subtitle = title
+            drawableEnd = Application.drawable(
+                R.drawable.ic_reviewing
+            )
+        }
+
+
+
+        cardReport.apply {
+            title = getString(
+                R.string.report_ecology
+            )
+            drawableEnd = Application.drawable(
+                R.drawable.ic_info_red
+            )
+        }
+
 
         // Drawable
         imageViewAvatar.setImageDrawable(
             R.drawable.icon
         )
+        imageViewNoPerm.setImageDrawableId(
+            R.drawable.ic_info
+        )
 
 
         // Text Color
+        textViewNoPerm.setTextColorId(
+            R.color.accentColor30
+        )
         textViewAppName.setTextColor(
             Application.color(
-                R.color.accentColor
+                R.color.accentColor30
             )
         )
         textViewHello.setTextColor(
@@ -99,18 +154,37 @@ class ProfileFragment
                 R.color.titleColor
             )
         )
-
-
+        mTextViewSeeAll.setTextColorId(
+            R.color.accentColor
+        )
+        notification.setTextColor(
+            Color.parseFromHexId(
+                R.color.titleColor,
+                0.3f
+            )
+        )
 
         // Font
-        textViewAppName.typeface = Application.font(
-            R.font.open_sans_bold,
-            context
-        )
-        textViewHello.typeface = Application.font(
+        Application.font(
             R.font.open_sans_semi_bold,
             context
-        )
+        )?.let {
+            textViewHello.typeface = it
+            mTextViewSeeAll.typeface = it
+            textViewNoPerm.typeface = it
+        }
+
+        Application.font(
+            R.font.open_sans_bold,
+            context
+        )?.let {
+            notification.typeface = it
+            textViewAppName.typeface = it
+        }
+
+
+
+
 
 
         // Text Size
@@ -120,6 +194,12 @@ class ProfileFragment
         textViewHello.setTextPx(
             measureUnit * 0.04685f
         )
+        mTextViewSeeAll.setTextPx(
+            measureUnit * 0.02681f
+        )
+        notification.setTextPx(
+            measureUnit * 0.02946f
+        )
 
 
 
@@ -127,7 +207,7 @@ class ProfileFragment
 
 
         // Background color
-        layout.setBackgroundColor(
+        mainLayout.setBackgroundColor(
             Application.color(
                 R.color.background
             )
@@ -137,87 +217,130 @@ class ProfileFragment
 
 
         // LayoutParams
-        textViewAppName.boundsFrame(
+        textViewAppName.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
-            top = btnBack.bottom() + measureUnit * 0.08454f
+            top = measureUnit * 0.08454f
         )
-        imageViewAvatar.boundsFrame(
+        imageViewAvatar.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             size = (measureUnit * 0.2028f).toInt(),
-            top = textViewAppName.top() + textViewAppName.textSizeBounds() + (measureUnit * 0.0483f)
+            top = measureUnit * 0.0483f
         )
-        textViewHello.boundsFrame(
+        textViewHello.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
-            top = imageViewAvatar.bottom() + (measureUnit * 0.0483f)
+            top = measureUnit * 0.0483f
         )
-        cardViewRequest.boundsFrame(
+        textViewPermissions.boundsLinear(
+            Gravity.START,
+            left = btnBack.left(),
+            top = measureUnit * 0.1207f
+        )
+        mCardState.boundsLinear(
+            Gravity.CENTER_HORIZONTAL,
+            width = (measureUnit * 0.9033f).toInt(),
+            height = (measureUnit * 0.3188f).toInt(),
+            top = measureUnit * 0.05917f
+        )
+        mLayoutNoPerms.boundsLinear(
+            Gravity.CENTER_HORIZONTAL,
+            width = (measureUnit * 0.9033f).toInt(),
+            height = (measureUnit * 0.3188f).toInt(),
+            top = measureUnit * 0.05917f
+        )
+        mTextViewSeeAll.boundsLinear(
             Gravity.CENTER_HORIZONTAL,
             width = (measureUnit * 0.88164f).toInt(),
-            height = (measureUnit * 0.3913f).toInt(),
-            top = textViewHello.textSizeBounds() + textViewHello.top() + measureUnit * 0.0724f
+            top = measureUnit * 0.05193f
         )
-        btnReport.boundsFrame(
-            Gravity.START,
-            width = -1,
-            top = cardViewRequest.bottom().toFloat()
+        notification.boundsLinear(
+            Gravity.CENTER_HORIZONTAL,
+            width = (measureUnit * 0.8357f).toInt(),
+            top = measureUnit * 0.07125f
         )
-        vulcanMsg.boundsFrame(
+        cardReport.boundsLinear(
+            Gravity.CENTER_HORIZONTAL,
+            width = (measureUnit * 0.9082f).toInt(),
+            height = (measureUnit * 0.215f).toInt(),
+            top = measureUnit * 0.0483f
+        )
+        vulcanMsg.boundsLinear(
             Gravity.START,
-            top = Application.HEIGHT * 0.671f,
+            top = measureUnit * 0.1135f,
             left = btnBack.left() * 1.3f
         )
-
 
 
         // Corner radius
         imageViewAvatar.radius = imageViewAvatar.height() * 0.5f
 
 
+        // Gravity
+        notification.gravity = Gravity
+            .CENTER_HORIZONTAL
+
+        cardReport.apply {
+            radius = height() * 0.191f
+            layoutIt()
+        }
+
+        mCardState.apply {
+            radius = height() * 0.191f
+            layoutIt()
+        }
 
 
+        mLayoutNoPerms.apply {
+            gravity = Gravity.CENTER
+            imageViewNoPerm.boundsLinear(
+                Gravity.CENTER_HORIZONTAL,
+                size = (height() * 0.37878f).toInt()
+            )
+            textViewNoPerm.setTextPx(
+                height() * 0.13113f
+            )
+            textViewNoPerm.boundsLinear(
+                Gravity.CENTER_HORIZONTAL
+            )
+        }
 
-        // Adding views
-        layout.addView(
-            btnBack
-        )
-        layout.addView(
-            textViewAppName
-        )
-        layout.addView(
-            imageViewAvatar
-        )
-        layout.addView(
-            textViewHello
-        )
-        layout.addView(
-            cardViewRequest
-        )
-        layout.addView(
-            btnReport
-        )
-        layout.addView(
-            vulcanMsg
-        )
+        mLayoutNoPerms.apply {
+            addView(imageViewNoPerm)
+            addView(textViewNoPerm)
+        }
 
-
-
+        mainLayout.apply {
+            addView(btnBack)
+            addView(textViewAppName)
+            addView(imageViewAvatar)
+            addView(textViewHello)
+            addView(textViewPermissions)
+            addView(mLayoutNoPerms)
+            addView(notification)
+            addView(cardReport)
+            addView(vulcanMsg)
+        }
 
 
         // Listeners
         btnBack.setOnClickListener(
             this::onClickBtnBack
         )
-        cardViewRequest.setOnClickListener(
+        mTextViewSeeAll.setOnClickListener(
             this::onClickCardViewRequest
         )
-        btnReport.setOnClickListener(
+        cardReport.setOnClickListener(
             this::onClickBtnReport
         )
 
 
+        PermissionService(
+            context
+        ).getPermissions(
+            this::onGetPermissions
+        )
 
 
-        return layout
+        return mainLayout
     }
 
     private fun onClickBtnReport(
@@ -231,11 +354,78 @@ class ProfileFragment
     private fun onClickCardViewRequest(
         view: View
     ) {
-        pushFragment(
-            ViewPermissionsFragment()
-        )
+        mPermissions?.let {
+            pushFragment(
+                ViewPermissionsFragment.create(
+                    it
+                )
+            )
+        }
     }
 
+
+    @WorkerThread
+    private fun onGetPermissions(
+        perms: Array<PermissionRequest>
+    ) {
+        mPermissions = perms
+        if (perms.isEmpty()) {
+            return
+        }
+        Application.ui {
+            mCardState.apply {
+                val p = perms.last()
+                title = p.name
+                subtitle = getString(
+                    R.string.park
+                )
+
+                if (p.approved) {
+                    state = getString(
+                        R.string.approved
+                    )
+                    setDrawableEndId(
+                        R.drawable.ic_approved
+                    )
+                    return@apply
+                }
+
+                if (p.reviewed) {
+                    state = getString(
+                        R.string.rejected
+                    )
+                    setDrawableEndId(
+                        R.drawable.ic_x_mark
+                    )
+                    return@apply
+                }
+
+                state = getString(
+                    R.string.reviewing
+                )
+                setDrawableEndId(
+                    R.drawable.ic_reviewing
+                )
+            }
+
+            View.VISIBLE.let {
+                mainLayout.addView(
+                    mCardState,
+                    5
+                )
+                if (perms.size != 1) {
+                    mainLayout.addView(
+                        mTextViewSeeAll,
+                        6
+                    )
+                }
+            }
+
+            mainLayout.removeView(
+                mLayoutNoPerms
+            )
+        }
+    }
 }
 
 private fun ProfileFragment.onClickBtnBack(

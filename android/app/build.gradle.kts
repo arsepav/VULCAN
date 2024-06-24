@@ -58,6 +58,7 @@ android {
 dependencies {
     val mockkVersion = "1.13.0"
 
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
     implementation(libs.okhttp)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

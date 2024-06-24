@@ -8,6 +8,7 @@ import androidx.annotation.ColorRes
 import androidx.appcompat.widget.AppCompatTextView
 import good.damn.kamchatka.Application
 
+
 fun TextView.setTextColorId(
     @ColorRes id: Int
 ) {

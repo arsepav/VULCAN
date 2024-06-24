@@ -3,6 +3,7 @@ package good.damn.kamchatka.fragments.ui.main_content.details
 import android.view.View
 import android.widget.LinearLayout
 import good.damn.kamchatka.R
+import good.damn.kamchatka.fragments.ui.main_content.maps.GoogleMapFragment
 import good.damn.kamchatka.fragments.ui.main_content.maps.MapsFragment
 import good.damn.kamchatka.models.RouteMap
 import good.damn.kamchatka.models.ShortOOPT
@@ -17,22 +18,21 @@ class RouteDetailsFragment
     override fun onClickMap(
         view: View
     ) {
-        MapsFragment().let {
-            val coords = mRoute?.coords
-                ?: return
+        val coords = mRoute?.coords
+            ?: return
 
-            if (coords.isEmpty()) {
-                return
-            }
-
-            it.markerLatLng = coords[
-                (coords.size * 0.5f).toInt()
-            ]
-
-            pushFragment(
-                it
-            )
+        if (coords.isEmpty()) {
+            return
         }
+
+        val map = GoogleMapFragment()
+        map.markerLatLng = coords[
+            (coords.size * 0.5f).toInt()
+        ]
+
+        pushFragment(
+            MapsFragment.create(map)
+        )
     }
 
     fun setModelDetails(
