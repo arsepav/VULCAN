@@ -92,8 +92,8 @@ GoogleMap.OnMapClickListener {
                 .position(
                     pos
                 ).icon(
-                    BitmapDescriptorFactory.defaultMarker(
-                        BitmapDescriptorFactory.HUE_RED
+                    BitmapDescriptorFactory.fromResource(
+                        R.drawable.ic_x_mark
                     )
                 )
         )

@@ -131,6 +131,9 @@
     <string name="rejected">ОТКЛОНЕНО</string>
     <string name="approved">ОДОБРЕНО</string>
     <string name="no_perms">Активных заявок нет</string>
+    <string name="perm_single_s">Действует 30 суток</string>
+    <string name="perm_group_hu_s">30 суток, до 5 человек на 1 билет</string>
+    <string name="perm_group_com_s">30 суток, до 50 человек на 1 билет</string>
     <string-array name="rates">
         <item>Низкий уровень нагрузки</item>
         <item>Средний уровень нагрузки</item>

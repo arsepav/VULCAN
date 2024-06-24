@@ -101,7 +101,6 @@ class ProfileFragment
         )
 
 
-
         // Text
         textViewAppName.apply {
             isAllCaps = true
@@ -279,7 +278,6 @@ class ProfileFragment
 
         // Corner radius
         imageViewAvatar.radius = imageViewAvatar.height() * 0.5f
-
 
 
         // Gravity
