@@ -102,7 +102,24 @@ class GeoService(
         makeRequest(
             Request.Builder()
                 .url(URL_OOPT)
-                .post(body)
+                .post(body),
+            noConnection = {
+                val cacheDir = mContext.cacheDir
+                CoroutineScope(
+                    Dispatchers.IO
+                ).launch {
+                    Log.d(TAG, "requestSecurityZones: noConnection: PREP:")
+                    val json = loadJSONArrayFromCache(
+                        URL_OOPT,
+                        cacheDir
+                    ) ?: return@launch
+                    Log.d(TAG, "requestSecurityZones: noConnection: $json")
+                    processZones(
+                        json
+                    )
+
+                }
+            }
         ) { client, request ->
             queueRequest(
                 client,
