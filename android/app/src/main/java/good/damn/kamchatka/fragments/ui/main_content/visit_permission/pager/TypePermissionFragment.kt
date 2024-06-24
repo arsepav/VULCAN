@@ -14,6 +14,9 @@ import good.damn.kamchatka.Application
 import good.damn.kamchatka.R
 import good.damn.kamchatka.extensions.boundsLinear
 import good.damn.kamchatka.extensions.height
+import good.damn.kamchatka.extensions.setTextColorId
+import good.damn.kamchatka.extensions.setTextPx
+import good.damn.kamchatka.models.Color
 import good.damn.kamchatka.utils.ViewUtils
 import good.damn.kamchatka.views.button.ButtonCardBig
 import good.damn.kamchatka.views.button.CardState
@@ -29,6 +32,7 @@ class TypePermissionFragment
         savedInstanceState: Bundle?
     ): View? {
         val context = context ?: return null
+        val measureUnit = Application.WIDTH
         val layout = ViewUtils.verticalLinearLayout(
             context
         )
@@ -39,6 +43,9 @@ class TypePermissionFragment
             context
         )
         val btnGroupCo = ButtonCardBig(
+            context
+        )
+        val textViewSelect = AppCompatTextView(
             context
         )
 
@@ -78,15 +85,36 @@ class TypePermissionFragment
             )
         }
 
+        textViewSelect.apply {
+            setTextColor(
+                Color.parseFromHexId(
+                    R.color.titleColor,
+                    0.3f
+                )
+            )
 
-        (Application.WIDTH * 0.90821f).toInt().let { width ->
-            (Application.WIDTH * 0.2222f).toInt().let { height ->
-                (Application.WIDTH * 0.0169f).let { top ->
+            typeface = Application.font(
+                R.font.open_sans_semi_bold,
+                context
+            )
+
+            setTextPx(
+                measureUnit * 0.03743f
+            )
+
+            setText(
+                R.string.select_type_perm
+            )
+        }
+
+        (measureUnit * 0.90821f).toInt().let { width ->
+            (measureUnit * 0.2222f).toInt().let { height ->
+                (measureUnit * 0.0169f).let { top ->
                     btnSingle.boundsLinear(
                         Gravity.CENTER_HORIZONTAL,
                         width = width,
                         height = height,
-                        top = Application.WIDTH * 0.1014f
+                        top = measureUnit * 0.1014f
                     )
 
                     btnGroupHu.boundsLinear(
@@ -101,6 +129,11 @@ class TypePermissionFragment
                         width = width,
                         height = height,
                         top = top
+                    )
+
+                    textViewSelect.boundsLinear(
+                        Gravity.CENTER_HORIZONTAL,
+                        top = measureUnit * 0.07488f
                     )
                 }
             }
@@ -120,6 +153,7 @@ class TypePermissionFragment
             addView(btnSingle)
             addView(btnGroupHu)
             addView(btnGroupCo)
+            addView(textViewSelect)
         }
 
 
