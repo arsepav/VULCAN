@@ -25,6 +25,8 @@ class PermissionFragment
     private var oopt: ShortOOPT? = null
     private var routes: Array<Route?>? = null
 
+    private lateinit var mViewPager: ViewPager2
+
     override fun onCreateView(
         context: Context,
         measureUnit: Int
@@ -45,11 +47,11 @@ class PermissionFragment
         val textViewObjectType = AppCompatTextView(
             context
         )
-        val viewPager = ViewPager2(
+        mViewPager = ViewPager2(
             context
         )
-        viewPager.id = View.generateViewId()
-        viewPager.offscreenPageLimit = 2
+        mViewPager.id = View.generateViewId()
+        mViewPager.offscreenPageLimit = 2
 
         Application.font(
             R.font.open_sans_bold,
@@ -101,11 +103,13 @@ class PermissionFragment
         }
 
 
-        viewPager.boundsLinear(
+        mViewPager.boundsLinear(
             Gravity.START,
             -1,
             -1
         )
+
+        mViewPager.isUserInputEnabled = false
 
         layout.addView(
             btnBack
@@ -117,7 +121,7 @@ class PermissionFragment
             textViewObjectType
         )
         layout.addView(
-            viewPager
+            mViewPager
         )
 
         val typePerm = TypePermissionFragment()
@@ -126,10 +130,10 @@ class PermissionFragment
         req.routes = routes
 
         typePerm.onSelectService = {
-            viewPager.currentItem = 1
+            mViewPager.currentItem = 1
         }
 
-        viewPager.adapter = FragmentAdapter(
+        mViewPager.adapter = FragmentAdapter(
             childFragmentManager,
             lifecycle,
             arrayOf(
@@ -148,7 +152,12 @@ class PermissionFragment
     private fun onClickBtnBack(
         view: View
     ) {
-        popFragment()
+        if (mViewPager.currentItem == 0) {
+            popFragment()
+            return
+        }
+
+        mViewPager.currentItem--
     }
 
     companion object {

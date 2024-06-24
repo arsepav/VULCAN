@@ -7,25 +7,50 @@ import good.damn.kamchatka.Application
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
 import java.net.URL
+import kotlin.math.log
 
 class URLUtils {
     companion object {
         private const val TAG = "URLUtils"
         fun loadImage(
             url: String,
-            completion: ((Bitmap?)->Unit)
+            cacheDir: File,
+            completion: ((Bitmap?, Boolean)->Unit)
         ) {
             CoroutineScope(
                 Dispatchers.IO
             ).launch {
 
+                val cachedBitmap = loadBitmapFromCache(
+                    url,
+                    cacheDir
+                )
+
+                if (cachedBitmap != null) {
+                    Application.ui {
+                        completion(cachedBitmap, true)
+                    }
+                }
+                
                 val bitmap = urlBitmap(
                     url
                 )
-                
+
+                bitmap?.let {
+                    saveImageCache(
+                        it,
+                        url,
+                        cacheDir
+                    )
+                }
+
                 Application.ui {
-                    completion(bitmap)
+                    completion(bitmap,false)
                 }
             }
         }
@@ -34,11 +59,24 @@ class URLUtils {
             url: String,
             inWidth: Int,
             inHeight: Int,
-            completion: (Bitmap?) -> Unit
+            cacheDir: File,
+            completion: (Bitmap?, Boolean) -> Unit
         ) {
             CoroutineScope(
                 Dispatchers.IO
             ).launch {
+                
+                val cachedBitmap = loadBitmapFromCache(
+                    url,
+                    cacheDir
+                )
+                
+                if (cachedBitmap != null) {
+                    Application.ui {
+                        completion(cachedBitmap,true)
+                    }
+                }
+                
                 urlBitmap(
                     url
                 )?.let {
@@ -53,18 +91,86 @@ class URLUtils {
                         it.recycle()
                     }
 
+                    saveImageCache(
+                        scaled,
+                        url,
+                        cacheDir
+                    )
+                    
                     Application.ui {
-                        completion(scaled)
+                        completion(scaled,false)
                     }
                 }
 
             }
         }
+
+        private fun getCachedFile(
+            url: String,
+            cacheDir: File
+        ): File {
+            val hash = url.hashCode()
+            return File("$cacheDir/$hash")
+        }
+
+        private fun saveImageCache(
+            bitmap: Bitmap,
+            url: String,
+            cacheDir: File
+        ) {
+            val f = getCachedFile(
+                url,
+                cacheDir
+            )
+            
+            try {
+                if (!f.exists() && f.createNewFile()) {
+                    Log.d(TAG, "saveImageCache: ${f.name} created")
+                }
+
+                val fos = FileOutputStream(f)
+                bitmap.compress(
+                    Bitmap.CompressFormat.JPEG,
+                    100,
+                    fos
+                )
+                fos.close()
+            } catch (e: Exception) {
+                Log.d(TAG, "saveImageCache: ERROR: ${e.message}")
+            }
+        }
+        
+        private fun loadBitmapFromCache(
+            url: String,
+            cacheDir: File
+        ): Bitmap? {
+
+            val file = getCachedFile(
+                url,
+                cacheDir
+            )
+
+            Log.d(TAG, "urlBitmap: $url $file")
+            
+            if (file.exists()) {
+                var b: Bitmap? = null
+                try {
+                    val fis = FileInputStream(file)
+                    b = BitmapFactory.decodeStream(
+                        fis
+                    )
+                    fis.close()
+                } catch (e: IOException) {
+                    Log.d(TAG, "urlBitmap: CACHE_ERROR: ${e.message}")
+                }
+                return b
+            }
+            return null
+        }
         
         private fun urlBitmap(
             url: String
         ): Bitmap? {
-            Log.d(TAG, "urlBitmap: $url")
             val stream = try {
                 URL(
                     url

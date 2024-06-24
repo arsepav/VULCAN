@@ -46,8 +46,9 @@ class BottomSheetInfo
 
         imageUrl?.let { url ->
             URLUtils.loadImage(
-                url
-            ) { bitmap ->
+                url,
+                context.cacheDir
+            ) { bitmap, _ ->
                 Log.d(TAG, "onCreateView: LOADED_IMAGE: $url ${bitmap?.height}")
                 imageView.setImageBitmap(
                     bitmap

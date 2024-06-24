@@ -77,7 +77,7 @@ class ButtonCardBig(
         )
 
         mTouchInteraction.setDuration(
-            350
+            150
         )
 
         mTouchInteraction.setInterpolator(
@@ -125,7 +125,7 @@ class ButtonCardBig(
     override fun onUpdateAnimation(
         animatedValue: Float
     ) {
-        val scale = 1.0f - 0.25f * animatedValue
+        val scale = 0.65f + 0.35f * animatedValue
         scaleX = scale
         scaleY = scale
     }

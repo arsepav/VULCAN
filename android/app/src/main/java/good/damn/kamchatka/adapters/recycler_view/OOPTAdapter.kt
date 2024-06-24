@@ -60,8 +60,11 @@ class OOPTAdapter(
                 it,
                 holder.imageSize,
                 holder.imageSize,
-            ) { bitmap ->
-                zone.image = bitmap
+                holder.itemView.context.cacheDir
+            ) { bitmap, isCached ->
+                if (!isCached) {
+                    zone.image = bitmap
+                }
                 holder.setPreview(bitmap)
             }
         }

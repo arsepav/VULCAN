@@ -93,7 +93,7 @@ GoogleMap.OnMapClickListener {
                     pos
                 ).icon(
                     BitmapDescriptorFactory.fromResource(
-                        R.drawable.ic_x_mark
+                        R.drawable.ic_x_mark_bmp
                     )
                 )
         )
