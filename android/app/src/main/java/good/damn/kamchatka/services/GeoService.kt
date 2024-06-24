@@ -61,7 +61,24 @@ class GeoService(
         makeRequest(
             Request.Builder()
                 .url(urlParam)
-                .get()
+                .get(),
+            noConnection = {
+                val cacheDir = mContext.cacheDir
+                CoroutineScope(
+                    Dispatchers.IO
+                ).launch {
+                    Log.d(TAG, "requestRoutes: noConnection: PREP:")
+                    val json = loadJSONArrayFromCache(
+                        urlParam,
+                        cacheDir
+                    ) ?: return@launch
+                    Log.d(TAG, "requestRoutes: noConnection: $json")
+                    processRoutes(
+                        json
+                    )
+
+                }
+            }
         ) { client, request ->
             queueRequest(
                 client,
@@ -79,7 +96,24 @@ class GeoService(
         makeRequest(
             Request.Builder()
                 .url(URL_OOPT_OBJS)
-                .get()
+                .get(),
+            noConnection = {
+                val cacheDir = mContext.cacheDir
+                CoroutineScope(
+                    Dispatchers.IO
+                ).launch {
+                    Log.d(TAG, "requestObjects: noConnection: PREP:")
+                    val json = loadJSONArrayFromCache(
+                        URL_OOPT_OBJS,
+                        cacheDir
+                    ) ?: return@launch
+                    Log.d(TAG, "requestObjects: noConnection: $json")
+                    processObjects(
+                        json
+                    )
+
+                }
+            }
         ) { client, request ->
             queueRequest(
                 client,
